@@ -7,8 +7,11 @@ editor_options:
   chunk_output_type: console
 params:
   cell_line: "ZR-75"
+  dataset: "PRJNA509779"
   target: "AR"
   treat_levels: ["E2", "E2DHT"]
+  width: 400
+  fl: 195
 ---
 
 

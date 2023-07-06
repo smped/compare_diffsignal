@@ -30,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -226,6 +227,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -283,6 +287,14 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Home</h1>
@@ -293,7 +305,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -304,8 +316,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -318,9 +330,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>compare_diffsignal/</code> <span
@@ -343,21 +355,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -448,15 +457,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltreebf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51edtargetblankbf483b7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1targetblank6a9ecfba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/bf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51ed" target="_blank">bf483b7</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1" target="_blank">6a9ecfb</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltreebf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51edtargetblankbf483b7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1targetblank6a9ecfba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -466,7 +475,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/bf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51ed" target="_blank">bf483b7</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1" target="_blank">6a9ecfb</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -484,12 +493,8 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Unstaged changes:
-    Modified:   .gitignore
     Modified:   README.md
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/about.Rmd
-    Modified:   analysis/index.Rmd
-    Deleted:    analysis/license.Rmd
+    Modified:   code/_method_comparison.Rmd
 
 </code></pre>
 <p>
@@ -539,6 +544,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/smped/compare_diffsignal/blob/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/analysis/index.Rmd" target="_blank">6a9ecfb</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+Initial Commit
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/docs/index.html" target="_blank">6a9ecfb</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+Initial Commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/smped/compare_diffsignal/blob/bf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51ed/analysis/index.Rmd" target="_blank">bf483b7</a>
 </td>
 <td>
@@ -560,8 +599,165 @@ Start workflowr project.
 </div>
 <div id="compare_diffsignal" class="section level1">
 <h1>compare_diffsignal</h1>
-<p>Compare differential signal approaches across multiple datasets:</p>
+<p>This is a workflow designed to directly compare the output of
+multiple approaches to detection of Differential (ChIP) Signal,
+specifically with regard to those available in the
+<code>extraChIPs</code> package. Analysis using <code>DiffBind</code>
+will also be included as a reference standard, especially when using
+methods which should replicate this methodology.</p>
+<p>The methods being compared will be</p>
 <table>
+<caption><em>Methods available in extraChIPs which are being compared
+</em></caption>
+<colgroup>
+<col width="24%" />
+<col width="15%" />
+<col width="14%" />
+<col width="24%" />
+<col width="12%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Abbreviation</th>
+<th align="left">Package</th>
+<th align="left">Windows</th>
+<th align="left">Normalisation</th>
+<th align="left">Method</th>
+<th align="left">Assay</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DB-LS</td>
+<td align="left">DiffBind</td>
+<td align="left">Fixed</td>
+<td align="left">Library Size</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="even">
+<td align="left">DB-TMM</td>
+<td align="left">DiffBind</td>
+<td align="left">Fixed</td>
+<td align="left">TMM</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="odd">
+<td align="left">FW-LS</td>
+<td align="left">extraChIPS</td>
+<td align="left">Fixed</td>
+<td align="left">Library Size</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="even">
+<td align="left">FW-TMM</td>
+<td align="left">extraChIPS</td>
+<td align="left">Fixed</td>
+<td align="left">TMM</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="odd">
+<td align="left">FW-TMMG</td>
+<td align="left">extraChIPS</td>
+<td align="left">Fixed</td>
+<td align="left">TMM Groups</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="even">
+<td align="left">FW-SQN</td>
+<td align="left">extraChIPS</td>
+<td align="left">Fixed</td>
+<td align="left">qsmooth</td>
+<td align="left">QLF</td>
+<td align="left">normCounts</td>
+</tr>
+<tr class="odd">
+<td align="left">FW-SQNGC</td>
+<td align="left">extraChIPS</td>
+<td align="left">Fixed</td>
+<td align="left">qsmoothGC</td>
+<td align="left">QLF</td>
+<td align="left">normCounts</td>
+</tr>
+<tr class="even">
+<td align="left">SW-LS</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">Library Size</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="odd">
+<td align="left">SW-TMM</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">TMM</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="even">
+<td align="left">SW-TMMG</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">TMM Groups</td>
+<td align="left">QLF</td>
+<td align="left">counts</td>
+</tr>
+<tr class="odd">
+<td align="left">SW-SQN</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">qsmooth</td>
+<td align="left">QLF</td>
+<td align="left">normCounts</td>
+</tr>
+<tr class="even">
+<td align="left">SW-SQNGC</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">qsmoothGC</td>
+<td align="left">QLF</td>
+<td align="left">normCounts</td>
+</tr>
+<tr class="odd">
+<td align="left">SW-SQN</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">Library Size</td>
+<td align="left">LT</td>
+<td align="left">logCPM</td>
+</tr>
+<tr class="even">
+<td align="left">SW-SQN</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">qsmooth</td>
+<td align="left">LT</td>
+<td align="left">logCPM</td>
+</tr>
+<tr class="odd">
+<td align="left">SW-SQNGC</td>
+<td align="left">extraChIPS</td>
+<td align="left">Sliding</td>
+<td align="left">qsmoothGC</td>
+<td align="left">LT</td>
+<td align="left">logCPM</td>
+</tr>
+</tbody>
+</table>
+<p>This makes a total of 15 methods. All above methods will be initially
+tested using <span class="math inline">\(H_0: \mu = 0\)</span>.
+Subsequent comparisons will be made using <span
+class="math inline">\(H_0: -\lambda &lt; \mu &lt; \lambda\)</span> but
+excluding DiffBind results.</p>
+<p>All approaches will be compared across multiple datasets:</p>
+<table>
+<caption><em>Cell lines and ChIP targets being analysed</em></caption>
 <thead>
 <tr class="header">
 <th align="left">Cell Type</th>
@@ -577,7 +773,7 @@ Start workflowr project.
 </tr>
 <tr class="even">
 <td align="left">ZR-75-1</td>
-<td align="left">ERa</td>
+<td align="left">ER<span class="math inline">\(\alpha\)</span></td>
 <td align="left">E2, E2DHT</td>
 </tr>
 <tr class="odd">
@@ -587,6 +783,25 @@ Start workflowr project.
 </tr>
 </tbody>
 </table>
+<p>The key defining features underlining this selection are:</p>
+<ul>
+<li>AR will shift from cytoplasmic to nuclear in response to DHT leading
+to unbalanced signal</li>
+<li>ER<span class="math inline">\(\alpha\)</span> should show
+approximately the same levels of signal between conditions, and like AR,
+should produce ‘narrow’ binding regions</li>
+<li>H3K27ac will be far broader peaks than either AR or ER<span
+class="math inline">\(\alpha\)</span></li>
+</ul>
+<p>The expectations are that</p>
+<ol style="list-style-type: decimal">
+<li>DB-LS and FW-LS should return near identical results</li>
+<li>DB-TMM and FW-TMM should return near identical results</li>
+<li>DB-TMM, FW-TMM, SW-TMM should return large numbers of errors for
+<em>AR specifically</em></li>
+<li>Sliding windows should out-perform fixed-width windows for
+H3K27ac</li>
+</ol>
 <p>A <a href="https://github.com/workflowr/workflowr">workflowr</a>
 project.</p>
 <br>
@@ -685,6 +900,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

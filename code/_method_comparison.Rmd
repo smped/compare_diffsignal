@@ -1,31 +1,380 @@
 
 ```{r setup, echo=FALSE, eval=TRUE}
-knitr::opts_chunk$set(
-  message = FALSE, warnings = FALSE,
-  fig.height = 8, fig.width = 10, dev = "png"
-)
-```
-
-```{r get-params, echo=FALSE}
+# params <- list(
+#   dataset = "PRJNA509779", target = "AR", cell_line = "ZR-75-1", 
+#   treat_levels = c("E2", "E2DHT")
+# )
+dataset <- params$dataset
 cell_line <- params$cell_line
 target <- params$target
 treat_levels <- params$treat_levels
+out_path <- here::here("output", dataset, target)
+if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE)
+threads <- min(parallel::detectCores() - 2, 12)
+knitr::opts_chunk$set(
+  message = FALSE, warnings = FALSE,
+  fig.height = 8, fig.width = 10, dev = "png", 
+)
 ```
 
-## Introduction
 
-This is a workflow designed to directly compare the output of multiple approaches to detection of Differential (ChIP) Signal, specifically with regard to those available in the `extraChIPs` package.
-Analysis using `DiffBind` will also be included as a reference standard, especially when using methods which should replicate this methodology.
+```{r packages}
+library(tidyverse)
+library(extraChIPs)
+library(Rsamtools)
+library(rtracklayer)
+library(scales)
+library(glue)
+library(plyranges)
+library(pander)
+library(DiffBind)
+library(edgeR)
+library(csaw)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(qsmooth)
+theme_set(
+  theme_bw() + 
+    theme(
+      text = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(face = "italic", hjust = 0.5)
+    )
+)
+status_colours <- c(
+  Increased = "red2", Decreased = "deepskyblue3", 
+  Unchanged = "grey30", Undetected = "grey70"
+)
+```
 
-The methods being compared will be
 
-| Abbreviation  | Package | Windows | Normalisation | Method |
-|:------------- |:-------- |:------- |:------------- |:------ |
-| DB: LS        | DiffBind | Fixed   | Library Size  | QLF    |
-| DB: TMM       | DiffBind | Fixed   | TMM           | QLF    |
-| EC: LS        | extraChIPS | Fixed   | Library Size  | QLF    |
-| EC: TMM       | extraChIPS | Fixed   | TMM           | QLF    |
-| EC: TMMG      | extraChIPS | Fixed   | TMM Groups    | QLF    |
-| EC: SQN       | extraChIPS | Fixed   | qsmooth       | QLF    |
-| EC: SQNGC     | extraChIPS | Fixed   | qsmoothGC     | QLF    |
-| EC: CQN       | extraChIPS | Fixed   | CQN           | QLF    |
+```{r samples}
+samples <- here::here("data", glue("{dataset}.tsv")) %>% 
+  read_tsv() %>% 
+  dplyr::filter(target == .GlobalEnv$target) %>% 
+  mutate(treatment = factor(treatment, levels = treat_levels))
+```
+
+```{r bfl}
+bfl <- samples %>% 
+  mutate(path = here::here("data", "bam", dataset, glue("{accession}.sorted.bam"))) %>% 
+  pull(path) %>% 
+  BamFileList()
+sq <- seqinfo(bfl) %>% 
+  keepStandardChromosomes() %>% 
+  dropSeqlevels(value = "chrM") %>% 
+  sortSeqlevels() 
+genome(sq) <- "GRCh37"
+isCircular(sq) <- rep_len(FALSE, length(seqlevels(sq)))
+```
+
+
+## Peaks
+
+```{r peaks}
+greylist <- here::here("data", glue("{samples$input}_greylist.bed")) %>% 
+  unique() %>% 
+  import.bed(which = GRanges(sq)) %>% 
+  keepStandardChromosomes()%>% 
+  dropSeqlevels(value = "chrM") %>% 
+  sortSeqlevels() 
+seqinfo(greylist) <- sq
+all_peaks <- samples %>% 
+  mutate(peak_file = here::here("data", "macs2", dataset, accession, glue("{accession}_peaks.narrowPeak"))) %>% 
+  split(.$treatment) %>% 
+  lapply(pull, peak_file) %>% 
+  lapply(importPeaks, centre = TRUE, seqinfo = sq, glueNames = "{str_remove_all(basename(x), '_peaks.+')}")
+treat_peaks <- all_peaks %>% 
+  lapply(makeConsensus, p = 2/3, var = "centre") %>% 
+  lapply(mutate, centre = vapply(centre, median, numeric(1))) 
+merged_peaks <- here::here(
+  "data", "macs2", dataset, target, glue("{treat_levels}_merged_peaks.narrowPeak")
+) %>% 
+  importPeaks(
+    seqinfo = sq, centre = TRUE, glueNames = "{str_remove_all(basename(x), '_merged.+')}"
+  )
+merged_peaks <- treat_levels %>% 
+  lapply(
+    function(x) filter_by_overlaps(merged_peaks[[x]], treat_peaks[[x]])
+  ) %>% 
+  GRangesList() %>% 
+  setNames(treat_levels)
+union_peaks <- makeConsensus(merged_peaks, var = c("score", "centre")) %>% 
+  mutate(
+    centre = round(vapply(centre, mean, numeric(1)), 0),
+    score=  vapply(score, max, numeric(1))
+  ) %>% 
+  filter_by_non_overlaps(greylist)
+union_peaks %>% 
+  select(score) %>% 
+  export.bed(file.path(out_path, glue("{target}_union_peaks.bed")))
+centred_peaks <- union_peaks %>% 
+  mutate(rng = paste0(seqnames, ":", centre)) %>% 
+  colToRanges("rng") %>% 
+  resize(width = params$width, fix = 'center')
+centred_peaks %>% 
+  select(score) %>% 
+  export.bed(file.path(out_path, glue("{target}_centred_peaks.bed")))
+```
+
+Peaks were:
+
+1. Imported for each sample individually
+2. Merged to create treatment-specific ranges with peaks in 2 or more samples
+3. Those derived by merging samples (as input to `macs2 callpeak`) were filtered by overlaps with the above merged samples
+4. A set of union peaks were then taken as the union of the above treatment-specific peaks which passed filtering
+
+This gave `r comma(length(union_peaks))` union peaks derived from `r pander(as.character(comma(vapply(merged_peaks, length, integer(1)))))` treatment-specific peaks from `r glue_collapse(treat_levels, last = " and ")` respectively.
+
+## Fixed-Width Analysis
+
+### DiffBind {.tabset} 
+
+```{r dba}
+db_sample_sheet <- samples %>%
+  mutate(
+    Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
+    bamReads = path(bfl),
+    ControlID = "Pooled",
+    bamControl = file.path(dirname(bamReads), glue("{input}.sorted.bam")),
+    Peaks = file.path(out_path, glue("{target}_centred_peaks.bed")),
+    PeakCaller = "bed"
+  ) %>% 
+  dplyr::rename(SampleID = accession, Treatment = treatment) %>% 
+  mutate(Replicate = seq_along(Treatment), .by = Treatment) %>% 
+  dplyr::select(
+    SampleID, Tissue, Factor, #Condition, 
+    Treatment, Replicate,
+    bamReads, ControlID, bamControl, starts_with("Peak")
+  ) %>% 
+  as.data.frame()
+dba <- dba(
+  sampleSheet = db_sample_sheet, 
+  config = data.frame(fragmentSize = params$fl, cores = threads)
+) %>% 
+  dba.count(summits = floor(params$width / 2)) %>% 
+  dba.blacklist(cores = threads)
+```
+
+For the initial analysis using DiffBind, all files were passed to the requisite functions using a fixed-width of `r params$width` bp, assuming a fragment length of `r params$fl`.
+
+**DiffBind Results as shown currently use DESeq2 due to a bug in DiffBind 3.10**
+
+#### Library Size
+
+```{r db-ls-results}
+dba_ls <- dba.normalize(dba, normalize = DBA_NORM_LIB) %>% 
+  dba.analyze(method = DBA_ALL_METHODS)
+# db_ls_results <-  dba_ls %>% 
+#   dba.report(method = DBA_EDGER, th = 1) %>% 
+#   sortSeqlevels() %>% 
+#   sort()
+# seqinfo(db_ls_results) <- sq
+## DiffBind currently has a bug
+db_ls_results <-  dba_ls %>% 
+  dba.report(method = DBA_DESEQ2, th = 1) %>% 
+  sortSeqlevels() %>% 
+  sort()
+seqinfo(db_ls_results) <- sq
+```
+
+
+This analysis returned `r comma(sum(db_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-db-ls}
+db_ls_results %>%
+  addDiffStatus(fc_col = "Fold") %>% 
+  as_tibble() %>% 
+  ggplot(aes(Conc, Fold)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: DiffBind"), subtitle = "Library Size Normalisation") +
+  labs(x = "Ave Signal", y = "logFC", colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+#### TMM
+
+```{r db-tmm-results}
+dba_tmm <- dba.normalize(dba, normalize = DBA_NORM_TMM) %>% 
+  dba.analyze(method = DBA_ALL_METHODS)
+# db_tmm_results <- dba_tmm %>% 
+#   dba.report(method = DBA_EDGER, th = 1) %>% 
+#   sortSeqlevels() %>% 
+#   sort()
+# seqinfo(db_tmm_results) <- sq
+db_tmm_results <- dba_tmm %>% 
+  dba.report(method = DBA_DESEQ2, th = 1) %>% 
+  sortSeqlevels() %>% 
+  sort()
+seqinfo(db_tmm_results) <- sq
+```
+
+This analysis returned `r comma(sum(db_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-db-tmm}
+db_tmm_results %>% 
+  addDiffStatus(fc_col = "Fold") %>% 
+  as_tibble() %>% 
+  ggplot(aes(Conc, Fold)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: DiffBind"), subtitle = "TMM Normalisation") +
+  labs(x = "Ave Signal", y = "logFC", colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+### extraChIPs {.tabset}
+
+
+```{r se-fixed}
+se <- regionCounts(bfl, centred_peaks, ext = 200)
+colData(se) %<>%
+  as_tibble(rownames = "sample") %>% 
+  mutate(
+    accession = str_remove_all(sample, ".sorted.bam"),
+  ) %>% 
+  left_join(samples, by = "accession") %>% 
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %>% 
+  as.data.frame() %>% 
+  column_to_rownames("sample") %>% 
+  DataFrame()
+X <- model.matrix(~treatment, data = colData(se))
+```
+
+#### Library Size
+
+```{r ec-ls-fixed}
+ec_ls_results <- fitAssayDiff(se, design = X, asRanges = TRUE) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(ec_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-ls-fixed}
+ec_ls_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "Library Size Normalisation") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+
+#### TMM
+
+```{r ec-tmm-fixed}
+ec_tmm_results <- fitAssayDiff(se, design = X, norm = "TMM", asRanges = TRUE) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(ec_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-tmm-fixed}
+ec_tmm_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+
+#### TMM Groups
+
+```{r ex-tmmg-fixed}
+ec_tmmg_results <- fitAssayDiff(se, design = X, norm = "TMM", groups = "treat", asRanges = TRUE) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(ec_tmmg_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-tmmg-fixed}
+ec_tmmg_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation (Groups)") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+### Smooth Quantile {.tabset}
+
+```{r get-gc}
+bs <- BSgenome.Hsapiens.UCSC.hg19
+seqlevels(centred_peaks) <- seqlevels(bs)
+genome(centred_peaks) <- "hg19"
+seqinfo(centred_peaks) <- seqinfo(bs)
+gc <- getSeq(bs, centred_peaks) %>% 
+  letterFrequency(letters = "GC", as.prob = TRUE)
+rowData(se)$gc <- gc[,1]
+```
+
+
+#### SQN
+
+```{r ec-sqn-fixed}
+assay(se, "normCounts") <- qsmooth(se, group_factor = se$treatment) %>% 
+  qsmoothData()
+sqn_results <- fitAssayDiff(
+  se, assay = "normCounts", lib.size = NULL, design = X, asRanges = TRUE
+) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(sqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-sqn-fixed}
+sqn_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ Normalisation") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```
+
+
+#### SQN-GC
+
+```{r ec-sqngc-fixed}
+assay(se, "normCountsGC") <- qsmoothGC(
+  se, group_factor = se$treatment, gc = rowData(se)$gc
+) %>% 
+  qsmoothData()
+sqngc_results <- fitAssayDiff(
+  se, assay = "normCountsGC", lib.size = NULL, design = X, asRanges = TRUE
+) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(sqngc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-sqngc-fixed}
+sqngc_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ-GC Normalisation") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+```

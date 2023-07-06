@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-07-06" />
 
-<title>zr75_ar</title>
+<title>ZR75: AR</title>
 
 <script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -375,7 +375,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">zr75_ar</h1>
+<h1 class="title toc-ignore">ZR75: AR</h1>
 <h4 class="author">Stephen Pederson</h4>
 <h4 class="date">2023-07-06</h4>
 
@@ -406,13 +406,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-07-06
+<strong>Last updated:</strong> 2023-07-07
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>compare_diffsignal/</code> <span
@@ -444,10 +444,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -456,17 +456,484 @@ HTML.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Environment:</strong> objects present
+</a>
 </p>
 </div>
-<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongobjectspresent"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the
-global environment can affect the analysis in your R Markdown file in
-unknown ways. For reproduciblity it’s best to always run the code in an
-empty environment.</p>
+<p>
+The global environment had objects present when the code in the R
+Markdown file was run. These objects can affect the analysis in your R
+Markdown file in unknown ways. For reproduciblity it’s best to always
+run the code in an empty environment. Use <code>wflow_publish</code> or
+<code>wflow_build</code> to ensure that the code is always run in an
+empty environment.
+</p>
+<p>
+The following objects were defined in the global environment when these
+results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+all_peaks
+</td>
+<td style="text-align:left;">
+list
+</td>
+<td style="text-align:left;">
+8.5 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bfl
+</td>
+<td style="text-align:left;">
+BamFileList
+</td>
+<td style="text-align:left;">
+5.9 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bs
+</td>
+<td style="text-align:left;">
+BSgenome
+</td>
+<td style="text-align:left;">
+86.7 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cell_line
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+112 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+centred_peaks
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+639.7 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dataset
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+120 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_ls_deseq
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_ls_deseq2
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_ls_edger
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_ls_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_sample_sheet
+</td>
+<td style="text-align:left;">
+data.frame
+</td>
+<td style="text-align:left;">
+4.8 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_tmm_deseq
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_tmm_deseq2
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_tmm_edger
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+db_tmm_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dba
+</td>
+<td style="text-align:left;">
+DBA
+</td>
+<td style="text-align:left;">
+7.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dba_ls
+</td>
+<td style="text-align:left;">
+DBA
+</td>
+<td style="text-align:left;">
+28.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dba_tmm
+</td>
+<td style="text-align:left;">
+DBA
+</td>
+<td style="text-align:left;">
+28.7 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dge
+</td>
+<td style="text-align:left;">
+DGEList
+</td>
+<td style="text-align:left;">
+2.8 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ec_ls_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.2 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ec_tmm_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.2 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ec_tmmg_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.2 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gc
+</td>
+<td style="text-align:left;">
+matrix;array
+</td>
+<td style="text-align:left;">
+115.8 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+greylist
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+43.7 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ls_res
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+995.1 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+merged_peaks
+</td>
+<td style="text-align:left;">
+CompressedGRangesList
+</td>
+<td style="text-align:left;">
+2.3 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+out_path
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+232 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+samples
+</td>
+<td style="text-align:left;">
+tbl_df;tbl;data.frame
+</td>
+<td style="text-align:left;">
+3.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+se
+</td>
+<td style="text-align:left;">
+RangedSummarizedExperiment
+</td>
+<td style="text-align:left;">
+2.4 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sq
+</td>
+<td style="text-align:left;">
+Seqinfo
+</td>
+<td style="text-align:left;">
+3.1 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sqn_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.3 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sqngc_results
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+1.3 Mb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+status_colours
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+760 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+target
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+112 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+threads
+</td>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tmm_res
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+995.1 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+treat_levels
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+176 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+treat_peaks
+</td>
+<td style="text-align:left;">
+list
+</td>
+<td style="text-align:left;">
+684.5 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+union_peaks
+</td>
+<td style="text-align:left;">
+GRanges
+</td>
+<td style="text-align:left;">
+590 Kb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+X
+</td>
+<td style="text-align:left;">
+matrix;array
+</td>
+<td style="text-align:left;">
+1.9 Kb
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -540,15 +1007,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltreebf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51edtargetblankbf483b7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1targetblank6a9ecfba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/bf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51ed" target="_blank">bf483b7</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1" target="_blank">6a9ecfb</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltreebf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51edtargetblankbf483b7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1targetblank6a9ecfba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -558,7 +1025,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/bf483b7f1798ce0bb6d9a197fe1ec3fd5f5e51ed" target="_blank">bf483b7</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1" target="_blank">6a9ecfb</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -574,18 +1041,18 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .Rproj.user/
+    Ignored:    data/bam/
 
 Untracked files:
-    Untracked:  analysis/zr75_ar.Rmd
-    Untracked:  code/_method_comparison.Rmd
+    Untracked:  data/PRJNA509779.tsv
+    Untracked:  data/SRR8315192_greylist.bed
+    Untracked:  data/macs2/
+    Untracked:  output/PRJNA509779/
 
 Unstaged changes:
-    Modified:   .gitignore
     Modified:   README.md
-    Modified:   analysis/_site.yml
-    Deleted:    analysis/about.Rmd
-    Modified:   analysis/index.Rmd
-    Deleted:    analysis/license.Rmd
+    Modified:   analysis/zr75_ar.Rmd
+    Modified:   code/_method_comparison.Rmd
 
 </code></pre>
 <p>
@@ -600,26 +1067,411 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/zr75_ar.Rmd</code>) and HTML
+(<code>docs/zr75_ar.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/smped/compare_diffsignal/blob/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/analysis/zr75_ar.Rmd" target="_blank">6a9ecfb</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+Initial Commit
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/docs/zr75_ar.html" target="_blank">6a9ecfb</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+Initial Commit
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
-<pre class="r"><code>cell_line &lt;- params$cell_line
-target &lt;- params$target
-treat_levels &lt;- params$treat_levels</code></pre>
-<pre class="r"><code>params</code></pre>
-<pre><code>$cell_line
-[1] &quot;ZR-75&quot;
-
-$target
-[1] &quot;AR&quot;
-
-$treat_levels
-[1] &quot;E2&quot;    &quot;E2DHT&quot;</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(extraChIPs)
+library(Rsamtools)
+library(rtracklayer)
+library(scales)
+library(glue)
+library(plyranges)
+library(pander)
+library(DiffBind)
+library(edgeR)
+library(csaw)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(qsmooth)
+theme_set(
+  theme_bw() + 
+    theme(
+      text = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(face = &quot;italic&quot;, hjust = 0.5)
+    )
+)
+status_colours &lt;- c(Increased = &quot;red2&quot;, Decreased = &quot;deepskyblue3&quot;, Unchanged = &quot;grey30&quot;, Undetected = &quot;grey70&quot;)</code></pre>
+<pre class="r"><code>samples &lt;- here::here(&quot;data&quot;, glue(&quot;{dataset}.tsv&quot;)) %&gt;% 
+  read_tsv() %&gt;% 
+  dplyr::filter(target == .GlobalEnv$target) %&gt;% 
+  mutate(treatment = factor(treatment, levels = treat_levels))</code></pre>
+<pre class="r"><code>bfl &lt;- samples %&gt;% 
+  mutate(path = here::here(&quot;data&quot;, &quot;bam&quot;, dataset, glue(&quot;{accession}.sorted.bam&quot;))) %&gt;% 
+  pull(path) %&gt;% 
+  BamFileList()
+sq &lt;- seqinfo(bfl) %&gt;% 
+  keepStandardChromosomes() %&gt;% 
+  dropSeqlevels(value = &quot;chrM&quot;) %&gt;% 
+  sortSeqlevels() 
+genome(sq) &lt;- &quot;GRCh37&quot;
+isCircular(sq) &lt;- rep_len(FALSE, length(seqlevels(sq)))</code></pre>
+<div id="peaks" class="section level2">
+<h2>Peaks</h2>
+<pre class="r"><code>greylist &lt;- here::here(&quot;data&quot;, glue(&quot;{samples$input}_greylist.bed&quot;)) %&gt;% 
+  unique() %&gt;% 
+  import.bed(which = GRanges(sq)) %&gt;% 
+  keepStandardChromosomes()%&gt;% 
+  dropSeqlevels(value = &quot;chrM&quot;) %&gt;% 
+  sortSeqlevels() 
+seqinfo(greylist) &lt;- sq
+all_peaks &lt;- samples %&gt;% 
+  mutate(peak_file = here::here(&quot;data&quot;, &quot;macs2&quot;, dataset, accession, glue(&quot;{accession}_peaks.narrowPeak&quot;))) %&gt;% 
+  split(.$treatment) %&gt;% 
+  lapply(pull, peak_file) %&gt;% 
+  lapply(importPeaks, centre = TRUE, seqinfo = sq, glueNames = &quot;{str_remove_all(basename(x), &#39;_peaks.+&#39;)}&quot;)
+treat_peaks &lt;- all_peaks %&gt;% 
+  lapply(makeConsensus, p = 2/3, var = &quot;centre&quot;) %&gt;% 
+  lapply(mutate, centre = vapply(centre, median, numeric(1))) 
+merged_peaks &lt;- here::here(
+  &quot;data&quot;, &quot;macs2&quot;, dataset, target, glue(&quot;{treat_levels}_merged_peaks.narrowPeak&quot;)
+) %&gt;% 
+  importPeaks(
+    seqinfo = sq, centre = TRUE, glueNames = &quot;{str_remove_all(basename(x), &#39;_merged.+&#39;)}&quot;
+  )
+merged_peaks &lt;- treat_levels %&gt;% 
+  lapply(
+    function(x) filter_by_overlaps(merged_peaks[[x]], treat_peaks[[x]])
+  ) %&gt;% 
+  GRangesList() %&gt;% 
+  setNames(treat_levels)
+union_peaks &lt;- makeConsensus(merged_peaks, var = c(&quot;score&quot;, &quot;centre&quot;)) %&gt;% 
+  mutate(
+    centre = round(vapply(centre, mean, numeric(1)), 0),
+    score=  vapply(score, max, numeric(1))
+  ) %&gt;% 
+  filter_by_non_overlaps(greylist)
+union_peaks %&gt;% 
+  select(score) %&gt;% 
+  export.bed(file.path(out_path, glue(&quot;{target}_union_peaks.bed&quot;)))
+centred_peaks &lt;- union_peaks %&gt;% 
+  mutate(rng = paste0(seqnames, &quot;:&quot;, centre)) %&gt;% 
+  colToRanges(&quot;rng&quot;) %&gt;% 
+  resize(width = params$width, fix = &#39;center&#39;)
+centred_peaks %&gt;% 
+  select(score) %&gt;% 
+  export.bed(file.path(out_path, glue(&quot;{target}_centred_peaks.bed&quot;)))</code></pre>
+<p>Peaks were:</p>
+<ol style="list-style-type: decimal">
+<li>Imported for each sample individually</li>
+<li>Merged to create treatment-specific ranges with peaks in 2 or more
+samples</li>
+<li>Those derived by merging samples (as input to
+<code>macs2 callpeak</code>) were filtered by overlaps with the above
+merged samples</li>
+<li>A set of union peaks were then taken as the union of the above
+treatment-specific peaks which passed filtering</li>
+</ol>
+<p>This gave 14,763 union peaks derived from <em>1,017</em> and
+<em>15,874</em> treatment-specific peaks from E2 and E2DHT
+respectively.</p>
+</div>
+<div id="fixed-width-analysis" class="section level2">
+<h2>Fixed-Width Analysis</h2>
+<div id="diffbind" class="section level3 tabset">
+<h3 class="tabset">DiffBind</h3>
+<pre class="r"><code>db_sample_sheet &lt;- samples %&gt;%
+  mutate(
+    Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
+    bamReads = path(bfl),
+    ControlID = &quot;Pooled&quot;,
+    bamControl = file.path(dirname(bamReads), glue(&quot;{input}.sorted.bam&quot;)),
+    Peaks = file.path(out_path, glue(&quot;{target}_centred_peaks.bed&quot;)),
+    PeakCaller = &quot;bed&quot;
+  ) %&gt;% 
+  dplyr::rename(SampleID = accession, Treatment = treatment) %&gt;% 
+  mutate(Replicate = seq_along(Treatment), .by = Treatment) %&gt;% 
+  dplyr::select(
+    SampleID, Tissue, Factor, #Condition, 
+    Treatment, Replicate,
+    bamReads, ControlID, bamControl, starts_with(&quot;Peak&quot;)
+  ) %&gt;% 
+  as.data.frame()
+dba &lt;- dba(
+  sampleSheet = db_sample_sheet, 
+  config = data.frame(fragmentSize = params$fl, cores = threads)
+) %&gt;% 
+  dba.count(summits = floor(params$width / 2)) %&gt;% 
+  dba.blacklist(cores = threads)</code></pre>
+<pre><code>coverage: 13012992 bp (0.43%)</code></pre>
+<p>For the initial analysis using DiffBind, all files were passed to the
+requisite functions using a fixed-width of 400 bp, assuming a fragment
+length of 195.</p>
+<p><strong>DiffBind Results as shown currently use DESeq2 due to a bug
+in DiffBind 3.10</strong></p>
+<div id="library-size" class="section level4">
+<h4>Library Size</h4>
+<pre class="r"><code>dba_ls &lt;- dba.normalize(dba, normalize = DBA_NORM_LIB) %&gt;% 
+  dba.analyze(method = DBA_ALL_METHODS)
+# db_ls_results &lt;-  dba_ls %&gt;% 
+#   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
+#   sortSeqlevels() %&gt;% 
+#   sort()
+# seqinfo(db_ls_results) &lt;- sq
+## DiffBind currently has a bug
+db_ls_results &lt;-  dba_ls %&gt;% 
+  dba.report(method = DBA_DESEQ2, th = 1) %&gt;% 
+  sortSeqlevels() %&gt;% 
+  sort()
+seqinfo(db_ls_results) &lt;- sq</code></pre>
+<p>This analysis returned 12,249 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>db_ls_results %&gt;%
+  addDiffStatus(fc_col = &quot;Fold&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(Conc, Fold)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: DiffBind&quot;), subtitle = &quot;Library Size Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;, colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-db-ls-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+<div id="tmm" class="section level4">
+<h4>TMM</h4>
+<pre class="r"><code>dba_tmm &lt;- dba.normalize(dba, normalize = DBA_NORM_TMM) %&gt;% 
+  dba.analyze(method = DBA_ALL_METHODS)
+# db_tmm_results &lt;- dba_tmm %&gt;% 
+#   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
+#   sortSeqlevels() %&gt;% 
+#   sort()
+# seqinfo(db_tmm_results) &lt;- sq
+db_tmm_results &lt;- dba_tmm %&gt;% 
+  dba.report(method = DBA_DESEQ2, th = 1) %&gt;% 
+  sortSeqlevels() %&gt;% 
+  sort()
+seqinfo(db_tmm_results) &lt;- sq</code></pre>
+<p>This analysis returned 4,221 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>db_tmm_results %&gt;% 
+  addDiffStatus(fc_col = &quot;Fold&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(Conc, Fold)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: DiffBind&quot;), subtitle = &quot;TMM Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;, colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-db-tmm-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+</div>
+<div id="extrachips" class="section level3 tabset">
+<h3 class="tabset">extraChIPs</h3>
+<pre class="r"><code>se &lt;- regionCounts(bfl, centred_peaks, ext = 200)
+colData(se) %&lt;&gt;%
+  as_tibble(rownames = &quot;sample&quot;) %&gt;% 
+  mutate(
+    accession = str_remove_all(sample, &quot;.sorted.bam&quot;),
+  ) %&gt;% 
+  left_join(samples, by = &quot;accession&quot;) %&gt;% 
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %&gt;% 
+  as.data.frame() %&gt;% 
+  column_to_rownames(&quot;sample&quot;) %&gt;% 
+  DataFrame()
+X &lt;- model.matrix(~treatment, data = colData(se))</code></pre>
+<div id="library-size-1" class="section level4">
+<h4>Library Size</h4>
+<pre class="r"><code>ec_ls_results &lt;- fitAssayDiff(se, design = X, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 12,769 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>ec_ls_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: extraChIPs&quot;), subtitle = &quot;Library Size Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-ec-ls-fixed-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+<div id="tmm-1" class="section level4">
+<h4>TMM</h4>
+<pre class="r"><code>ec_tmm_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,738 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>ec_tmm_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: extraChIPs&quot;), subtitle = &quot;TMM Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-ec-tmm-fixed-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+<div id="tmm-groups" class="section level4">
+<h4>TMM Groups</h4>
+<pre class="r"><code>ec_tmmg_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, groups = &quot;treat&quot;, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 12,703 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>ec_tmmg_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: extraChIPs&quot;), subtitle = &quot;TMM Normalisation (Groups)&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-ec-tmmg-fixed-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+</div>
+<div id="smooth-quantile" class="section level3 tabset">
+<h3 class="tabset">Smooth Quantile</h3>
+<pre class="r"><code>bs &lt;- BSgenome.Hsapiens.UCSC.hg19
+seqlevels(centred_peaks) &lt;- seqlevels(bs)
+genome(centred_peaks) &lt;- &quot;hg19&quot;
+seqinfo(centred_peaks) &lt;- seqinfo(bs)
+gc &lt;- getSeq(bs, centred_peaks) %&gt;% 
+  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
+rowData(se)$gc &lt;- gc[,1]</code></pre>
+<div id="sqn" class="section level4">
+<h4>SQN</h4>
+<pre class="r"><code>assay(se, &quot;normCounts&quot;) &lt;- qsmooth(se, group_factor = se$treatment) %&gt;% 
+  qsmoothData()
+sqn_results &lt;- fitAssayDiff(
+  se, assay = &quot;normCounts&quot;, lib.size = NULL, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,656 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>sqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: extraChIPs&quot;), subtitle = &quot;SQ Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-ec-sqn-fixed-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
+</div>
+<div id="sqn-gc" class="section level4">
+<h4>SQN-GC</h4>
+<pre class="r"><code>assay(se, &quot;normCountsGC&quot;) &lt;- qsmoothGC(
+  se, group_factor = se$treatment, gc = rowData(se)$gc
+) %&gt;% 
+  qsmoothData()
+sqngc_results &lt;- fitAssayDiff(
+  se, assay = &quot;normCountsGC&quot;, lib.size = NULL, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,463 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>sqngc_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: extraChIPs&quot;), subtitle = &quot;SQ-GC Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)</code></pre>
+<img src="figure/_method_comparison.Rmd/plotma-ec-sqngc-fixed-1.png" width="960" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<strong>Warning!</strong> The custom <code>fig.path</code> you set was
+ignored by workflowr.
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -638,34 +1490,80 @@ BLAS:   /data/tki_bodl/sw/R/4.3.0-gcc-blas-fullsupport/lib64/R/lib/libRblas.so
 LAPACK: /data/tki_bodl/sw/R/4.3.0-gcc-blas-fullsupport/lib64/R/lib/libRlapack.so;  LAPACK version 3.11.0
 
 locale:
- [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
- [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
- [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C               LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8    LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
 
 time zone: Australia/Perth
 tzcode source: system (glibc)
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_1.7.0
+ [1] qsmooth_1.16.0                    BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.68.0                  
+ [4] csaw_1.34.0                       edgeR_3.42.4                      limma_3.56.2                     
+ [7] DiffBind_3.10.0                   pander_0.6.5                      plyranges_1.20.0                 
+[10] glue_1.6.2                        scales_1.2.1                      rtracklayer_1.60.0               
+[13] Rsamtools_2.16.0                  Biostrings_2.68.1                 XVector_0.40.0                   
+[16] extraChIPs_1.5.6                  SummarizedExperiment_1.30.2       Biobase_2.60.0                   
+[19] MatrixGenerics_1.12.2             matrixStats_1.0.0                 ggside_0.2.2                     
+[22] GenomicRanges_1.52.0              GenomeInfoDb_1.36.0               IRanges_2.34.0                   
+[25] S4Vectors_0.38.1                  BiocGenerics_0.46.0               BiocParallel_1.34.2              
+[28] lubridate_1.9.2                   forcats_1.0.0                     stringr_1.5.0                    
+[31] dplyr_1.1.2                       purrr_1.0.1                       readr_2.1.4                      
+[34] tidyr_1.3.0                       tibble_3.2.1                      ggplot2_3.4.2                    
+[37] tidyverse_2.0.0                   workflowr_1.7.0                  
 
 loaded via a namespace (and not attached):
- [1] jsonlite_1.8.5   compiler_4.3.0   promises_1.2.0.1 Rcpp_1.0.10     
- [5] stringr_1.5.0    git2r_0.32.0     callr_3.7.3      later_1.3.1     
- [9] jquerylib_0.1.4  yaml_2.3.7       fastmap_1.1.1    here_1.0.1      
-[13] R6_2.5.1         knitr_1.43       tibble_3.2.1     rprojroot_2.0.3 
-[17] bslib_0.5.0      pillar_1.9.0     rlang_1.1.1      utf8_1.2.3      
-[21] cachem_1.0.8     stringi_1.7.12   httpuv_1.6.11    xfun_0.39       
-[25] getPass_0.2-2    fs_1.6.2         sass_0.4.6       cli_3.6.1       
-[29] magrittr_2.0.3   ps_1.7.5         digest_0.6.31    processx_3.8.1  
-[33] rstudioapi_0.14  lifecycle_1.0.3  vctrs_0.6.3      evaluate_0.21   
-[37] glue_1.6.2       whisker_0.4.1    fansi_1.0.4      rmarkdown_2.22  
-[41] httr_1.4.6       tools_4.3.0      pkgconfig_2.0.3  htmltools_0.5.5 </code></pre>
+  [1] fs_1.6.2                   ProtGenerics_1.32.0        bitops_1.0-7               httr_1.4.6                
+  [5] RColorBrewer_1.1-3         doParallel_1.0.17          InteractionSet_1.28.1      numDeriv_2016.8-1.1       
+  [9] tools_4.3.0                backports_1.4.1            utf8_1.2.3                 R6_2.5.1                  
+ [13] mgcv_1.8-42                lazyeval_0.2.2             Gviz_1.44.0                apeglm_1.22.1             
+ [17] GetoptLong_1.0.5           withr_2.5.0                prettyunits_1.1.1          gridExtra_2.3             
+ [21] VennDiagram_1.7.3          cli_3.6.1                  formatR_1.14               sass_0.4.6                
+ [25] labeling_0.4.2             SQUAREM_2021.1             mvtnorm_1.2-2              genefilter_1.82.1         
+ [29] mixsqp_0.3-48              foreign_0.8-84             dichromat_2.0-0.1          invgamma_1.1              
+ [33] bbmle_1.0.25               rstudioapi_0.14            RSQLite_2.3.1              generics_0.1.3            
+ [37] shape_1.4.6                BiocIO_1.10.0              hwriter_1.3.2.1            gtools_3.9.4              
+ [41] vroom_1.6.3                Matrix_1.5-4               interp_1.1-4               futile.logger_1.4.3       
+ [45] fansi_1.0.4                lifecycle_1.0.3            whisker_0.4.1              yaml_2.3.7                
+ [49] gplots_3.1.3               BiocFileCache_2.8.0        grid_4.3.0                 blob_1.2.4                
+ [53] promises_1.2.0.1           crayon_1.5.2               bdsmatrix_1.3-6            lattice_0.21-8            
+ [57] ComplexUpset_1.3.3         annotate_1.78.0            GenomicFeatures_1.52.0     KEGGREST_1.40.0           
+ [61] pillar_1.9.0               knitr_1.43                 ComplexHeatmap_2.16.0      metapod_1.8.0             
+ [65] rjson_0.2.21               systemPipeR_2.6.3          codetools_0.2-19           ShortRead_1.58.0          
+ [69] getPass_0.2-2              GreyListChIP_1.32.0        data.table_1.14.8          vctrs_0.6.3               
+ [73] png_0.1-8                  gtable_0.3.3               amap_0.8-19                emdbook_1.3.13            
+ [77] cachem_1.0.8               xfun_0.39                  S4Arrays_1.0.4             coda_0.19-4               
+ [81] survival_3.5-5             iterators_1.0.14           GenomicInteractions_1.34.0 nlme_3.1-162              
+ [85] bit64_4.0.5                progress_1.2.2             filelock_1.0.2             rprojroot_2.0.3           
+ [89] bslib_0.5.0                irlba_2.3.5.1              KernSmooth_2.23-20         rpart_4.1.19              
+ [93] colorspace_2.1-0           DBI_1.1.3                  Hmisc_5.1-0                nnet_7.3-18               
+ [97] DESeq2_1.40.2              tidyselect_1.2.0           processx_3.8.1             bit_4.0.5                 
+[101] compiler_4.3.0             curl_5.0.1                 git2r_0.32.0               htmlTable_2.4.1           
+[105] xml2_1.3.4                 DelayedArray_0.26.3        checkmate_2.2.0            caTools_1.18.2            
+[109] callr_3.7.3                rappdirs_0.3.3             digest_0.6.31              rmarkdown_2.22            
+[113] htmltools_0.5.5            pkgconfig_2.0.3            jpeg_0.1-10                base64enc_0.1-3           
+[117] highr_0.10                 dbplyr_2.3.2               fastmap_1.1.1              ensembldb_2.24.0          
+[121] rlang_1.1.1                GlobalOptions_0.1.2        htmlwidgets_1.6.2          jquerylib_0.1.4           
+[125] EnrichedHeatmap_1.30.0     farver_2.1.1               jsonlite_1.8.5             VariantAnnotation_1.46.0  
+[129] RCurl_1.98-1.12            magrittr_2.0.3             Formula_1.2-5              GenomeInfoDbData_1.2.10   
+[133] patchwork_1.1.2            munsell_0.5.0              Rcpp_1.0.10                stringi_1.7.12            
+[137] zlibbioc_1.46.0            MASS_7.3-58.4              plyr_1.8.8                 parallel_4.3.0            
+[141] ggrepel_0.9.3              deldir_1.0-9               splines_4.3.0              hms_1.1.3                 
+[145] circlize_0.4.15            locfit_1.5-9.8             ps_1.7.5                   igraph_1.5.0              
+[149] biomaRt_2.56.0             futile.options_1.0.1       XML_3.99-0.14              evaluate_0.21             
+[153] latticeExtra_0.6-30        biovizBase_1.48.0          lambda.r_1.2.4             BiocManager_1.30.21       
+[157] tzdb_0.4.0                 foreach_1.5.2              tweenr_2.0.2               httpuv_1.6.11             
+[161] polyclip_1.10-4            clue_0.3-64                ashr_2.2-54                ggforce_0.4.1             
+[165] xtable_1.8-4               broom_1.0.5                restfulr_0.0.15            AnnotationFilter_1.24.0   
+[169] later_1.3.1                truncnorm_1.0-9            memoise_2.0.1              AnnotationDbi_1.62.1      
+[173] GenomicAlignments_1.36.0   cluster_2.1.4              sva_3.48.0                 timechange_0.2.0          
+[177] here_1.0.1                </code></pre>
+</div>
+</div>
+</div>
 </div>
 
 
