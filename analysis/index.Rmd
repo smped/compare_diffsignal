@@ -8,4 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+```{r, echo = FALSE, eval = TRUE, results='asis'}
+cat(readLines(here::here("README.md")), sep = "\n")
+```
+

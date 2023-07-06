@@ -1,0 +1,31 @@
+
+```{r setup, echo=FALSE, eval=TRUE}
+knitr::opts_chunk$set(
+  message = FALSE, warnings = FALSE,
+  fig.height = 8, fig.width = 10, dev = "png"
+)
+```
+
+```{r get-params, echo=FALSE}
+cell_line <- params$cell_line
+target <- params$target
+treat_levels <- params$treat_levels
+```
+
+## Introduction
+
+This is a workflow designed to directly compare the output of multiple approaches to detection of Differential (ChIP) Signal, specifically with regard to those available in the `extraChIPs` package.
+Analysis using `DiffBind` will also be included as a reference standard, especially when using methods which should replicate this methodology.
+
+The methods being compared will be
+
+| Abbreviation  | Package | Windows | Normalisation | Method |
+|:------------- |:-------- |:------- |:------------- |:------ |
+| DB: LS        | DiffBind | Fixed   | Library Size  | QLF    |
+| DB: TMM       | DiffBind | Fixed   | TMM           | QLF    |
+| EC: LS        | extraChIPS | Fixed   | Library Size  | QLF    |
+| EC: TMM       | extraChIPS | Fixed   | TMM           | QLF    |
+| EC: TMMG      | extraChIPS | Fixed   | TMM Groups    | QLF    |
+| EC: SQN       | extraChIPS | Fixed   | qsmooth       | QLF    |
+| EC: SQNGC     | extraChIPS | Fixed   | qsmoothGC     | QLF    |
+| EC: CQN       | extraChIPS | Fixed   | CQN           | QLF    |

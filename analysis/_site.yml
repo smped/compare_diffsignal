@@ -5,13 +5,18 @@ navbar:
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  - text: ZR-75-1
+    menu:
+    - text: AR
+      href: zr75_ar.html
+    - text: ER
+      href: zr75_er.html
+    - text: H3K27ac
+      href: zr75_h3k27ac.html
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
+    code_folding: hide
     theme: cosmo
     highlight: textmate

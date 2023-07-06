@@ -1,0 +1,18 @@
+---
+title: "ZR75: AR"
+author: "Stephen Pederson"
+date: "2023-07-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+params:
+  cell_line: "ZR-75"
+  target: "AR"
+  treat_levels: ["E2", "E2DHT"]
+---
+
+
+```{r run-analysis, eval = TRUE, child = here::here('code/_method_comparison.Rmd')}
+
+```
+
