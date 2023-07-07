@@ -15,21 +15,25 @@ The methods being compared will be
 | FW-LS        | extraChIPs | Fixed   | Library Size  | QLF    | counts |
 | FW-TMM       | extraChIPs | Fixed   | TMM           | QLF    | counts |
 | FW-TMMG      | extraChIPs | Fixed   | TMM Groups    | QLF    | counts |
+| FW-CQN       | extraChIPs | Fixed   | CQN           | QLF    | counts |
+| FW-CQNG      | extraChIPs | Fixed   | CQN Groups    | QLF    | counts |
 | FW-SQN       | extraChIPs | Fixed   | qsmooth       | QLF    | normCounts |
 | FW-SQNGC     | extraChIPs | Fixed   | qsmoothGC     | QLF    | normCounts |
 | SW-LS        | extraChIPs | Sliding   | Library Size  | QLF    | counts |
 | SW-TMM       | extraChIPs | Sliding   | TMM           | QLF    | counts |
 | SW-TMMG      | extraChIPs | Sliding   | TMM Groups    | QLF    | counts |
+| SW-CQN       | extraChIPs | Sliding   | CQN           | QLF    | counts |
+| SW-CQNG      | extraChIPs | Sliding   | CQN Groups    | QLF    | counts |
 | SW-SQN       | extraChIPs | Sliding   | qsmooth       | QLF    | normCounts |
 | SW-SQNGC     | extraChIPs | Sliding   | qsmoothGC     | QLF    | normCounts |
-| SW-SQN       | extraChIPs | Sliding   | Library Size  | LT     | logCPM |
-| SW-SQN       | extraChIPs | Sliding   | qsmooth       | LT     | logCPM |
-| SW-SQNGC     | extraChIPs | Sliding   | qsmoothGC     | LT     | logCPM |
+| SW-LT        | extraChIPs | Sliding   | Library Size  | LT     | logCPM |
+| SW-LTSQN     | extraChIPs | Sliding   | qsmooth       | LT     | logCPM |
+| SW-LTSQNGC   | extraChIPs | Sliding   | qsmoothGC     | LT     | logCPM |
 
 Table: *Methods available in extraChIPs which are being compared *
 
 
-This makes a total of 15 methods.
+This makes a total of 19 methods, of which two are specific to DiffBind and the remainder possible using extraChIPs.
 All above methods will be initially tested using $H_0: \mu = 0$.
 Subsequent comparisons will be made using $H_0: -\lambda < \mu < \lambda$ but excluding DiffBind results.
 
@@ -66,6 +70,7 @@ The **expectations are** that :
 1. DB-LS and FW-LS should return near identical results
 2. DB-TMM and FW-TMM should return near identical results
 3. DB-TMM, FW-TMM, SW-TMM should return large numbers of errors for *AR specifically*
+4. Group-based approaches for TMM and CQN should perform strongly
 4. Sliding windows should out-perform fixed-width windows for H3K27ac
 
 

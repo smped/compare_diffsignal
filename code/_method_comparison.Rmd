@@ -36,6 +36,11 @@ library(csaw)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(qsmooth)
 library(BiocParallel)
+library(cqn)
+library(reactable)
+library(htmltools)
+library(ComplexUpset)
+library(patchwork)
 register(MulticoreParam(threads))
 theme_set(
   theme_bw() + 
@@ -49,6 +54,25 @@ status_colours <- c(
   Increased = "red2", Decreased = "deepskyblue3", 
   Unchanged = "grey30", Undetected = "grey70"
 )
+bar_style <- function(width = 1, fill = "#e6e6e6", height = "75%", align = c("left", "right"), color = NULL, fontSize = c()) {
+  align <- match.arg(align)
+  if (align == "left") {
+    position <- paste0(width * 100, "%")
+    image <- sprintf("linear-gradient(90deg, %1$s %2$s, transparent %2$s)", fill, position)
+  } else {
+    position <- paste0(100 - width * 100, "%")
+    image <- sprintf("linear-gradient(90deg, transparent %1$s, %2$s %1$s)", position, fill)
+  }
+  styles <- list(
+    backgroundImage = image,
+    backgroundSize = paste("100%", height),
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center",
+    color = color
+  )
+  if (!is.null(fontSize)) styles$fontSize = fontSize
+  styles
+}
 ```
 
 
@@ -68,7 +92,7 @@ sq <- seqinfo(bfl) %>%
   keepStandardChromosomes() %>% 
   dropSeqlevels(value = "chrM") %>% 
   sortSeqlevels() 
-genome(sq) <- "GRCh37"
+genome(sq) <- "hg19"
 isCircular(sq) <- rep_len(FALSE, length(seqlevels(sq)))
 ```
 
@@ -83,11 +107,25 @@ greylist <- here::here("data", glue("{samples$input}_greylist.bed")) %>%
   dropSeqlevels(value = "chrM") %>% 
   sortSeqlevels() 
 seqinfo(greylist) <- sq
+data("hg19.blacklist", package = "GreyListChIP") 
+blacklist <- hg19.blacklist %>% 
+  sortSeqlevels() %>% 
+  subset(seqnames %in% seqlevels(sq)) %>% 
+  dropSeqlevels("chrM") %>% 
+  keepSeqlevels(value = seqnames(sq))
+seqinfo(blacklist) <- sq
+omit_ranges <- c(blacklist, greylist) %>% 
+  granges() %>% 
+  sort()
 all_peaks <- samples %>% 
   mutate(peak_file = here::here("data", "macs2", dataset, accession, glue("{accession}_peaks.narrowPeak"))) %>% 
   split(.$treatment) %>% 
   lapply(pull, peak_file) %>% 
-  lapply(importPeaks, centre = TRUE, seqinfo = sq, glueNames = "{str_remove_all(basename(x), '_peaks.+')}")
+  lapply(
+    importPeaks, 
+    centre = TRUE, blacklist = omit_ranges, seqinfo = sq, 
+    glueNames = "{str_remove_all(basename(x), '_peaks.+')}"
+  )
 treat_peaks <- all_peaks %>% 
   lapply(makeConsensus, p = 2/3, var = "centre") %>% 
   lapply(mutate, centre = vapply(centre, median, numeric(1))) 
@@ -95,7 +133,8 @@ merged_peaks <- here::here(
   "data", "macs2", dataset, target, glue("{treat_levels}_merged_peaks.narrowPeak")
 ) %>% 
   importPeaks(
-    seqinfo = sq, centre = TRUE, glueNames = "{str_remove_all(basename(x), '_merged.+')}"
+    blacklist = omit_ranges, seqinfo = sq, centre = TRUE, 
+    glueNames = "{str_remove_all(basename(x), '_merged.+')}"
   )
 merged_peaks <- treat_levels %>% 
   lapply(
@@ -107,14 +146,13 @@ union_peaks <- makeConsensus(merged_peaks, var = c("score", "centre")) %>%
   mutate(
     centre = round(vapply(centre, mean, numeric(1)), 0),
     score=  vapply(score, max, numeric(1))
-  ) %>% 
-  filter_by_non_overlaps(greylist)
+  )
 union_peaks %>% 
   select(score) %>% 
   export.bed(file.path(out_path, glue("{target}_union_peaks.bed")))
 centred_peaks <- union_peaks %>% 
   mutate(rng = paste0(seqnames, ":", centre)) %>% 
-  colToRanges("rng") %>% 
+  colToRanges("rng", seqinfo = sq) %>% 
   resize(width = params$width, fix = 'center')
 centred_peaks %>% 
   select(score) %>% 
@@ -140,24 +178,24 @@ db_sample_sheet <- samples %>%
     Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
     bamReads = path(bfl),
     ControlID = "Pooled",
-    bamControl = file.path(dirname(bamReads), glue("{input}.sorted.bam")),
-    Peaks = file.path(out_path, glue("{target}_centred_peaks.bed")),
-    PeakCaller = "bed"
+    bamControl = file.path(dirname(bamReads), glue("{input}.sorted.bam"))#,
+    # Peaks = file.path(out_path, glue("{target}_centred_peaks.bed")),
+    # PeakCaller = "bed"
   ) %>% 
   dplyr::rename(SampleID = accession, Treatment = treatment) %>% 
   mutate(Replicate = seq_along(Treatment), .by = Treatment) %>% 
   dplyr::select(
     SampleID, Tissue, Factor, #Condition, 
     Treatment, Replicate,
-    bamReads, ControlID, bamControl, starts_with("Peak")
+    bamReads, ControlID, bamControl#, starts_with("Peak")
   ) %>% 
   as.data.frame()
 dba <- dba(
   sampleSheet = db_sample_sheet, 
   config = data.frame(fragmentSize = params$fl, cores = threads)
 ) %>% 
-  dba.count(summits = floor(params$width / 2)) %>% 
-  dba.blacklist(cores = threads)
+  dba.count(peaks = union_peaks, summits = floor(params$width / 2)) %>% 
+  dba.blacklist(cores = threads, blacklist = blacklist, greylist = greylist)
 ```
 
 For the initial analysis using DiffBind, all files were passed to the requisite functions using a fixed-width of `r params$width` bp, assuming a fragment length of `r params$fl`.
@@ -171,8 +209,9 @@ dba_ls <- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_LIB)
 db_ls_results <-  dba_ls %>% 
   dba.report(method = DBA_EDGER, th = 1) %>% 
   sortSeqlevels() %>% 
-  sort() 
-db_ls_results$status <- addDiffStatus(db_ls_results, fc_col = "Fold")$status
+  sort() %>% 
+  select(Conc, logFC = Fold, PValue = `p-value`, FDR) %>% 
+  addDiffStatus()
 seqinfo(db_ls_results) <- sq
 ```
 
@@ -182,7 +221,7 @@ This analysis returned `r comma(sum(db_ls_results$FDR < 0.05))` peaks considered
 ```{r plotma-db-ls}
 p <- db_ls_results %>% 
   as_tibble() %>% 
-  ggplot(aes(Conc, Fold)) +
+  ggplot(aes(Conc, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
@@ -214,11 +253,12 @@ if (interactive()) {
 dba_tmm <- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_TMM) %>% 
   dba.analyze(method = DBA_ALL_METHODS)
 db_tmm_results <- dba_tmm %>%
-  dba.report(method = DBA_EDGER, th = 1) %>%
-  sortSeqlevels() %>%
-  sort()
-db_tmm_results$status <- addDiffStatus(db_tmm_results, fc_col = "Fold")$status
-seqinfo(db_tmm_results) <- sq
+  dba.report(method = DBA_EDGER, th = 1) %>% 
+  sortSeqlevels() %>% 
+  sort() %>% 
+  select(Conc, logFC = Fold, PValue = `p-value`, FDR) %>% 
+  addDiffStatus()
+seqinfo(db_ls_results) <- sq
 ```
 
 This analysis returned `r comma(sum(db_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
@@ -226,7 +266,7 @@ This analysis returned `r comma(sum(db_tmm_results$FDR < 0.05))` peaks considere
 ```{r plotma-db-tmm}
 p <- db_tmm_results  %>% 
   as_tibble() %>% 
-  ggplot(aes(Conc, Fold)) +
+  ggplot(aes(Conc, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
@@ -256,8 +296,15 @@ if (interactive()) {
 
 
 ```{r se-fixed}
-se <- regionCounts(bfl, centred_peaks, ext = 200)
-colData(se) %<>%
+rp <- readParam(
+  pe = "none", dedup = TRUE,
+  restrict = seqnames(sq),
+  discard = omit_ranges
+)
+se <- regionCounts(
+  bfl, centred_peaks, ext = params$fl, param = rp, BPPARAM = bpparam()
+)
+colData(se) <- colData(se) %>%
   as_tibble(rownames = "sample") %>% 
   mutate(
     accession = str_remove_all(sample, ".sorted.bam"),
@@ -351,7 +398,7 @@ if (interactive()) {
 
 #### TMM Groups
 
-```{r ex-tmmg-fixed}
+```{r ec-tmmg-fixed}
 ec_tmmg_results <- fitAssayDiff(se, design = X, norm = "TMM", groups = "treat", asRanges = TRUE) %>% 
   addDiffStatus()
 ```
@@ -388,17 +435,115 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using TMM-groups Normalisation*](`r href`)
 
-### Smooth Quantile {.tabset}
+### Conditional Quantile {.tabset}
 
 ```{r get-gc}
 bs <- BSgenome.Hsapiens.UCSC.hg19
 seqlevels(centred_peaks) <- seqlevels(bs)
-genome(centred_peaks) <- "hg19"
 seqinfo(centred_peaks) <- seqinfo(bs)
 gc <- getSeq(bs, centred_peaks) %>% 
   letterFrequency(letters = "GC", as.prob = TRUE)
 rowData(se)$gc <- gc[,1]
+centred_peaks <- keepSeqlevels(centred_peaks, seqnames(sq))
+seqinfo(centred_peaks) <- sq  # Restore..
 ```
+
+#### CQN
+
+```{r cqn-fixed}
+cqn <- assay(se, "counts") %>% 
+  cqn(
+    x = rowData(se)$gc, sizeFactors = se$totals, 
+    lengths = rep(1e3, nrow(se)), lengthMethod = "fixed"
+  )
+cqnplot(cqn)
+cqn_results <- fitAssayDiff(
+  se, method = "qlf", offset = cqn$glm.offset, design = X, asRanges = TRUE
+) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(cqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-cqn-fixed}
+p <- cqn_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "CQ Normalisation") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+#### CQN Groups
+
+```{r cqng-fixed}
+cqn_groups <- treat_levels %>% 
+  lapply(
+    function(x) {
+      ind <- se$treatment == x
+      mat <- assay(se, "counts")[, ind]
+      cqn(
+        mat, x = rowData(se)$gc, sizeFactors = se$totals[ind],
+        lengths = rep(1e3, nrow(se)), lengthMethod = "fixed"
+      )
+    }
+  ) %>% 
+  setNames(treat_levels)
+offset <- do.call("cbind", lapply(cqn_groups, function(x) x$glm.offset))[,colnames(filtcounts)]
+cqng_results <- fitAssayDiff(
+  se, method = "qlf", offset = offset, design = X, asRanges = TRUE
+) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(cqng_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-cqng-fixed}
+p <- cqng_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "CQ Normalisation (Groups)") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+### Smooth Quantile {.tabset}
 
 
 #### SQN
@@ -533,10 +678,12 @@ stat_cols <- c(
 
 ```{r compare-logfc-db-ec-ls}
 p <- GRangesList(
-  DiffBind = select(db_ls_results, logFC = Fold, status), 
+  DiffBind = select(db_ls_results, logFC, status), 
   extraChIPs = select(ec_ls_results, logFC, status)
 ) %>% 
   plotPairwise(var = "logFC", colour = "status", xside = "none", yside = "none") +
+    geom_abline(slope = 1) +
+  geom_smooth(method = "lm", se = FALSE, formula = "y~x") +
   ggtitle(
     glue("{target} logFC"), "Library-Size Normalisation"
   ) +
@@ -564,7 +711,7 @@ if (interactive()) {
 
 ```{r compare-p-db-ec-ls}
 p <- GRangesList(
-  DiffBind = select(db_ls_results, PValue = `p-value`, status), 
+  DiffBind = select(db_ls_results, PValue, status), 
   extraChIPs = select(ec_ls_results, PValue, status)
 ) %>% 
   mapGrlCols(var = c("PValue", "status")) %>% # , collapse = "status") %>% 
@@ -578,8 +725,11 @@ p <- GRangesList(
       TRUE ~ "Neither"
     )
   ) %>% 
+  dplyr::filter(!is.na(DiffBind_PValue), !is.na(extraChIPs_PValue)) %>% 
   ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
   geom_point(aes(colour = status)) +
+  geom_abline(slope = 1) +
+  geom_smooth(method = "lm", se = FALSE, formula = "y~x") +
   ggtitle(
     glue("{target}"), "Library-Size Normalisation"
   ) +
@@ -613,10 +763,12 @@ if (interactive()) {
 
 ```{r compare-logfc-db-ec-tmm}
 p <- GRangesList(
-  DiffBind = select(db_tmm_results, logFC = Fold, status), 
+  DiffBind = select(db_tmm_results, logFC, status), 
   extraChIPs = select(ec_tmm_results, logFC, status)
 ) %>% 
   plotPairwise(var = "logFC", colour = "status", xside = "none", yside = "none") +
+    geom_abline(slope = 1) +
+  geom_smooth(method = "lm", se = FALSE, formula = "y~x") +
   ggtitle(
     glue("{target} logFC"), "TMM Normalisation"
   ) +
@@ -643,7 +795,7 @@ if (interactive()) {
 
 ```{r compare-p-db-ec-tmm}
 p <- GRangesList(
-  DiffBind = select(db_tmm_results, PValue = `p-value`, status), 
+  DiffBind = select(db_tmm_results, PValue, status), 
   extraChIPs = select(ec_tmm_results, PValue, status)
 ) %>% 
   mapGrlCols(var = c("PValue", "status")) %>% # , collapse = "status") %>% 
@@ -657,8 +809,11 @@ p <- GRangesList(
       TRUE ~ "Neither"
     )
   ) %>% 
+    dplyr::filter(!is.na(DiffBind_PValue), !is.na(extraChIPs_PValue)) %>% 
   ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
   geom_point(aes(colour = status)) +
+  geom_abline(slope = 1) +
+  geom_smooth(method = "lm", se = FALSE, formula = "y~x") +
   ggtitle(
     glue("{target}"), "TMM Normalisation"
   ) +
@@ -688,15 +843,9 @@ if (interactive()) {
 
 ## Sliding Windows
 
-```{r set-sindows}
-data("hg19.blacklist", package = "GreyListChIP") 
+```{r set-windows}
 window_size <- round(params$width / 4, -1)
 window_step <- ceiling(0.1 * window_size / 3) * 10
-rp <- readParam(
-  pe = "none", dedup = TRUE,
-  restrict = seqnames(sq),
-  discard = c(greylist, hg19.blacklist)
-)
 bfl <- path(bfl) %>% 
   dirname() %>% 
   unique() %>% 
@@ -717,11 +866,12 @@ wincounts <- windowCounts(
   width = window_size,
   ext = params$fl,
   filter = length(bfl),
-  param = rp
+  param = rp,
+  BPPARAM = bpparam()
 )
 seqlevels(wincounts) <- seqlevels(sq)
 seqinfo(wincounts) <- sq
-colData(wincounts) %<>%
+colData(wincounts) <- colData(wincounts) %>% 
   as_tibble(rownames = "sample") %>% 
   mutate(
     accession = str_remove_all(sample, ".sorted.bam"),
@@ -743,6 +893,11 @@ filtcounts <- dualFilter(
 )
 ```
 
+Under this filtering approach `r comma(sum(!overlapsAny(union_peaks, filtcounts)))` of the `r comma(length(union_peaks))` (`r percent(mean(!overlapsAny(union_peaks, filtcounts)), 0.1)`) were not covered by any sliding windows.
+
+Conversely, `r percent(mean(!rowData(filtcounts)$overlaps_ref), 0.1)` of the sliding windows retained after filtering did not overlap any of the union_peaks.
+
+
 ```{r add-assays}
 filtRanges <- granges(rowRanges(filtcounts))
 seqlevels(filtRanges) <- seqlevels(bs)
@@ -761,7 +916,7 @@ assay(filtcounts, "sqgc_counts") <- assay(filtcounts, "counts") %>%
   qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %>% 
   qsmoothData()
 assay(filtcounts, "sqgc_logCPM") <- assay(filtcounts, "logCPM") %>% 
-  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %>% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc, round = FALSE) %>% 
   qsmoothData()
 X <- model.matrix(~treatment, data = colData(filtcounts))
 ```
@@ -771,8 +926,7 @@ X <- model.matrix(~treatment, data = colData(filtcounts))
 ```{r sw-ls-results}
 sw_ls_all <- fitAssayDiff(filtcounts, design = X, asRanges = TRUE) 
 sw_ls_results <- sw_ls_all %>% 
-  mergeByHMP(inc_cols = "overlaps_ref") %>% 
-  filter(n_windows > 1) %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
   mutate(FDR = p.adjust(hmp, "fdr")) %>% 
   select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
   addDiffStatus()
@@ -782,13 +936,16 @@ This analysis returned `r comma(sum(sw_ls_results$FDR < 0.05))` peaks considered
 
 ```{r plotma-sw-ls}
 p <- sw_ls_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_ls_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
+  arrange(Sig) %>% 
   ggplot(aes(logCPM, logFC)) +
-  geom_point(alpha = 0.7) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
   ggtitle(glue("{target}: Sliding Windows"), subtitle = "Library Size Normalisation") +
-  labs(x = "Ave Signal", y = "logFC") 
+  labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
 } else {
@@ -806,7 +963,7 @@ if (interactive()) {
 ```
 
 
-![*MA-plot for sliding-window results using Library Size Normalisation*](`r href`)
+![*MA-plot for sliding-window results using Library Size Normalisation. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
 ### TMM
@@ -814,8 +971,7 @@ if (interactive()) {
 ```{r sw-tmm-results}
 sw_tmm_all <- fitAssayDiff(filtcounts, design = X, norm = "TMM", asRanges = TRUE) 
 sw_tmm_results <- sw_tmm_all %>% 
-  mergeByHMP(inc_cols = "overlaps_ref") %>% 
-  filter(n_windows > 1) %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
   mutate(FDR = p.adjust(hmp, "fdr")) %>% 
   select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
   addDiffStatus()
@@ -824,14 +980,17 @@ sw_tmm_results <- sw_tmm_all %>%
 This analysis returned `r comma(sum(sw_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-sw-tmm}
-p <- sw_tmm_results %>% 
+p <- sw_tmm_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_tmm_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
+  arrange(Sig) %>% 
   ggplot(aes(logCPM, logFC)) +
-  geom_point(alpha = 0.7) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
   ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation") +
-  labs(x = "Ave Signal", y = "logFC") 
+  labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
 } else {
@@ -849,7 +1008,7 @@ if (interactive()) {
 ```
 
 
-![*MA-plot for sliding-window results using TMM Normalisation*](`r href`)
+![*MA-plot for sliding-window results using TMM Normalisation. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 ### TMM Groups
 
@@ -858,8 +1017,7 @@ sw_tmmg_all <- fitAssayDiff(
   filtcounts, design = X, norm = "TMM", groups = "treatment", asRanges = TRUE
 ) 
 sw_tmmg_results <- sw_tmmg_all %>% 
-  mergeByHMP(inc_cols = "overlaps_ref") %>% 
-  filter(n_windows > 1) %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
   mutate(FDR = p.adjust(hmp, "fdr")) %>% 
   select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
   addDiffStatus()
@@ -868,14 +1026,17 @@ sw_tmmg_results <- sw_tmmg_all %>%
 This analysis returned `r comma(sum(sw_tmmg_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-sw-tmmg}
-p <- sw_tmmg_results %>% 
+p <- sw_tmmg_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_tmmg_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
+  arrange(Sig) %>% 
   ggplot(aes(logCPM, logFC)) +
-  geom_point(alpha = 0.7) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
   ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation (Groups)") +
-  labs(x = "Ave Signal", y = "logFC") 
+  labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
 } else {
@@ -893,7 +1054,7 @@ if (interactive()) {
 ```
 
 
-![*MA-plot for sliding-window results using TMM Normalisation within treatment groups*](`r href`)
+![*MA-plot for sliding-window results using TMM Normalisation within treatment groups.  All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 ### Smooth Quantile
 
@@ -902,8 +1063,7 @@ sw_sq_all <- fitAssayDiff(
   filtcounts, assay = "sq_counts", totals = NULL, design = X, asRanges = TRUE
 ) 
 sw_sq_results <- sw_sq_all %>% 
-  mergeByHMP(inc_cols = "overlaps_ref") %>% 
-  filter(n_windows > 1) %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
   mutate(FDR = p.adjust(hmp, "fdr")) %>% 
   select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
   addDiffStatus()
@@ -913,13 +1073,16 @@ This analysis returned `r comma(sum(sw_sq_results$FDR < 0.05))` peaks considered
 
 ```{r plotma-sw-sq}
 p <- sw_sq_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_sq_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
+  arrange(Sig) %>% 
   ggplot(aes(logCPM, logFC)) +
-  geom_point(alpha = 0.7) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation") +
-  labs(x = "Ave Signal", y = "logFC") 
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation (Counts)") +
+  labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
 } else {
@@ -936,6 +1099,7 @@ if (interactive()) {
 }
 ```
 
+![*MA-plot for sliding-window results using Smooth-Quantile Normalisation on counts, within treatment groups. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 ### Smooth Quantile GC
 
@@ -944,8 +1108,7 @@ sw_sqgc_all <- fitAssayDiff(
   filtcounts, assay = "sqgc_counts", totals = NULL, design = X, asRanges = TRUE
 ) 
 sw_sqgc_results <- sw_sqgc_all %>% 
-  mergeByHMP(inc_cols = "overlaps_ref") %>% 
-  filter(n_windows > 1) %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
   mutate(FDR = p.adjust(hmp, "fdr")) %>% 
   select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
   addDiffStatus()
@@ -955,13 +1118,16 @@ This analysis returned `r comma(sum(sw_sqgc_results$FDR < 0.05))` peaks consider
 
 ```{r plotma-sw-sqgc}
 p <- sw_sqgc_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_sqgc_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
+  arrange(Sig) %>% 
   ggplot(aes(logCPM, logFC)) +
-  geom_point(alpha = 0.7) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation") +
-  labs(x = "Ave Signal", y = "logFC") 
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation (Counts)") +
+  labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
 } else {
@@ -978,9 +1144,544 @@ if (interactive()) {
 }
 ```
 
+![*MA-plot for sliding-window results using Smooth-Quantile Normalisation on counts, within treatment groups and accounting for GC effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
+
+### Conditional Quantile Normalisation
+
+```{r sw-cqn-results}
+library(cqn)
+cqn <- assay(filtcounts, "counts") %>% 
+  cqn(
+    x = rowData(filtcounts)$gc, sizeFactors = filtcounts$totals, 
+    lengths = rep(1e3, nrow(filtcounts)), lengthMethod = "fixed"
+  )
+sw_cqn_all <- fitAssayDiff(
+  filtcounts, method = "qlf", offset = cqn$glm.offset, design = X, asRanges = TRUE
+) 
+sw_cqn_results <- sw_cqn_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_sqgc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-cqn}
+p <- sw_cqn_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_cqn_results, FDR < 0.05)$keyval_range) == 1) %>% 
+  as_tibble() %>% 
+  arrange(Sig) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "CQ Normalisation") +
+  labs(x = "logCPM", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for sliding-window results using Conditional-Quantile Normalisation on counts to account for GC-effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
+
+
+### Conditional Quantile Normalisation (Groups)
+
+```{r sw-cqng-results}
+cqn_groups <- treat_levels %>% 
+  lapply(
+    function(x) {
+      ind <- filtcounts$treatment == x
+      mat <- assay(filtcounts, "counts")[, ind]
+      cqn(
+        mat, x = rowData(filtcounts)$gc, sizeFactors = filtcounts$totals[ind],
+        lengths = rep(1e3, nrow(filtcounts)), lengthMethod = "fixed"
+      )
+    }
+  ) %>% 
+  setNames(treat_levels)
+offset <- do.call("cbind", lapply(cqn_groups, function(x) x$glm.offset))[,colnames(filtcounts)]
+sw_cqng_all <- fitAssayDiff(
+  filtcounts, method = "qlf", offset = offset, design = X, asRanges = TRUE
+) 
+sw_cqng_results <- sw_cqng_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_cqng_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-cqng}
+p <- sw_cqng_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_cqng_results, FDR < 0.05)$keyval_range) == 1) %>% 
+  as_tibble() %>% 
+  arrange(Sig) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "CQ Normalisation (Groups)") +
+  labs(x = "logCPM", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for sliding-window results using Conditional-Quantile Normalisation on counts to account for GC-effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
 
 
+### Limma-Trend
 
+```{r sw-lt-results}
+sw_lt_all <- fitAssayDiff(
+  filtcounts, assay = "logCPM", method = "lt", design = X, asRanges = TRUE
+) 
+sw_lt_results <- sw_lt_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_lt_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-lt}
+p <- sw_lt_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_lt_results, FDR < 0.05)$keyval_range) == 1) %>% 
+  as_tibble() %>% 
+  arrange(Sig) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "Limma-Trend") +
+  labs(x = "logCPM", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for sliding-window results using Limma-Trend on logCPM values taken directly from each window. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
+
+### Smooth Quantile (logCPM)
+
+```{r sw-ltsq-results}
+sw_ltsq_all <- fitAssayDiff(
+  filtcounts, assay = "sq_logCPM", method = "lt", design = X, asRanges = TRUE
+) 
+sw_ltsq_results <- sw_ltsq_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_ltsq_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-ltsq}
+p <- sw_ltsq_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_ltsq_results, FDR < 0.05)$keyval_range) == 1) %>% 
+  as_tibble() %>% 
+  arrange(Sig) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation + Limma-Trend") +
+  labs(x = "logCPM", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for sliding-window results using Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
+
+### Smooth Quantile GC (logCPM)
+
+```{r sw-ltsqgc-results}
+sw_ltsqgc_all <- fitAssayDiff(
+  filtcounts, assay = "sqgc_logCPM", method = "lt", design = X, asRanges = TRUE
+) 
+sw_ltsqgc_results <- sw_ltsqgc_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref", min_win = 2) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_ltsqgc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-ltsq}
+p <- sw_ltsqgc_all %>% 
+  mutate(Sig = propOverlap(., subset(sw_ltsqgc_results, FDR < 0.05)$keyval_range) == 1) %>% 
+  as_tibble() %>% 
+  arrange(Sig) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c("grey", "red")) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation + Limma-Trend") +
+  labs(x = "logCPM", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for sliding-window results using Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
+
+
+## Results
+
+```{r all-res}
+all_res <- list(
+  `DB-LS` = db_ls_results,
+  `DB-TMM` = db_tmm_results,
+  `FW-LS` = ec_ls_results,
+  `FW-TMM` = ec_tmm_results,
+  `FW-TMMG` = ec_tmmg_results,
+  `FW-CQN` = cqn_results,
+  `FW-CQNG` = cqng_results,
+  `FW-SQN` = sqn_results,
+  `FW-SQNGC` = sqngc_results,
+  `SW-LS` = sw_ls_results,
+  `SW-TMM` = sw_tmm_results,
+  `SW-TMMG` = sw_tmmg_results,
+  `SW-SQN` = sw_sq_results,
+  `SW-SQNGC` = sw_sqgc_results,
+  `SW-CQN` = sw_cqn_results,
+  `SW-CQNG` = sw_cqng_results,
+  `SW-LT` = sw_lt_results,
+  `SW-LTSQN` = sw_ltsq_results,
+  `SW-LTSQNGC` = sw_ltsqgc_results
+)
+write_rds(
+  all_res,
+  here::here("output", dataset, target, "all_results.rds"),
+  compress = "gz"
+)
+```
+
+### Table
+
+```{r result-table}
+tbl <- all_res %>%
+  lapply(
+    function(x) {
+      tbl <- table(x$status)
+      tibble(status = names(tbl), n = as.integer(tbl))
+    }
+  ) %>% 
+  bind_rows(.id = "method") %>% 
+  dplyr::filter(n > 0) %>% 
+  pivot_wider(names_from = "status", values_from = "n") %>% 
+  mutate(
+    total = Unchanged + Decreased + Increased,
+    Detected = 1 - Unchanged / total,
+    package = ifelse(grepl("DB", method), "DiffBind", "extraChIPs"),
+    normalisation = str_remove_all(method, ".+-"),
+    groups = grepl("(SQ|G$)", normalisation),
+    windows = ifelse(grepl("^SW", method), "Sliding", "Fixed"),
+    GC = grepl("GC|CQN", normalisation),
+    Model = ifelse(grepl("LT", normalisation), "limma-trend", "glmQLF"),
+    normalisation = normalisation %>% 
+      str_remove_all("(^LT|G$)") %>% 
+      str_replace_all("GC$", "-GC")
+  ) %>% 
+  arrange(desc(Detected)) %>% 
+  dplyr::select(
+    method, package, windows, normalisation, groups, GC, Model, total, 
+    Detected, Increased, Decreased, Unchanged
+  ) %>% 
+  rename_with(str_to_title, -all_of("GC")) %>% 
+  reactable(
+    sortable = TRUE, filterable = TRUE, pagination = FALSE,
+    columns = list(
+      Normalisation = colDef(name = "Norm", maxWidth = 100),
+      Groups = colDef(
+        cell = function(value) ifelse(value, "Y", "N"), maxWidth = 80
+      ),
+      GC = colDef(
+        cell = function(value) ifelse(value, "Y", "N"), maxWidth = 50
+      ),
+      Total = colDef(format = colFormat(separators = TRUE), maxWidth = 80),
+      Increased = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Decreased = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Unchanged = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Detected = colDef(
+        format = colFormat(percent = TRUE, digits = 1), maxWidth = 80,
+        style = function(value) bar_style(width = value, align = "left")
+      ),
+      Windows = colDef(maxWidth = 80)
+    )
+  )
+cp <- htmltools::tags$caption(
+  htmltools::em(
+    glue(
+      "
+      Summary of all {length(all_res)} approaches investigated. Results are
+      ranked by the total number of detected regions, although this may be
+      poorly representative of accuracy. LS in the Normalisation column is 
+      indicative of Library-Size normalisation, which is the most conservative 
+      approach, but is widely applicable in general. Models fitted using 
+      limma-trend used logCPM values instead of counts.
+      "
+    )
+  )
+)
+div(class = "table",
+  div(class = "table-header",
+      div(class = "caption", cp),
+      tbl
+  )
+)
+```
+
+### Summary Visualisation
+
+```{r plot-all-cat}
+p <- all_res %>%
+  lapply(
+    function(x) {
+      tbl <- table(x$status)
+      tibble(status = names(tbl), n = as.integer(tbl))
+    }
+  ) %>% 
+  bind_rows(.id = "method") %>% 
+  mutate(p = n / sum(n), .by = method) %>% 
+  arrange(desc(p)) %>% 
+  mutate(
+    windows = ifelse(grepl("^SW", method), "Sliding Windows", "Fixed-Width"),
+    method = method %>% 
+      str_remove_all("^(FW|SW)-") %>% 
+      str_replace_all("G$", " (Groups)") %>% 
+      str_replace_all("^LT", "Limma-Trend ") %>% 
+      fct_inorder(),
+    status = factor(status, levels = names(status_colours)),
+  ) %>% 
+  droplevels() %>% 
+  ggplot(aes(p, fct_rev(method), fill = status)) +
+  geom_col() +
+  facet_grid(windows ~ ., scales = "free", space = "free", switch = "y") +
+  labs(x = "% In Category", y = "Method", fill = "Status") +
+  scale_x_continuous(
+    expand = expansion(c(0, 0)), breaks = seq(0, 1, by = 0.2),
+    labels = percent
+  ) +
+  scale_y_discrete(expand = expansion(0, 0)) +
+  scale_fill_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Combined results for each applied method broken into Fixed-Window and Sliding-Window approaches. Both CQN and TMM were applied across the complete dataset and within groups. Methods beginning with DB indicate those fitted using DiffBind. All Limma-Trend methods use logCPM values as the starting point.*](`r href`)
+
+
+### Shared Increasing Sites
+
+```{r upset-increasing}
+size <- get_size_mode('exclusive_intersection')
+p <- all_res %>% 
+  lapply(filter, status == "Increased") %>% 
+  lapply(granges) %>% 
+  GRangesList() %>% 
+  plotOverlaps(
+    base_annotations = list(
+      `Shared Increasing Sites` = intersection_size(
+        text_mapping = aes(label = comma(!!size)),
+        bar_number_threshold = 1, text_colors = "black", 
+        text = list(size = 3.5, angle = 90, vjust = 0.5, hjust = -0.1)
+      ) +
+        scale_y_continuous(expand = expansion(c(0, 0.2)), label = comma) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = "grey20"),
+          panel.border = element_rect(colour = "grey20", fill =  NA)
+        )
+    ),
+    set_sizes = (
+      upset_set_size() +
+        geom_text(
+          aes(label = comma(after_stat(count))), 
+          hjust = 1.1, stat = 'count', size = 3.5
+        ) +
+        scale_y_reverse(
+          expand = expansion(c(0.3, 0)), label = comma
+        ) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = "grey20"),
+          panel.border = element_rect(colour = "grey20", fill =  NA)
+        )
+    ),
+    n_intersections = 30, keep_empty_groups = TRUE, 
+    set_col = status_colours["Increased"]
+  ) +
+  xlab(NULL) +
+  theme_bw() +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_layout(heights = c(1, 1))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Overlapping/Shared sites detected as Increased across all methods*](`r href`)
+
+
+### Shared Decreasing Sites
+
+```{r upset-decreasing}
+p <- all_res %>% 
+  lapply(filter, status == "Decreased") %>% 
+  lapply(granges) %>% 
+  GRangesList() %>% 
+  plotOverlaps(
+    base_annotations = list(
+      `Shared Decreasing Sites` = intersection_size(
+        text_mapping = aes(label = comma(!!size)),
+        bar_number_threshold = 1, text_colors = "black", 
+        text = list(size = 3.5, angle = 90, vjust = 0.5, hjust = -0.1)
+      ) +
+        scale_y_continuous(expand = expansion(c(0, 0.2)), label = comma) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = "grey20"),
+          panel.border = element_rect(colour = "grey20", fill =  NA)
+        )
+    ),
+    set_sizes = (
+      upset_set_size() +
+        geom_text(
+          aes(label = comma(after_stat(count))), 
+          hjust = 1.1, stat = 'count', size = 3.5
+        ) +
+        scale_y_reverse(
+          expand = expansion(c(0.3, 0)), label = comma
+        ) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = "grey20"),
+          panel.border = element_rect(colour = "grey20", fill =  NA)
+        )
+    ),
+    n_intersections = 30, keep_empty_groups = TRUE, 
+    set_col = status_colours["Decreased"]
+  ) +
+  xlab(NULL) +
+  theme_bw() +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_layout(heights = c(1, 1))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Overlapping/Shared sites detected as Decreased across all methods*](`r href`)
 

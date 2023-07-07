@@ -385,7 +385,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -396,8 +396,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -410,9 +410,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>compare_diffsignal/</code> <span
@@ -435,21 +435,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -540,15 +537,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree602cb12952786e1011d356ba12041f841717f9aetargetblank602cb12a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree873b7c71a1e65d8805280a3a47d321da62149159targetblank873b7c7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/602cb12952786e1011d356ba12041f841717f9ae" target="_blank">602cb12</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/873b7c71a1e65d8805280a3a47d321da62149159" target="_blank">873b7c7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree602cb12952786e1011d356ba12041f841717f9aetargetblank602cb12a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree873b7c71a1e65d8805280a3a47d321da62149159targetblank873b7c7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -558,7 +555,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/602cb12952786e1011d356ba12041f841717f9ae" target="_blank">602cb12</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/873b7c71a1e65d8805280a3a47d321da62149159" target="_blank">873b7c7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -577,12 +574,8 @@ Ignored files:
     Ignored:    data/bam/
 
 Untracked files:
-    Untracked:  analysis/zr75_er.Rmd
     Untracked:  data/macs2/
     Untracked:  output/PRJNA509779/
-
-Unstaged changes:
-    Modified:   code/_method_comparison.Rmd
 
 </code></pre>
 <p>
@@ -597,10 +590,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/zr75_er.Rmd</code>) and HTML
+(<code>docs/zr75_er.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/smped/compare_diffsignal/blob/873b7c71a1e65d8805280a3a47d321da62149159/analysis/zr75_er.Rmd" target="_blank">873b7c7</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-07
+</td>
+<td>
+Added sliding QLF methods
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/873b7c71a1e65d8805280a3a47d321da62149159/docs/zr75_er.html" target="_blank">873b7c7</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-07
+</td>
+<td>
+Added sliding QLF methods
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -618,6 +675,8 @@ library(edgeR)
 library(csaw)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(qsmooth)
+library(BiocParallel)
+register(MulticoreParam(threads))
 theme_set(
   theme_bw() + 
     theme(
@@ -734,18 +793,10 @@ dba &lt;- dba(
 <p>For the initial analysis using DiffBind, all files were passed to the
 requisite functions using a fixed-width of 400 bp, assuming a fragment
 length of 195.</p>
-<p><strong>DiffBind Results as shown currently use DESeq2 due to a bug
-in DiffBind 3.10</strong></p>
 <div id="library-size" class="section level4">
 <h4>Library Size</h4>
-<pre class="r"><code>dba_ls &lt;- dba.normalize(dba, normalize = DBA_NORM_LIB) %&gt;% 
+<pre class="r"><code>dba_ls &lt;- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_LIB) %&gt;% 
   dba.analyze(method = DBA_ALL_METHODS)
-# db_ls_results &lt;-  dba_ls %&gt;% 
-#   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
-#   sortSeqlevels() %&gt;% 
-#   sort()
-# seqinfo(db_ls_results) &lt;- sq
-## DiffBind currently has a bug
 db_ls_results &lt;-  dba_ls %&gt;% 
   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
   sortSeqlevels() %&gt;% 
@@ -785,23 +836,17 @@ Normalisation</em></p>
 </div>
 <div id="tmm" class="section level4">
 <h4>TMM</h4>
-<pre class="r"><code>dba_tmm &lt;- dba.normalize(dba, normalize = DBA_NORM_TMM) %&gt;% 
+<pre class="r"><code>dba_tmm &lt;- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_TMM) %&gt;% 
   dba.analyze(method = DBA_ALL_METHODS)
-# db_tmm_results &lt;- dba_tmm %&gt;% 
-#   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
-#   sortSeqlevels() %&gt;% 
-#   sort()
-# seqinfo(db_tmm_results) &lt;- sq
-db_tmm_results &lt;- dba_tmm %&gt;% 
-  dba.report(method = DBA_DESEQ2, th = 1) %&gt;% 
-  sortSeqlevels() %&gt;% 
+db_tmm_results &lt;- dba_tmm %&gt;%
+  dba.report(method = DBA_EDGER, th = 1) %&gt;%
+  sortSeqlevels() %&gt;%
   sort()
 db_tmm_results$status &lt;- addDiffStatus(db_tmm_results, fc_col = &quot;Fold&quot;)$status
 seqinfo(db_tmm_results) &lt;- sq</code></pre>
-<p>This analysis returned 320 peaks considered to show evidence of
+<p>This analysis returned 590 peaks considered to show evidence of
 differential signal.</p>
-<pre class="r"><code>p &lt;- db_tmm_results %&gt;% 
-  addDiffStatus(fc_col = &quot;Fold&quot;) %&gt;% 
+<pre class="r"><code>p &lt;- db_tmm_results  %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(Conc, Fold)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -1046,6 +1091,34 @@ Quantile Normalisation, accounting for GC content</em></p>
 <p>Given the expectation of identical results, those from DiffBind and
 extraChIPs were compared for both Library-Size and TMM
 normalisation.</p>
+<pre class="r"><code>dir_combs &lt;- c(&quot;DiffBind&quot;, &quot;extraChIPs&quot;) %&gt;% 
+vapply(
+  function(x) paste(x, setdiff(names(status_colours), &quot;Undetected&quot;)),
+  character(3)
+) %&gt;% 
+  as.data.frame() %&gt;% 
+  expand.grid() %&gt;% 
+  mutate(
+    status = paste(extraChIPs, DiffBind, sep = &quot; - &quot;),
+    status = case_when(
+      grepl(&quot;Increased.+Increased&quot;, status) ~ &quot;Both Increased&quot;,
+      grepl(&quot;Decreased.+Decreased&quot;, status) ~ &quot;Both Decreased&quot;,
+      grepl(&quot;Unchanged.+Unchanged&quot;, status) ~ &quot;Both Unchanged&quot;,
+      TRUE ~ status
+    )
+  ) %&gt;% 
+  pull(status) %&gt;% 
+  sort()
+dir_cols &lt;- c(
+  rgb(0, 0, 1), rgb(1, 0, 0), rgb(0.5, 0.5, 0.5), #Both
+  &quot;orange&quot;, rgb(0, 0.5, 1), &quot;orange&quot;, rgb(1, 0.5, 0),
+  rgb(0.5, 0, 1), rgb(1, 0, 0.5)
+)
+names(dir_cols) &lt;- dir_combs
+stat_cols &lt;- c(
+  Neither = &quot;grey70&quot;, Both = &quot;forestgreen&quot;,
+  `DiffBind Only` = &quot;red&quot;, `extraChIPs Only` = &quot;orange&quot;
+)</code></pre>
 <div id="library-size-normalisation" class="section level4 tabset">
 <h4 class="tabset">Library Size Normalisation</h4>
 <div id="logfc-estimates" class="section level5">
@@ -1058,12 +1131,7 @@ normalisation.</p>
   ggtitle(
     glue(&quot;{target} logFC&quot;), &quot;Library-Size Normalisation&quot;
   ) +
-  scale_colour_manual(
-    values = c(
-      rgb(1, 0, 0.5), rgb(0.5, 0.5, 1), rgb(1, 0.5, 0), rgb(0.5, 0.5, 0.5),
-      rgb(0, 0, 1), rgb(1, 0, 0)
-    )
-  )
+  scale_colour_manual(values = dir_cols)
 if (interactive()) {
   p
 } else {
@@ -1106,7 +1174,7 @@ library-size normalisation for both DiffBind and extraChIPs</em></p>
   ggtitle(
     glue(&quot;{target}&quot;), &quot;Library-Size Normalisation&quot;
   ) +
-  scale_colour_manual(values = c(&quot;forestgreen&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;grey&quot;))+
+  scale_colour_manual(values = stat_cols) +
   labs(
     x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
     y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
@@ -1147,12 +1215,7 @@ extraChIPs</em></p>
   ggtitle(
     glue(&quot;{target} logFC&quot;), &quot;TMM Normalisation&quot;
   ) +
-  scale_colour_manual(
-    values = c(
-      rgb(0.5, 0, 1), rgb(1, 0, 0.5), rgb(0, 0.5, 1), rgb(1, 0.5, 0), 
-      rgb(0.5, 0.5, 0.5), rgb(0, 0, 1), rgb(1, 0, 0)
-    )
-  )
+  scale_colour_manual(values = dir_cols)
 if (interactive()) {
   p
 } else {
@@ -1195,7 +1258,7 @@ normalisation for both DiffBind and extraChIPs</em></p>
   ggtitle(
     glue(&quot;{target}&quot;), &quot;TMM Normalisation&quot;
   ) +
-  scale_colour_manual(values = c(&quot;forestgreen&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;grey&quot;))+
+  scale_colour_manual(values = stat_cols) +
   labs(
     x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
     y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
@@ -1221,6 +1284,268 @@ if (interactive()) {
 <p class="caption"><em>Comparison of -log<sub>10</sub> p-values returned
 using TMM normalisation for both DiffBind and extraChIPs</em></p>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div id="sliding-windows" class="section level2">
+<h2>Sliding Windows</h2>
+<pre class="r"><code>data(&quot;hg19.blacklist&quot;, package = &quot;GreyListChIP&quot;) 
+window_size &lt;- round(params$width / 4, -1)
+window_step &lt;- ceiling(0.1 * window_size / 3) * 10
+rp &lt;- readParam(
+  pe = &quot;none&quot;, dedup = TRUE,
+  restrict = seqnames(sq),
+  discard = c(greylist, hg19.blacklist)
+)
+bfl &lt;- path(bfl) %&gt;% 
+  dirname() %&gt;% 
+  unique() %&gt;% 
+  file.path(glue(&quot;{samples$input}.sorted.bam&quot;)) %&gt;% 
+  unique() %&gt;% 
+  BamFileList() %&gt;% 
+  setNames(unique(samples$input)) %&gt;% 
+  c(bfl)</code></pre>
+<p>Windows were set to be about 1/4 of the fixed-width window-size, with
+each range covered up to 3 times. This gave 100bp windows moving in
+increments of 40bp.</p>
+<pre class="r"><code>wincounts &lt;- windowCounts(
+  bam.files = bfl,
+  spacing = window_step,
+  width = window_size,
+  ext = params$fl,
+  filter = length(bfl),
+  param = rp
+)
+seqlevels(wincounts) &lt;- seqlevels(sq)
+seqinfo(wincounts) &lt;- sq
+colData(wincounts) %&lt;&gt;%
+  as_tibble(rownames = &quot;sample&quot;) %&gt;% 
+  mutate(
+    accession = str_remove_all(sample, &quot;.sorted.bam&quot;),
+    ChIP_Target = ifelse(accession %in% samples$accession, .GlobalEnv$target, &quot;Input&quot;)
+  ) %&gt;% 
+  left_join(samples, by = &quot;accession&quot;) %&gt;% 
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, ChIP_Target, treatment) %&gt;% 
+  as.data.frame() %&gt;% 
+  column_to_rownames(&quot;sample&quot;) %&gt;% 
+  DataFrame()</code></pre>
+<pre class="r"><code>filtcounts &lt;- dualFilter(
+  x = wincounts[, wincounts$ChIP_Target == target],
+  bg = wincounts[, wincounts$ChIP_Target != target], 
+  ref = union_peaks,
+  q = 0.6
+)</code></pre>
+<pre class="r"><code>filtRanges &lt;- granges(rowRanges(filtcounts))
+seqlevels(filtRanges) &lt;- seqlevels(bs)
+genome(filtRanges) &lt;- &quot;hg19&quot;
+seqinfo(filtRanges) &lt;- seqinfo(bs)
+gc &lt;- getSeq(bs, filtRanges) %&gt;% 
+  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
+rowRanges(filtcounts)$gc &lt;- gc[,1]
+assay(filtcounts, &quot;sq_counts&quot;) &lt;- assay(filtcounts, &quot;counts&quot;) %&gt;% 
+  qsmooth(group_factor = filtcounts$treatment) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sq_logCPM&quot;) &lt;- assay(filtcounts, &quot;logCPM&quot;) %&gt;% 
+  qsmooth(group_factor = filtcounts$treatment) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sqgc_counts&quot;) &lt;- assay(filtcounts, &quot;counts&quot;) %&gt;% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sqgc_logCPM&quot;) &lt;- assay(filtcounts, &quot;logCPM&quot;) %&gt;% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %&gt;% 
+  qsmoothData()
+X &lt;- model.matrix(~treatment, data = colData(filtcounts))</code></pre>
+<div id="library-size-2" class="section level3">
+<h3>Library Size</h3>
+<pre class="r"><code>sw_ls_all &lt;- fitAssayDiff(filtcounts, design = X, asRanges = TRUE) 
+sw_ls_results &lt;- sw_ls_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;) %&gt;% 
+  filter(n_windows &gt; 1) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 107 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_ls_all %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: Sliding Windows&quot;), subtitle = &quot;Library Size Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotma-sw-ls.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using Library
+Size Normalisation</em></p>
+</div>
+</div>
+<div id="tmm-2" class="section level3">
+<h3>TMM</h3>
+<pre class="r"><code>sw_tmm_all &lt;- fitAssayDiff(filtcounts, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) 
+sw_tmm_results &lt;- sw_tmm_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;) %&gt;% 
+  filter(n_windows &gt; 1) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 370 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_tmm_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: Sliding Windows&quot;), subtitle = &quot;TMM Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotma-sw-tmm.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using TMM
+Normalisation</em></p>
+</div>
+</div>
+<div id="tmm-groups-1" class="section level3">
+<h3>TMM Groups</h3>
+<pre class="r"><code>sw_tmmg_all &lt;- fitAssayDiff(
+  filtcounts, design = X, norm = &quot;TMM&quot;, groups = &quot;treatment&quot;, asRanges = TRUE
+) 
+sw_tmmg_results &lt;- sw_tmmg_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;) %&gt;% 
+  filter(n_windows &gt; 1) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 129 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_tmmg_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: Sliding Windows&quot;), subtitle = &quot;TMM Normalisation (Groups)&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotma-sw-tmmg.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using TMM
+Normalisation within treatment groups</em></p>
+</div>
+</div>
+<div id="smooth-quantile-1" class="section level3">
+<h3>Smooth Quantile</h3>
+<pre class="r"><code>sw_sq_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sq_counts&quot;, totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sq_results &lt;- sw_sq_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;) %&gt;% 
+  filter(n_windows &gt; 1) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 320 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_sq_all %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: Sliding Windows&quot;), subtitle = &quot;SQ Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+</div>
+<div id="smooth-quantile-gc" class="section level3">
+<h3>Smooth Quantile GC</h3>
+<pre class="r"><code>sw_sqgc_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sqgc_counts&quot;, totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sqgc_results &lt;- sw_sqgc_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;) %&gt;% 
+  filter(n_windows &gt; 1) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 342 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_sqgc_all %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: Sliding Windows&quot;), subtitle = &quot;SQ-GC Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1230,8 +1555,6 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-</div>
-</div>
 </div>
 </div>
 </div>
