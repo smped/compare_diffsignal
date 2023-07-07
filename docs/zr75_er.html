@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-07-06" />
 
-<title>ZR75: AR</title>
+<title>ZR75: ERa</title>
 
 <script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -375,7 +375,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">ZR75: AR</h1>
+<h1 class="title toc-ignore">ZR75: ERa</h1>
 <h4 class="author">Stephen Pederson</h4>
 <h4 class="date">2023-07-06</h4>
 
@@ -385,7 +385,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -396,8 +396,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -410,9 +410,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>compare_diffsignal/</code> <span
@@ -435,18 +435,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -574,9 +577,8 @@ Ignored files:
     Ignored:    data/bam/
 
 Untracked files:
+    Untracked:  analysis/zr75_er.Rmd
     Untracked:  data/macs2/
-    Untracked:  junk.Rmd
-    Untracked:  junk.html
     Untracked:  output/PRJNA509779/
 
 Unstaged changes:
@@ -595,108 +597,10 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/zr75_ar.Rmd</code>) and HTML
-(<code>docs/zr75_ar.html</code>) files. If you’ve configured a remote
-Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/smped/compare_diffsignal/blob/602cb12952786e1011d356ba12041f841717f9ae/analysis/zr75_ar.Rmd" target="_blank">602cb12</a>
-</td>
-<td>
-Stephen Pederson
-</td>
-<td>
-2023-07-07
-</td>
-<td>
-Fixed width done, but fig.path doesn’t work
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/smped/compare_diffsignal/602cb12952786e1011d356ba12041f841717f9ae/docs/zr75_ar.html" target="_blank">602cb12</a>
-</td>
-<td>
-Stephen Pederson
-</td>
-<td>
-2023-07-07
-</td>
-<td>
-Fixed width done, but fig.path doesn’t work
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/smped/compare_diffsignal/blob/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/analysis/zr75_ar.Rmd" target="_blank">6a9ecfb</a>
-</td>
-<td>
-Stephen Pederson
-</td>
-<td>
-2023-07-06
-</td>
-<td>
-Initial Commit
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/smped/compare_diffsignal/6a9ecfbbda6c66e8223b1ab947b1c322bdbe00b1/docs/zr75_ar.html" target="_blank">6a9ecfb</a>
-</td>
-<td>
-Stephen Pederson
-</td>
-<td>
-2023-07-06
-</td>
-<td>
-Initial Commit
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
@@ -796,8 +700,8 @@ merged samples</li>
 <li>A set of union peaks were then taken as the union of the above
 treatment-specific peaks which passed filtering</li>
 </ol>
-<p>This gave 14,763 union peaks derived from <em>1,017</em> and
-<em>15,874</em> treatment-specific peaks from E2 and E2DHT
+<p>This gave 7,402 union peaks derived from <em>7,117</em> and
+<em>6,887</em> treatment-specific peaks from E2 and E2DHT
 respectively.</p>
 </div>
 <div id="fixed-width-analysis" class="section level2">
@@ -827,7 +731,6 @@ dba &lt;- dba(
 ) %&gt;% 
   dba.count(summits = floor(params$width / 2)) %&gt;% 
   dba.blacklist(cores = threads)</code></pre>
-<pre><code>coverage: 13012992 bp (0.43%)</code></pre>
 <p>For the initial analysis using DiffBind, all files were passed to the
 requisite functions using a fixed-width of 400 bp, assuming a fragment
 length of 195.</p>
@@ -846,12 +749,12 @@ in DiffBind 3.10</strong></p>
 db_ls_results &lt;-  dba_ls %&gt;% 
   dba.report(method = DBA_EDGER, th = 1) %&gt;% 
   sortSeqlevels() %&gt;% 
-  sort()
+  sort() 
+db_ls_results$status &lt;- addDiffStatus(db_ls_results, fc_col = &quot;Fold&quot;)$status
 seqinfo(db_ls_results) &lt;- sq</code></pre>
-<p>This analysis returned 12,749 peaks considered to show evidence of
+<p>This analysis returned 188 peaks considered to show evidence of
 differential signal.</p>
-<pre class="r"><code>p &lt;- db_ls_results %&gt;%
-  addDiffStatus(fc_col = &quot;Fold&quot;) %&gt;% 
+<pre class="r"><code>p &lt;- db_ls_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(Conc, Fold)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -874,10 +777,8 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-db-ls.png" alt="" />
+<img src="assets/PRJNA509779/ERa/plotma-db-ls.png" alt="" />
 <p class="caption"><em>MA-plot for DiffBind results using Library Size
 Normalisation</em></p>
 </div>
@@ -895,8 +796,9 @@ db_tmm_results &lt;- dba_tmm %&gt;%
   dba.report(method = DBA_DESEQ2, th = 1) %&gt;% 
   sortSeqlevels() %&gt;% 
   sort()
+db_tmm_results$status &lt;- addDiffStatus(db_tmm_results, fc_col = &quot;Fold&quot;)$status
 seqinfo(db_tmm_results) &lt;- sq</code></pre>
-<p>This analysis returned 4,221 peaks considered to show evidence of
+<p>This analysis returned 320 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- db_tmm_results %&gt;% 
   addDiffStatus(fc_col = &quot;Fold&quot;) %&gt;% 
@@ -922,10 +824,8 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-db-tmm.png" alt="" />
+<img src="assets/PRJNA509779/ERa/plotma-db-tmm.png" alt="" />
 <p class="caption"><em>MA-plot for DiffBind results using TMM
 Normalisation</em></p>
 </div>
@@ -949,7 +849,7 @@ X &lt;- model.matrix(~treatment, data = colData(se))</code></pre>
 <h4>Library Size</h4>
 <pre class="r"><code>ec_ls_results &lt;- fitAssayDiff(se, design = X, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 12,769 peaks considered to show evidence of
+<p>This analysis returned 181 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- ec_ls_results %&gt;% 
   as_tibble() %&gt;% 
@@ -974,10 +874,8 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-ec-ls-fixed.png" alt="" />
+<img src="assets/PRJNA509779/ERa/plotma-ec-ls-fixed.png" alt="" />
 <p class="caption"><em>MA-plot for extraChIPs results using Library Size
 Normalisation</em></p>
 </div>
@@ -986,7 +884,7 @@ Normalisation</em></p>
 <h4>TMM</h4>
 <pre class="r"><code>ec_tmm_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 5,738 peaks considered to show evidence of
+<p>This analysis returned 600 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- ec_tmm_results %&gt;% 
   as_tibble() %&gt;% 
@@ -1011,10 +909,8 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-ec-tmm-fixed.png" alt="" />
+<img src="assets/PRJNA509779/ERa/plotma-ec-tmm-fixed.png" alt="" />
 <p class="caption"><em>MA-plot for extraChIPs results using TMM
 Normalisation</em></p>
 </div>
@@ -1023,7 +919,7 @@ Normalisation</em></p>
 <h4>TMM Groups</h4>
 <pre class="r"><code>ec_tmmg_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, groups = &quot;treat&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 12,703 peaks considered to show evidence of
+<p>This analysis returned 208 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- ec_tmmg_results %&gt;% 
   as_tibble() %&gt;% 
@@ -1048,11 +944,9 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-ec-tmmg-fixed.png" alt="" />
-<p class="caption"><em>MA-plot for extraChIPa results using TMM-groups
+<img src="assets/PRJNA509779/ERa/plotma-ec-tmmg-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using TMM-groups
 Normalisation</em></p>
 </div>
 </div>
@@ -1074,7 +968,7 @@ sqn_results &lt;- fitAssayDiff(
   se, assay = &quot;normCounts&quot;, lib.size = NULL, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 5,656 peaks considered to show evidence of
+<p>This analysis returned 605 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sqn_results %&gt;% 
   as_tibble() %&gt;% 
@@ -1099,11 +993,9 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-ec-sqn-fixed.png" alt="" />
-<p class="caption"><em>MA-plot for extraChIPa results using Smooth
+<img src="assets/PRJNA509779/ERa/plotma-ec-sqn-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using Smooth
 Quantile Normalisation</em></p>
 </div>
 </div>
@@ -1117,7 +1009,7 @@ sqngc_results &lt;- fitAssayDiff(
   se, assay = &quot;normCountsGC&quot;, lib.size = NULL, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 5,463 peaks considered to show evidence of
+<p>This analysis returned 277 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sqngc_results %&gt;% 
   as_tibble() %&gt;% 
@@ -1142,12 +1034,192 @@ if (interactive()) {
   print(p)
   dev.off()
 }</code></pre>
-<pre><code>png 
-  2 </code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/AR/plotma-ec-sqngc-fixed.png" alt="" />
-<p class="caption"><em>MA-plot for extraChIPa results using Smooth
+<img src="assets/PRJNA509779/ERa/plotma-ec-sqngc-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using Smooth
 Quantile Normalisation, accounting for GC content</em></p>
+</div>
+</div>
+</div>
+<div id="comparison-of-extrachips-and-diffbind" class="section level3">
+<h3>Comparison of extraChIPs and DiffBind</h3>
+<p>Given the expectation of identical results, those from DiffBind and
+extraChIPs were compared for both Library-Size and TMM
+normalisation.</p>
+<div id="library-size-normalisation" class="section level4 tabset">
+<h4 class="tabset">Library Size Normalisation</h4>
+<div id="logfc-estimates" class="section level5">
+<h5>logFC Estimates</h5>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_ls_results, logFC = Fold, status), 
+  extraChIPs = select(ec_ls_results, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;, xside = &quot;none&quot;, yside = &quot;none&quot;) +
+  ggtitle(
+    glue(&quot;{target} logFC&quot;), &quot;Library-Size Normalisation&quot;
+  ) +
+  scale_colour_manual(
+    values = c(
+      rgb(1, 0, 0.5), rgb(0.5, 0.5, 1), rgb(1, 0.5, 0), rgb(0.5, 0.5, 0.5),
+      rgb(0, 0, 1), rgb(1, 0, 0)
+    )
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/compare-logfc-db-ec-ls.png" alt="" />
+<p class="caption"><em>Comparison of logFC estimates returned using
+library-size normalisation for both DiffBind and extraChIPs</em></p>
+</div>
+</div>
+<div id="p-values" class="section level5">
+<h5>P-Values</h5>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_ls_results, PValue = `p-value`, status), 
+  extraChIPs = select(ec_ls_results, PValue, status)
+) %&gt;% 
+  mapGrlCols(var = c(&quot;PValue&quot;, &quot;status&quot;)) %&gt;% # , collapse = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;PValue&quot;), function(x) -log10(x)),
+    status = case_when(
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;Both&quot;, 
+      !grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;extraChIPs Only&quot;, 
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; !grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;DiffBind Only&quot;, 
+      TRUE ~ &quot;Neither&quot;
+    )
+  ) %&gt;% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  ggtitle(
+    glue(&quot;{target}&quot;), &quot;Library-Size Normalisation&quot;
+  ) +
+  scale_colour_manual(values = c(&quot;forestgreen&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;grey&quot;))+
+  labs(
+    x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
+    y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
+    colour = &quot;Status&quot;
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<pre><code>Warning: Removed 6 rows containing missing values (`geom_point()`).</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/compare-p-db-ec-ls.png" alt="" />
+<p class="caption"><em>Comparison of -log<sub>10</sub> p-values returned
+using library-size normalisation for both DiffBind and
+extraChIPs</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-normalisation" class="section level4 tabset">
+<h4 class="tabset">TMM Normalisation</h4>
+<div id="logfc-estimates-1" class="section level5">
+<h5>logFC Estimates</h5>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_tmm_results, logFC = Fold, status), 
+  extraChIPs = select(ec_tmm_results, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;, xside = &quot;none&quot;, yside = &quot;none&quot;) +
+  ggtitle(
+    glue(&quot;{target} logFC&quot;), &quot;TMM Normalisation&quot;
+  ) +
+  scale_colour_manual(
+    values = c(
+      rgb(0.5, 0, 1), rgb(1, 0, 0.5), rgb(0, 0.5, 1), rgb(1, 0.5, 0), 
+      rgb(0.5, 0.5, 0.5), rgb(0, 0, 1), rgb(1, 0, 0)
+    )
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/compare-logfc-db-ec-tmm.png" alt="" />
+<p class="caption"><em>Comparison of logFC estimates returned using TMM
+normalisation for both DiffBind and extraChIPs</em></p>
+</div>
+</div>
+<div id="p-values-1" class="section level5">
+<h5>P-Values</h5>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_tmm_results, PValue = `p-value`, status), 
+  extraChIPs = select(ec_tmm_results, PValue, status)
+) %&gt;% 
+  mapGrlCols(var = c(&quot;PValue&quot;, &quot;status&quot;)) %&gt;% # , collapse = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;PValue&quot;), function(x) -log10(x)),
+    status = case_when(
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;Both&quot;, 
+      !grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;extraChIPs Only&quot;, 
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; !grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;DiffBind Only&quot;, 
+      TRUE ~ &quot;Neither&quot;
+    )
+  ) %&gt;% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  ggtitle(
+    glue(&quot;{target}&quot;), &quot;TMM Normalisation&quot;
+  ) +
+  scale_colour_manual(values = c(&quot;forestgreen&quot;, &quot;red&quot;, &quot;orange&quot;, &quot;grey&quot;))+
+  labs(
+    x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
+    y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
+    colour = &quot;Status&quot;
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<pre><code>Warning: Removed 6 rows containing missing values (`geom_point()`).</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/compare-p-db-ec-tmm.png" alt="" />
+<p class="caption"><em>Comparison of -log<sub>10</sub> p-values returned
+using TMM normalisation for both DiffBind and extraChIPs</em></p>
 </div>
 <br>
 <p>
@@ -1158,139 +1230,7 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.3.0 (2023-04-21)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: CentOS Linux 7 (Core)
-
-Matrix products: default
-BLAS:   /data/tki_bodl/sw/R/4.3.0-gcc-blas-fullsupport/lib64/R/lib/libRblas.so 
-LAPACK: /data/tki_bodl/sw/R/4.3.0-gcc-blas-fullsupport/lib64/R/lib/libRlapack.so;  LAPACK version 3.11.0
-
-locale:
- [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
- [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
- [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
-
-time zone: Australia/Perth
-tzcode source: system (glibc)
-
-attached base packages:
-[1] stats4    stats     graphics  grDevices utils     datasets  methods  
-[8] base     
-
-other attached packages:
- [1] qsmooth_1.16.0                    BSgenome.Hsapiens.UCSC.hg19_1.4.3
- [3] BSgenome_1.68.0                   csaw_1.34.0                      
- [5] edgeR_3.42.4                      limma_3.56.2                     
- [7] DiffBind_3.10.0                   pander_0.6.5                     
- [9] plyranges_1.20.0                  glue_1.6.2                       
-[11] scales_1.2.1                      rtracklayer_1.60.0               
-[13] Rsamtools_2.16.0                  Biostrings_2.68.1                
-[15] XVector_0.40.0                    extraChIPs_1.5.6                 
-[17] SummarizedExperiment_1.30.2       Biobase_2.60.0                   
-[19] MatrixGenerics_1.12.2             matrixStats_1.0.0                
-[21] ggside_0.2.2                      GenomicRanges_1.52.0             
-[23] GenomeInfoDb_1.36.0               IRanges_2.34.0                   
-[25] S4Vectors_0.38.1                  BiocGenerics_0.46.0              
-[27] BiocParallel_1.34.2               lubridate_1.9.2                  
-[29] forcats_1.0.0                     stringr_1.5.0                    
-[31] dplyr_1.1.2                       purrr_1.0.1                      
-[33] readr_2.1.4                       tidyr_1.3.0                      
-[35] tibble_3.2.1                      ggplot2_3.4.2                    
-[37] tidyverse_2.0.0                   workflowr_1.7.0                  
-
-loaded via a namespace (and not attached):
-  [1] fs_1.6.2                   ProtGenerics_1.32.0       
-  [3] bitops_1.0-7               httr_1.4.6                
-  [5] RColorBrewer_1.1-3         doParallel_1.0.17         
-  [7] InteractionSet_1.28.1      numDeriv_2016.8-1.1       
-  [9] tools_4.3.0                backports_1.4.1           
- [11] utf8_1.2.3                 R6_2.5.1                  
- [13] mgcv_1.8-42                lazyeval_0.2.2            
- [15] Gviz_1.44.0                apeglm_1.22.1             
- [17] GetoptLong_1.0.5           withr_2.5.0               
- [19] prettyunits_1.1.1          gridExtra_2.3             
- [21] VennDiagram_1.7.3          cli_3.6.1                 
- [23] formatR_1.14               labeling_0.4.2            
- [25] sass_0.4.6                 SQUAREM_2021.1            
- [27] mvtnorm_1.2-2              genefilter_1.82.1         
- [29] mixsqp_0.3-48              foreign_0.8-84            
- [31] dichromat_2.0-0.1          invgamma_1.1              
- [33] bbmle_1.0.25               rstudioapi_0.14           
- [35] RSQLite_2.3.1              generics_0.1.3            
- [37] shape_1.4.6                BiocIO_1.10.0             
- [39] hwriter_1.3.2.1            vroom_1.6.3               
- [41] gtools_3.9.4               Matrix_1.5-4              
- [43] interp_1.1-4               futile.logger_1.4.3       
- [45] fansi_1.0.4                lifecycle_1.0.3           
- [47] whisker_0.4.1              yaml_2.3.7                
- [49] gplots_3.1.3               BiocFileCache_2.8.0       
- [51] grid_4.3.0                 blob_1.2.4                
- [53] promises_1.2.0.1           crayon_1.5.2              
- [55] bdsmatrix_1.3-6            lattice_0.21-8            
- [57] ComplexUpset_1.3.3         annotate_1.78.0           
- [59] GenomicFeatures_1.52.0     KEGGREST_1.40.0           
- [61] pillar_1.9.0               knitr_1.43                
- [63] ComplexHeatmap_2.16.0      metapod_1.8.0             
- [65] rjson_0.2.21               systemPipeR_2.6.3         
- [67] codetools_0.2-19           ShortRead_1.58.0          
- [69] getPass_0.2-2              GreyListChIP_1.32.0       
- [71] data.table_1.14.8          vctrs_0.6.3               
- [73] png_0.1-8                  gtable_0.3.3              
- [75] amap_0.8-19                emdbook_1.3.13            
- [77] cachem_1.0.8               xfun_0.39                 
- [79] S4Arrays_1.0.4             coda_0.19-4               
- [81] survival_3.5-5             iterators_1.0.14          
- [83] GenomicInteractions_1.34.0 nlme_3.1-162              
- [85] bit64_4.0.5                progress_1.2.2            
- [87] filelock_1.0.2             rprojroot_2.0.3           
- [89] bslib_0.5.0                irlba_2.3.5.1             
- [91] KernSmooth_2.23-20         rpart_4.1.19              
- [93] colorspace_2.1-0           DBI_1.1.3                 
- [95] Hmisc_5.1-0                nnet_7.3-18               
- [97] DESeq2_1.40.2              tidyselect_1.2.0          
- [99] processx_3.8.1             bit_4.0.5                 
-[101] compiler_4.3.0             curl_5.0.1                
-[103] git2r_0.32.0               htmlTable_2.4.1           
-[105] xml2_1.3.4                 DelayedArray_0.26.3       
-[107] checkmate_2.2.0            caTools_1.18.2            
-[109] callr_3.7.3                rappdirs_0.3.3            
-[111] digest_0.6.31              rmarkdown_2.22            
-[113] htmltools_0.5.5            pkgconfig_2.0.3           
-[115] jpeg_0.1-10                base64enc_0.1-3           
-[117] dbplyr_2.3.2               fastmap_1.1.1             
-[119] ensembldb_2.24.0           rlang_1.1.1               
-[121] GlobalOptions_0.1.2        htmlwidgets_1.6.2         
-[123] EnrichedHeatmap_1.30.0     farver_2.1.1              
-[125] jquerylib_0.1.4            jsonlite_1.8.5            
-[127] VariantAnnotation_1.46.0   RCurl_1.98-1.12           
-[129] magrittr_2.0.3             Formula_1.2-5             
-[131] GenomeInfoDbData_1.2.10    patchwork_1.1.2           
-[133] munsell_0.5.0              Rcpp_1.0.10               
-[135] stringi_1.7.12             zlibbioc_1.46.0           
-[137] MASS_7.3-58.4              plyr_1.8.8                
-[139] parallel_4.3.0             ggrepel_0.9.3             
-[141] deldir_1.0-9               splines_4.3.0             
-[143] hms_1.1.3                  circlize_0.4.15           
-[145] locfit_1.5-9.8             ps_1.7.5                  
-[147] igraph_1.5.0               biomaRt_2.56.0            
-[149] futile.options_1.0.1       XML_3.99-0.14             
-[151] evaluate_0.21              latticeExtra_0.6-30       
-[153] biovizBase_1.48.0          lambda.r_1.2.4            
-[155] tzdb_0.4.0                 foreach_1.5.2             
-[157] tweenr_2.0.2               httpuv_1.6.11             
-[159] polyclip_1.10-4            clue_0.3-64               
-[161] ashr_2.2-54                ggforce_0.4.1             
-[163] xtable_1.8-4               broom_1.0.5               
-[165] restfulr_0.0.15            AnnotationFilter_1.24.0   
-[167] later_1.3.1                truncnorm_1.0-9           
-[169] memoise_2.0.1              AnnotationDbi_1.62.1      
-[171] GenomicAlignments_1.36.0   cluster_2.1.4             
-[173] sva_3.48.0                 timechange_0.2.0          
-[175] here_1.0.1                </code></pre>
+</div>
 </div>
 </div>
 </div>

@@ -1,8 +1,8 @@
 
 ```{r setup, echo=FALSE, eval=TRUE}
 # params <- list(
-#   dataset = "PRJNA509779", target = "AR", cell_line = "ZR-75-1", 
-#   treat_levels = c("E2", "E2DHT")
+#   dataset = "PRJNA509779", target = "AR", cell_line = "ZR-75-1",
+#   treat_levels = c("E2", "E2DHT"), width = 400, fl = 195
 # )
 dataset <- params$dataset
 cell_line <- params$cell_line
@@ -10,10 +10,13 @@ target <- params$target
 treat_levels <- params$treat_levels
 out_path <- here::here("output", dataset, target)
 if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE)
+fig_path <- here::here("docs", "assets", dataset, target)
+if (!dir.exists(fig_path)) dir.create(fig_path, recursive = TRUE)
 threads <- min(parallel::detectCores() - 2, 12)
 knitr::opts_chunk$set(
-  message = FALSE, warnings = FALSE,
-  fig.height = 8, fig.width = 10, dev = "png", 
+  message = FALSE, warnings = FALSE, results = "hide",
+  fig.height = 8, fig.width = 10, dev = "png", fig.show = "hide",
+  fig.align = "center"
 )
 ```
 
@@ -32,6 +35,8 @@ library(edgeR)
 library(csaw)
 library(BSgenome.Hsapiens.UCSC.hg19)
 library(qsmooth)
+library(BiocParallel)
+register(MulticoreParam(threads))
 theme_set(
   theme_bw() + 
     theme(
@@ -157,23 +162,17 @@ dba <- dba(
 
 For the initial analysis using DiffBind, all files were passed to the requisite functions using a fixed-width of `r params$width` bp, assuming a fragment length of `r params$fl`.
 
-**DiffBind Results as shown currently use DESeq2 due to a bug in DiffBind 3.10**
 
 #### Library Size
 
 ```{r db-ls-results}
-dba_ls <- dba.normalize(dba, normalize = DBA_NORM_LIB) %>% 
+dba_ls <- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_LIB) %>% 
   dba.analyze(method = DBA_ALL_METHODS)
-# db_ls_results <-  dba_ls %>% 
-#   dba.report(method = DBA_EDGER, th = 1) %>% 
-#   sortSeqlevels() %>% 
-#   sort()
-# seqinfo(db_ls_results) <- sq
-## DiffBind currently has a bug
 db_ls_results <-  dba_ls %>% 
-  dba.report(method = DBA_DESEQ2, th = 1) %>% 
+  dba.report(method = DBA_EDGER, th = 1) %>% 
   sortSeqlevels() %>% 
-  sort()
+  sort() 
+db_ls_results$status <- addDiffStatus(db_ls_results, fc_col = "Fold")$status
 seqinfo(db_ls_results) <- sq
 ```
 
@@ -181,8 +180,7 @@ seqinfo(db_ls_results) <- sq
 This analysis returned `r comma(sum(db_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-db-ls}
-db_ls_results %>%
-  addDiffStatus(fc_col = "Fold") %>% 
+p <- db_ls_results %>% 
   as_tibble() %>% 
   ggplot(aes(Conc, Fold)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -191,30 +189,42 @@ db_ls_results %>%
   ggtitle(glue("{target}: DiffBind"), subtitle = "Library Size Normalisation") +
   labs(x = "Ave Signal", y = "logFC", colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for DiffBind results using Library Size Normalisation*](`r href`)
 
 #### TMM
 
 ```{r db-tmm-results}
-dba_tmm <- dba.normalize(dba, normalize = DBA_NORM_TMM) %>% 
+dba_tmm <- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_TMM) %>% 
   dba.analyze(method = DBA_ALL_METHODS)
-# db_tmm_results <- dba_tmm %>% 
-#   dba.report(method = DBA_EDGER, th = 1) %>% 
-#   sortSeqlevels() %>% 
-#   sort()
-# seqinfo(db_tmm_results) <- sq
-db_tmm_results <- dba_tmm %>% 
-  dba.report(method = DBA_DESEQ2, th = 1) %>% 
-  sortSeqlevels() %>% 
+db_tmm_results <- dba_tmm %>%
+  dba.report(method = DBA_EDGER, th = 1) %>%
+  sortSeqlevels() %>%
   sort()
+db_tmm_results$status <- addDiffStatus(db_tmm_results, fc_col = "Fold")$status
 seqinfo(db_tmm_results) <- sq
 ```
 
 This analysis returned `r comma(sum(db_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-db-tmm}
-db_tmm_results %>% 
-  addDiffStatus(fc_col = "Fold") %>% 
+p <- db_tmm_results  %>% 
   as_tibble() %>% 
   ggplot(aes(Conc, Fold)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -223,7 +233,24 @@ db_tmm_results %>%
   ggtitle(glue("{target}: DiffBind"), subtitle = "TMM Normalisation") +
   labs(x = "Ave Signal", y = "logFC", colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for DiffBind results using TMM Normalisation*](`r href`)
 
 ### extraChIPs {.tabset}
 
@@ -254,7 +281,7 @@ ec_ls_results <- fitAssayDiff(se, design = X, asRanges = TRUE) %>%
 This analysis returned `r comma(sum(ec_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-ec-ls-fixed}
-ec_ls_results %>% 
+p <- ec_ls_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -263,8 +290,24 @@ ec_ls_results %>%
   ggtitle(glue("{target}: extraChIPs"), subtitle = "Library Size Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
 
+
+![*MA-plot for extraChIPs results using Library Size Normalisation*](`r href`)
 
 #### TMM
 
@@ -277,7 +320,7 @@ ec_tmm_results <- fitAssayDiff(se, design = X, norm = "TMM", asRanges = TRUE) %>
 This analysis returned `r comma(sum(ec_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-ec-tmm-fixed}
-ec_tmm_results %>% 
+p <- ec_tmm_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -286,7 +329,24 @@ ec_tmm_results %>%
   ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for extraChIPs results using TMM Normalisation*](`r href`)
 
 
 #### TMM Groups
@@ -300,7 +360,7 @@ ec_tmmg_results <- fitAssayDiff(se, design = X, norm = "TMM", groups = "treat", 
 This analysis returned `r comma(sum(ec_tmmg_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-ec-tmmg-fixed}
-ec_tmmg_results %>% 
+p <- ec_tmmg_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -309,7 +369,24 @@ ec_tmmg_results %>%
   ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation (Groups)") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for extraChIPs results using TMM-groups Normalisation*](`r href`)
 
 ### Smooth Quantile {.tabset}
 
@@ -339,7 +416,7 @@ sqn_results <- fitAssayDiff(
 This analysis returned `r comma(sum(sqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-ec-sqn-fixed}
-sqn_results %>% 
+p <- sqn_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -348,7 +425,25 @@ sqn_results %>%
   ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for extraChIPs results using Smooth Quantile Normalisation*](`r href`)
+
 
 
 #### SQN-GC
@@ -368,7 +463,7 @@ sqngc_results <- fitAssayDiff(
 This analysis returned `r comma(sum(sqngc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-ec-sqngc-fixed}
-sqngc_results %>% 
+p <- sqngc_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
@@ -377,4 +472,515 @@ sqngc_results %>%
   ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ-GC Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
+
+
+![*MA-plot for extraChIPs results using Smooth Quantile Normalisation, accounting for GC content*](`r href`)
+
+### Comparison of extraChIPs and DiffBind
+
+Given the expectation of identical results, those from DiffBind and extraChIPs were compared for both Library-Size and TMM normalisation.
+
+```{r set-colours}
+dir_combs <- c("DiffBind", "extraChIPs") %>% 
+vapply(
+  function(x) paste(x, setdiff(names(status_colours), "Undetected")),
+  character(3)
+) %>% 
+  as.data.frame() %>% 
+  expand.grid() %>% 
+  mutate(
+    status = paste(extraChIPs, DiffBind, sep = " - "),
+    status = case_when(
+      grepl("Increased.+Increased", status) ~ "Both Increased",
+      grepl("Decreased.+Decreased", status) ~ "Both Decreased",
+      grepl("Unchanged.+Unchanged", status) ~ "Both Unchanged",
+      TRUE ~ status
+    )
+  ) %>% 
+  pull(status) %>% 
+  sort()
+dir_cols <- c(
+  rgb(0, 0, 1), rgb(1, 0, 0), rgb(0.5, 0.5, 0.5), #Both
+  "orange", rgb(0, 0.5, 1), "orange", rgb(1, 0.5, 0),
+  rgb(0.5, 0, 1), rgb(1, 0, 0.5)
+)
+names(dir_cols) <- dir_combs
+stat_cols <- c(
+  Neither = "grey70", Both = "forestgreen",
+  `DiffBind Only` = "red", `extraChIPs Only` = "orange"
+)
+```
+
+
+#### Library Size Normalisation {.tabset}
+
+##### logFC Estimates
+
+```{r compare-logfc-db-ec-ls}
+p <- GRangesList(
+  DiffBind = select(db_ls_results, logFC = Fold, status), 
+  extraChIPs = select(ec_ls_results, logFC, status)
+) %>% 
+  plotPairwise(var = "logFC", colour = "status", xside = "none", yside = "none") +
+  ggtitle(
+    glue("{target} logFC"), "Library-Size Normalisation"
+  ) +
+  scale_colour_manual(values = dir_cols)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of logFC estimates returned using library-size normalisation for both DiffBind and extraChIPs*](`r href`)
+
+##### P-Values
+
+
+```{r compare-p-db-ec-ls}
+p <- GRangesList(
+  DiffBind = select(db_ls_results, PValue = `p-value`, status), 
+  extraChIPs = select(ec_ls_results, PValue, status)
+) %>% 
+  mapGrlCols(var = c("PValue", "status")) %>% # , collapse = "status") %>% 
+  as_tibble() %>% 
+  mutate(
+    across(ends_with("PValue"), function(x) -log10(x)),
+    status = case_when(
+      grepl("(In|De)creased", DiffBind_status) & grepl("(In|De)creased", extraChIPs_status) ~ "Both", 
+      !grepl("(In|De)creased", DiffBind_status) & grepl("(In|De)creased", extraChIPs_status) ~ "extraChIPs Only", 
+      grepl("(In|De)creased", DiffBind_status) & !grepl("(In|De)creased", extraChIPs_status) ~ "DiffBind Only", 
+      TRUE ~ "Neither"
+    )
+  ) %>% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  ggtitle(
+    glue("{target}"), "Library-Size Normalisation"
+  ) +
+  scale_colour_manual(values = stat_cols) +
+  labs(
+    x = expr(paste(-log[10], "p (DiffBind)")),
+    y = expr(paste(-log[10], "p (extraChIPs)")),
+    colour = "Status"
+  )
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of -log~10~ p-values returned using library-size normalisation for both DiffBind and extraChIPs*](`r href`)
+
+#### TMM Normalisation {.tabset}
+
+##### logFC Estimates
+
+```{r compare-logfc-db-ec-tmm}
+p <- GRangesList(
+  DiffBind = select(db_tmm_results, logFC = Fold, status), 
+  extraChIPs = select(ec_tmm_results, logFC, status)
+) %>% 
+  plotPairwise(var = "logFC", colour = "status", xside = "none", yside = "none") +
+  ggtitle(
+    glue("{target} logFC"), "TMM Normalisation"
+  ) +
+  scale_colour_manual(values = dir_cols)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of logFC estimates returned using TMM normalisation for both DiffBind and extraChIPs*](`r href`)
+
+##### P-Values
+
+```{r compare-p-db-ec-tmm}
+p <- GRangesList(
+  DiffBind = select(db_tmm_results, PValue = `p-value`, status), 
+  extraChIPs = select(ec_tmm_results, PValue, status)
+) %>% 
+  mapGrlCols(var = c("PValue", "status")) %>% # , collapse = "status") %>% 
+  as_tibble() %>% 
+  mutate(
+    across(ends_with("PValue"), function(x) -log10(x)),
+    status = case_when(
+      grepl("(In|De)creased", DiffBind_status) & grepl("(In|De)creased", extraChIPs_status) ~ "Both", 
+      !grepl("(In|De)creased", DiffBind_status) & grepl("(In|De)creased", extraChIPs_status) ~ "extraChIPs Only", 
+      grepl("(In|De)creased", DiffBind_status) & !grepl("(In|De)creased", extraChIPs_status) ~ "DiffBind Only", 
+      TRUE ~ "Neither"
+    )
+  ) %>% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  ggtitle(
+    glue("{target}"), "TMM Normalisation"
+  ) +
+  scale_colour_manual(values = stat_cols) +
+  labs(
+    x = expr(paste(-log[10], "p (DiffBind)")),
+    y = expr(paste(-log[10], "p (extraChIPs)")),
+    colour = "Status"
+  )
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of -log~10~ p-values returned using TMM normalisation for both DiffBind and extraChIPs*](`r href`)
+
+## Sliding Windows
+
+```{r set-sindows}
+data("hg19.blacklist", package = "GreyListChIP") 
+window_size <- round(params$width / 4, -1)
+window_step <- ceiling(0.1 * window_size / 3) * 10
+rp <- readParam(
+  pe = "none", dedup = TRUE,
+  restrict = seqnames(sq),
+  discard = c(greylist, hg19.blacklist)
+)
+bfl <- path(bfl) %>% 
+  dirname() %>% 
+  unique() %>% 
+  file.path(glue("{samples$input}.sorted.bam")) %>% 
+  unique() %>% 
+  BamFileList() %>% 
+  setNames(unique(samples$input)) %>% 
+  c(bfl)
+```
+
+Windows were set to be about 1/4 of the fixed-width window-size, with each range covered up to 3 times.
+This gave `r window_size`bp windows moving in increments of `r window_step`bp.
+
+```{r wincounts}
+wincounts <- windowCounts(
+  bam.files = bfl,
+  spacing = window_step,
+  width = window_size,
+  ext = params$fl,
+  filter = length(bfl),
+  param = rp
+)
+seqlevels(wincounts) <- seqlevels(sq)
+seqinfo(wincounts) <- sq
+colData(wincounts) %<>%
+  as_tibble(rownames = "sample") %>% 
+  mutate(
+    accession = str_remove_all(sample, ".sorted.bam"),
+    ChIP_Target = ifelse(accession %in% samples$accession, .GlobalEnv$target, "Input")
+  ) %>% 
+  left_join(samples, by = "accession") %>% 
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, ChIP_Target, treatment) %>% 
+  as.data.frame() %>% 
+  column_to_rownames("sample") %>% 
+  DataFrame()
+```
+
+```{r filtcounts}
+filtcounts <- dualFilter(
+  x = wincounts[, wincounts$ChIP_Target == target],
+  bg = wincounts[, wincounts$ChIP_Target != target], 
+  ref = union_peaks,
+  q = 0.6
+)
+```
+
+```{r add-assays}
+filtRanges <- granges(rowRanges(filtcounts))
+seqlevels(filtRanges) <- seqlevels(bs)
+genome(filtRanges) <- "hg19"
+seqinfo(filtRanges) <- seqinfo(bs)
+gc <- getSeq(bs, filtRanges) %>% 
+  letterFrequency(letters = "GC", as.prob = TRUE)
+rowRanges(filtcounts)$gc <- gc[,1]
+assay(filtcounts, "sq_counts") <- assay(filtcounts, "counts") %>% 
+  qsmooth(group_factor = filtcounts$treatment) %>% 
+  qsmoothData()
+assay(filtcounts, "sq_logCPM") <- assay(filtcounts, "logCPM") %>% 
+  qsmooth(group_factor = filtcounts$treatment) %>% 
+  qsmoothData()
+assay(filtcounts, "sqgc_counts") <- assay(filtcounts, "counts") %>% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %>% 
+  qsmoothData()
+assay(filtcounts, "sqgc_logCPM") <- assay(filtcounts, "logCPM") %>% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %>% 
+  qsmoothData()
+X <- model.matrix(~treatment, data = colData(filtcounts))
+```
+
+### Library Size
+
+```{r sw-ls-results}
+sw_ls_all <- fitAssayDiff(filtcounts, design = X, asRanges = TRUE) 
+sw_ls_results <- sw_ls_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref") %>% 
+  filter(n_windows > 1) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-ls}
+p <- sw_ls_all %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "Library Size Normalisation") +
+  labs(x = "Ave Signal", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*MA-plot for sliding-window results using Library Size Normalisation*](`r href`)
+
+
+### TMM
+
+```{r sw-tmm-results}
+sw_tmm_all <- fitAssayDiff(filtcounts, design = X, norm = "TMM", asRanges = TRUE) 
+sw_tmm_results <- sw_tmm_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref") %>% 
+  filter(n_windows > 1) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-tmm}
+p <- sw_tmm_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation") +
+  labs(x = "Ave Signal", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*MA-plot for sliding-window results using TMM Normalisation*](`r href`)
+
+### TMM Groups
+
+```{r sw-tmmg-results}
+sw_tmmg_all <- fitAssayDiff(
+  filtcounts, design = X, norm = "TMM", groups = "treatment", asRanges = TRUE
+) 
+sw_tmmg_results <- sw_tmmg_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref") %>% 
+  filter(n_windows > 1) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_tmmg_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-tmmg}
+p <- sw_tmmg_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation (Groups)") +
+  labs(x = "Ave Signal", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*MA-plot for sliding-window results using TMM Normalisation within treatment groups*](`r href`)
+
+### Smooth Quantile
+
+```{r sw-sq-results}
+sw_sq_all <- fitAssayDiff(
+  filtcounts, assay = "sq_counts", totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sq_results <- sw_sq_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref") %>% 
+  filter(n_windows > 1) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_sq_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-sq}
+p <- sw_sq_all %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation") +
+  labs(x = "Ave Signal", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+### Smooth Quantile GC
+
+```{r sw-sqgc-results}
+sw_sqgc_all <- fitAssayDiff(
+  filtcounts, assay = "sqgc_counts", totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sqgc_results <- sw_sqgc_all %>% 
+  mergeByHMP(inc_cols = "overlaps_ref") %>% 
+  filter(n_windows > 1) %>% 
+  mutate(FDR = p.adjust(hmp, "fdr")) %>% 
+  select(overlaps_ref, keyval_range, starts_with("log"), PValue = hmp, FDR) %>% 
+  addDiffStatus()
+```
+
+This analysis returned `r comma(sum(sw_sqgc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-sw-sqgc}
+p <- sw_sqgc_all %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation") +
+  labs(x = "Ave Signal", y = "logFC") 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+
+
+
+
+

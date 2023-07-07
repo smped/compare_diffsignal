@@ -1,0 +1,21 @@
+---
+title: "ZR75: ERa"
+author: "Stephen Pederson"
+date: "2023-07-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+params:
+  cell_line: "ZR-75"
+  dataset: "PRJNA509779"
+  target: "ERa"
+  treat_levels: ["E2", "E2DHT"]
+  width: 400
+  fl: 195
+---
+
+
+```{r run-analysis, eval = TRUE, child = here::here('code/_method_comparison.Rmd')}
+
+```
+
