@@ -1,11 +1,11 @@
 name: "compare_diffsignal"
 output_dir: ../docs
 navbar:
-  title: "compare_diffsignal"
+  title: "Compare Differential ChIP Signal"
   left:
   - text: Home
     href: index.html
-  - text: ZR-75-1
+  - text: PRJNA509779
     menu:
     - text: AR
       href: zr75_ar.html

@@ -8,7 +8,140 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r setup, echo=FALSE, eval=TRUE}
+knitr::opts_chunk$set(
+  message = FALSE, warning = FALSE
+)
+```
+
+```{r packages}
+library(tidyverse)
+library(reactable)
+library(htmltools)
+```
+
+
+
 ```{r, echo = FALSE, eval = TRUE, results='asis'}
 cat(readLines(here::here("README.md")), sep = "\n")
+```
+
+
+## Conclusion
+
+Each method was given a score for each dataset, representing (-1) Not Recommended, (0) Viable But Lacking in some characteristic such as statistical power, and (1) for Recommended.
+Any suggestion of spurious detections, or an introduced bias were assigned -1.
+Scores were then totalled across datasets to provide guidance for methods which were robust overall and are generally applicable.
+Scores were also totalled within datasets to provide guidance as to the sensitivity of each dataset to the chosen methods, with high scores representing a dataset with few technical challenges.
+
+```{r set-methods}
+methods <- c(
+  "DB-LS", "DB-TMM", 
+  paste("FW", c("LS", "TMM", "TMMG", "CQN", "CQNG", "SQN", "SQNGC", "LT"), sep = "-"),
+  paste("SW", c("LS", "TMM", "TMMG", "CQN", "CQNG", "SQN", "SQNGC", "LT", "LTSQN", "LTSQNGC"), sep = "-")
+)
+```
+
+```{r tbl-summary}
+tbl <- tibble(
+  method = methods,
+  `PRJNA509779 (AR)` = case_when(
+    method %in% c(
+      paste("DB", "TMM", sep = "-"), 
+      paste("FW", c("CQN", "TMM", "SQN", "SQNGC"), sep = "-"),
+      paste("SW", c("CQN", "TMM"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", "LS", sep = "-"), 
+      paste("FW", c("LS", "TMMG", "CQNG"), sep = "-"),
+      paste("SW", c("CQNG", "LTSQN", "LT", "LS", "TMMG"), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
+  ),
+  `PRJNA509779 (ER)` = case_when(
+    method %in% c(
+      paste("DB", c(), sep = "-"),
+      paste("FW", c("CQN", "CQNG"), sep = "-"),
+      paste("SW", c("CQN", "CQNG", "SQNGC"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", c("LS", "TMM"), sep = "-"), 
+      paste("FW", c("SQN", "TMM", "LS"), sep = "-"),
+      paste("SW", c("LTSQN", "LTSQNGC", "SQN", "TMM"), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
+  ),
+  `PRJNA509779 (H3K27ac)` = case_when(
+    method %in% c(
+      paste("DB", c(), sep = "-"),
+      paste("FW", c(), sep = "-"),
+      paste("SW", c("SQN", "SQNGC", "LTCQNGC"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", c("LS", "TMM"), sep = "-"), 
+      paste("FW", c("LS", "TMM", "TMMG", "CQN", "SQN", "SQNGC", "LT"), sep = "-"),
+      paste("SW", c(), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
+  )
+) %>% 
+  mutate(
+    score = dplyr::select(., -all_of("method")) %>% 
+      as.matrix() %>% 
+      rowSums(),
+    package = ifelse(grepl("^DB", method), "DiffBind", "extraChIPs"),
+    model = ifelse(grepl("LT", method), "limma-trend", "glmQLF"),
+    windows = ifelse(grepl("^SW", method), "Sliding", "Fixed-Width"),
+    groups = ifelse(grepl("(SQ|G$)", method), "Explicit", "None"),
+    normalisation = str_remove_all(method, ".+-") %>% 
+      str_remove_all("(^LT|G$)") %>% 
+      str_replace_all("SQNGC", "SQN-GC") %>% 
+      str_replace_all("^$", "LS")
+  ) %>% 
+  arrange(desc(score)) %>% 
+  dplyr::select(
+    method, windows, package, model, normalisation, groups, score, everything()
+  ) %>% 
+  reactable(
+    sortable = TRUE, filterable = FALSE, pagination = FALSE,
+    columns = list(
+      method = colDef(
+        name = "Method", footer = htmltools::tags$b("All Methods")
+      ),
+      package = colDef(name = "Package", footer = "", maxWidth = 110),
+      model = colDef(name = "Model", footer = "", maxWidth = 110),
+      score = colDef(name = "Score", footer = "", maxWidth = 80),
+      groups = colDef(name = "Groups", footer = "", maxWidth = 110),
+      windows = colDef(name = "Windows", footer = "", maxWidth = 110),
+      normalisation = colDef(name = "Norm.", footer = "")
+    ),
+    defaultColDef = colDef(
+      maxWidth = 130, 
+      style = function(value) {
+        clr <- "black"
+        if (value < 0) clr <- "red"
+        list(color = clr, fontize = 10)
+      },
+      footer = function(values) htmltools::tags$b(sum(values))
+    )
+  )
+cp <- htmltools::tags$caption(
+  htmltools::em(
+    "
+    Summary of all tested methods across all datasets. Methods were scored 
+    based on the methods described above and the combined score represents a
+    measure of how difficult each method is to use. Highly-scoring methods 
+    appear more robust across a diversity of settings. It should be noted,
+    however, that in the  case of methods such as TMM, performing a simple
+    test a priori for the suitability of using groups in the normalisation, 
+    would restore these mthods much higher on the list
+    "
+  )
+)
+div(
+  class = "table",
+  div(class = "table-header", cp),
+  tbl
+)
 ```
 

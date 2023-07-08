@@ -209,6 +209,31 @@ dba <- dba(
 
 For the initial analysis using DiffBind, all files were passed to the requisite functions using a fixed-width of `r params$width` bp, assuming a fragment length of `r params$fl`.
 
+```{r plot-db-read-densities}
+db_se <- dba(dba, bSummarizedExperiment = TRUE)
+p <- plotAssayDensities(
+  db_se, assay = "Reads", trans = "log1p", colour = "Treatment"
+  ) +
+  scale_colour_manual(values = c("deepskyblue3", "red3"))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*Read Density Plot for counts returned by DiffBind*](`r href`)
+
 
 #### Library Size
 
@@ -314,17 +339,44 @@ se <- regionCounts(
   bfl, centred_peaks, ext = params$fl, param = rp, BPPARAM = bpparam()
 )
 colData(se) <- colData(se) %>%
-  as_tibble(rownames = "sample") %>% 
+  as_tibble(rownames = "sample") %>%
   mutate(
     accession = str_remove_all(sample, ".sorted.bam"),
-  ) %>% 
-  left_join(samples, by = "accession") %>% 
-  dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %>% 
-  as.data.frame() %>% 
-  column_to_rownames("sample") %>% 
+  ) %>%
+  left_join(samples, by = "accession") %>%
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %>%
+  as.data.frame() %>%
+  column_to_rownames("sample") %>%
   DataFrame()
+# se <- dba(dba_ls, bSummarizedExperiment = TRUE)
+# assayNames(se) <- str_replace_all(assayNames(se), "^Reads$", "counts")
+# se$treatment <- factor(se$Treatment, levels = treat_levels)
+# se$totals <- as.numeric(se$Reads)
 X <- model.matrix(~treatment, data = colData(se))
 ```
+
+```{r plot-ec-read-densities}
+p <- plotAssayDensities(se, trans = "log1p", colour = "treatment") +
+  scale_colour_manual(values = c("deepskyblue3", "red3"))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*Read Density Plot for counts returned by csaw*](`r href`)
+
 
 #### Library Size
 
@@ -692,7 +744,6 @@ if (interactive()) {
 
 ## Comparison of extraChIPs and DiffBind
 
-Given the expectation of identical results, those from DiffBind and extraChIPs were compared for both Library-Size and TMM normalisation.
 
 ```{r set-colours}
 dir_combs <- c("DiffBind", "extraChIPs") %>% 
@@ -725,6 +776,11 @@ stat_cols <- c(
 )
 ```
 
+
+Given the expectation of identical results, those from DiffBind and extraChIPs were compared for both Library-Size and TMM normalisation.
+It should be noted that DiffBind re-centres any supplied peaks whilst extraChIPs will not.
+This accounts for much of the observed difference, and direct comparison of Library Size normalisation using the two identical sets of ranges (i.e. passing DiffBind re-cented ranges to extraChIPs) does in fact yield a 1:1 association between logFC estimates and detection of differential signal.
+The following comparison instead indirectly assesses the impact of this additional step performed by DiffBind.
 
 ### Library Size Normalisation {.tabset}
 
@@ -895,7 +951,7 @@ if (interactive()) {
 
 ![*Comparison of -log~10~ p-values returned using TMM normalisation for both DiffBind and extraChIPs*](`r href`)
 
-## Sliding Windows {.tabset}
+## Sliding Windows
 
 ```{r set-windows}
 window_size <- round(params$width / 4, -1)
@@ -975,7 +1031,33 @@ assay(filtcounts, "sqgc_logCPM") <- assay(filtcounts, "logCPM") %>%
 X <- model.matrix(~treatment, data = colData(filtcounts))
 ```
 
-### Library Size
+```{r plot-sw-read-densities}
+p <- plotAssayDensities(filtcounts, trans = "log1p", colour = "treatment") +
+  scale_colour_manual(values = c("deepskyblue3", "red3"))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*Read Density Plot for sliding-window counts returned by extraChIPs after filtering*](`r href`)
+
+
+
+### QLF Methods {.tabset}
+
+#### Library Size
 
 ```{r sw-ls-results}
 sw_ls_all <- fitAssayDiff(filtcounts, design = X, asRanges = TRUE) 
@@ -1020,7 +1102,7 @@ if (interactive()) {
 ![*MA-plot for sliding-window results using Library Size Normalisation. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
-### TMM
+#### TMM
 
 ```{r sw-tmm-results}
 sw_tmm_all <- fitAssayDiff(filtcounts, design = X, norm = "TMM", asRanges = TRUE) 
@@ -1064,7 +1146,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using TMM Normalisation. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### TMM Groups
+#### TMM Groups
 
 ```{r sw-tmmg-results}
 sw_tmmg_all <- fitAssayDiff(
@@ -1110,7 +1192,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using TMM Normalisation within treatment groups.  All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### Smooth Quantile
+#### Smooth Quantile
 
 ```{r sw-sq-results}
 sw_sq_all <- fitAssayDiff(
@@ -1155,7 +1237,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using Smooth-Quantile Normalisation on counts, within treatment groups. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### Smooth Quantile GC
+#### Smooth Quantile GC
 
 ```{r sw-sqgc-results}
 sw_sqgc_all <- fitAssayDiff(
@@ -1200,7 +1282,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using Smooth-Quantile Normalisation on counts, within treatment groups and accounting for GC effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### Conditional Quantile Normalisation
+#### Conditional Quantile Normalisation
 
 ```{r sw-cqn-results}
 cqn <- assay(filtcounts, "counts") %>% 
@@ -1218,7 +1300,7 @@ sw_cqn_results <- sw_cqn_all %>%
   addDiffStatus()
 ```
 
-This analysis returned `r comma(sum(sw_sqgc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+This analysis returned `r comma(sum(sw_cqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
 ```{r plotma-sw-cqn}
 p <- sw_cqn_all %>% 
@@ -1251,7 +1333,7 @@ if (interactive()) {
 ![*MA-plot for sliding-window results using Conditional-Quantile Normalisation on counts to account for GC-effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
-### Conditional Quantile Normalisation (Groups)
+#### Conditional Quantile Normalisation (Groups)
 
 ```{r sw-cqng-results}
 cqn_groups <- treat_levels %>% 
@@ -1310,9 +1392,9 @@ if (interactive()) {
 ![*MA-plot for sliding-window results using Conditional-Quantile Normalisation on counts to account for GC-effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
+### Limma-Trend Methods
 
-
-### Limma-Trend
+#### logCPM
 
 ```{r sw-lt-results}
 sw_lt_all <- fitAssayDiff(
@@ -1357,7 +1439,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using Limma-Trend on logCPM values taken directly from each window. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### Smooth Quantile (logCPM)
+#### Smooth Quantile
 
 ```{r sw-ltsq-results}
 sw_ltsq_all <- fitAssayDiff(
@@ -1402,7 +1484,7 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
-### Smooth Quantile GC (logCPM)
+#### Smooth Quantile GC 
 
 ```{r sw-ltsqgc-results}
 sw_ltsqgc_all <- fitAssayDiff(
@@ -1620,13 +1702,14 @@ p <- all_res %>%
       fct_inorder(),
     status = factor(status, levels = names(status_colours)),
   ) %>% 
+  dplyr::filter(status %in% c("Increased", "Decreasd")) %>% 
   droplevels() %>% 
   ggplot(aes(p, fct_rev(method), fill = status)) +
   geom_col() +
   facet_grid(windows + groups ~ ., scales = "free", space = "free", switch = "y") +
   labs(x = "% In Category", y = "Method", fill = "Status") +
   scale_x_continuous(
-    expand = expansion(c(0, 0)), breaks = seq(0, 1, by = 0.2),
+    expand = expansion(c(0, 0.05)), breaks = seq(0, 1, by = 0.2),
     labels = percent
   ) +
   scale_y_discrete(expand = expansion(0, 0)) +

@@ -42,11 +42,11 @@ Subsequent comparisons will be made using $H_0: -\lambda < \mu < \lambda$ but ex
 
 All approaches will be compared across multiple datasets:
 
-| Cell Type | ChIP Target | Treatments |
-|:--------- |:----------- |:---------- |
-| ZR-75-1   | AR          | E2, E2DHT  |
-| ZR-75-1   | ER$\alpha$  | E2, E2DHT  |
-| ZR-75-1   | H3K27ac     | E2, E2DHT  |
+| Dataset | Cell Type | ChIP Target | Treatments |
+|:------- |:--------- |:----------- |:---------- |
+| PRJNA509779 | ZR-75-1   | AR          | E2, E2DHT  |
+| PRJNA509779 | ZR-75-1   | ER$\alpha$  | E2, E2DHT  |
+| PRJNA509779 | ZR-75-1   | H3K27ac     | E2, E2DHT  |
 
 Table: *Cell lines and ChIP targets being analysed*
 
