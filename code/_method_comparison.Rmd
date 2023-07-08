@@ -395,7 +395,7 @@ p <- ec_ls_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "Library Size Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Library Size Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -434,7 +434,7 @@ p <- ec_tmm_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; TMM Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -474,7 +474,7 @@ p <- ec_tmmg_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "TMM Normalisation (Groups)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; TMM-Groups Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -533,7 +533,7 @@ p <- cqn_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "CQ Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; CQ Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -585,7 +585,7 @@ p <- cqng_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "CQ Normalisation (Groups)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; CQN-Groups") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -631,7 +631,7 @@ p <- sqn_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Smooth Quantil Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -678,7 +678,7 @@ p <- sqngc_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "SQ-GC Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; SQ-GC Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -704,7 +704,7 @@ if (interactive()) {
 
 
 ```{r ec-lt-fixed}
-assay(se, "logCPM") <- cpm(assay(se, "counts"), log = TRUE, lib.sizes = se$totals)
+assay(se, "logCPM") <- cpm(assay(se, "counts"), log = TRUE, lib.size = se$totals)
 lt_results <- fitAssayDiff(
   se, assay = "logCPM", method = "lt", design = X, asRanges = TRUE
 ) %>% 
@@ -721,7 +721,7 @@ p <- lt_results %>%
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{target}: extraChIPs"), subtitle = "Fixed-Width; Limma-Trend") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Limma-Trend") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -1080,7 +1080,7 @@ p <- sw_ls_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "Library Size Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; Library Size Normalisation") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1125,7 +1125,7 @@ p <- sw_tmm_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; TMM Normalisation") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1171,7 +1171,7 @@ p <- sw_tmmg_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "TMM Normalisation (Groups)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; TMM-Groups Normalisation") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1217,7 +1217,7 @@ p <- sw_sq_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation (Counts)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; SQN (Counts)") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1262,7 +1262,7 @@ p <- sw_sqgc_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation (Counts)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; SQN-GC (Counts)") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1312,7 +1312,7 @@ p <- sw_cqn_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "CQ Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; CQN") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1371,7 +1371,7 @@ p <- sw_cqng_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "CQ Normalisation (Groups)") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; CQN-Groups") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1392,7 +1392,7 @@ if (interactive()) {
 ![*MA-plot for sliding-window results using Conditional-Quantile Normalisation on counts to account for GC-effects. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
 
-### Limma-Trend Methods
+### Limma-Trend Methods {.tabset}
 
 #### logCPM
 
@@ -1419,7 +1419,7 @@ p <- sw_lt_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "Limma-Trend") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; Limma-Trend") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1464,7 +1464,7 @@ p <- sw_ltsq_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ Normalisation + Limma-Trend") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; SQN + Limma-Trend") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1509,7 +1509,7 @@ p <- sw_ltsqgc_all %>%
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
   scale_colour_manual(values = c("grey", "red")) +
-  ggtitle(glue("{target}: Sliding Windows"), subtitle = "SQ-GC Normalisation + Limma-Trend") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "Sliding Windows; SQN-GC + Limma-Trend") +
   labs(x = "logCPM", y = "logFC") 
 if (interactive()) {
   p
@@ -1680,7 +1680,8 @@ div(
 
 #### Summary
 
-```{r plot-all-cat}
+```{r plot-all-cat, fig.height=10}
+abs_percent <- function(x, ...) scales::percent(abs(x), ...)
 p <- all_res %>%
   lapply(
     function(x) {
@@ -1690,10 +1691,12 @@ p <- all_res %>%
   ) %>% 
   bind_rows(.id = "method") %>% 
   mutate(p = n / sum(n), .by = method) %>% 
+  dplyr::filter(status %in% c("Increased", "Decreased")) %>% 
+  mutate(p = ifelse(status == "Decreased", -1, 1) * p) %>% 
   arrange(desc(p)) %>% 
   mutate(
-    windows = ifelse(grepl("^SW", method), "Sliding\nWindows", "Fixed\nWidth"),
-    groups = ifelse(grepl("G$", method), "Explicit\nGroups", "No Groups"),
+    windows = ifelse(grepl("^SW", method), "Sliding Windows", "Fixed Width"),
+    groups = ifelse(grepl("(SQN|G$)", method), "Explicit Groups", "No Groups"),
     method = method %>% 
       str_remove_all("^(FW|SW)-") %>% 
       str_replace_all("G$", " (Groups)") %>% 
@@ -1702,15 +1705,15 @@ p <- all_res %>%
       fct_inorder(),
     status = factor(status, levels = names(status_colours)),
   ) %>% 
-  dplyr::filter(status %in% c("Increased", "Decreasd")) %>% 
   droplevels() %>% 
   ggplot(aes(p, fct_rev(method), fill = status)) +
   geom_col() +
   facet_grid(windows + groups ~ ., scales = "free", space = "free", switch = "y") +
-  labs(x = "% In Category", y = "Method", fill = "Status") +
+  ggtitle(glue("{dataset}: {target} Method Comparison")) +
+  labs(x = "% All Regions", y = "Method", fill = "Status") +
   scale_x_continuous(
-    expand = expansion(c(0, 0.05)), breaks = seq(0, 1, by = 0.2),
-    labels = percent
+    expand = expansion(c(0.05, 0.05)),
+    labels = abs_percent
   ) +
   scale_y_discrete(expand = expansion(0, 0)) +
   scale_fill_manual(values = status_colours)

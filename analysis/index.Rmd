@@ -21,7 +21,6 @@ library(htmltools)
 ```
 
 
-
 ```{r, echo = FALSE, eval = TRUE, results='asis'}
 cat(readLines(here::here("README.md")), sep = "\n")
 ```
@@ -49,12 +48,12 @@ tbl <- tibble(
     method %in% c(
       paste("DB", "TMM", sep = "-"), 
       paste("FW", c("CQN", "TMM", "SQN", "SQNGC"), sep = "-"),
-      paste("SW", c("CQN", "TMM"), sep = "-")
+      paste("SW", c("CQN", "TMM", "LTSQNGC"), sep = "-")
     ) ~ -1,
     method %in% c(
       paste("DB", "LS", sep = "-"), 
-      paste("FW", c("LS", "TMMG", "CQNG"), sep = "-"),
-      paste("SW", c("CQNG", "LTSQN", "LT", "LS", "TMMG"), sep = "-")
+      paste("FW", c("LS", "LT", "TMMG", "CQNG"), sep = "-"),
+      paste("SW", c("CQNG", "TMMG", "LTSQN", "SQN", "SQNGC", "LT", "LS"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
   ),
@@ -65,8 +64,8 @@ tbl <- tibble(
       paste("SW", c("CQN", "CQNG", "SQNGC"), sep = "-")
     ) ~ -1,
     method %in% c(
-      paste("DB", c("LS", "TMM"), sep = "-"), 
-      paste("FW", c("SQN", "TMM", "LS"), sep = "-"),
+      paste("DB", c("TMM"), sep = "-"), 
+      paste("FW", c("SQN", "TMM"), sep = "-"),
       paste("SW", c("LTSQN", "LTSQNGC", "SQN", "TMM"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
@@ -74,12 +73,12 @@ tbl <- tibble(
   `PRJNA509779 (H3K27ac)` = case_when(
     method %in% c(
       paste("DB", c(), sep = "-"),
-      paste("FW", c(), sep = "-"),
+      paste("FW", c("CQNG"), sep = "-"),
       paste("SW", c("SQN", "SQNGC", "LTCQNGC"), sep = "-")
     ) ~ -1,
     method %in% c(
       paste("DB", c("LS", "TMM"), sep = "-"), 
-      paste("FW", c("LS", "TMM", "TMMG", "CQN", "SQN", "SQNGC", "LT"), sep = "-"),
+      paste("FW", c("LS", "TMM", "TMMG", "CQN", "SQN", "LT"), sep = "-"),
       paste("SW", c(), sep = "-")
     ) ~ 1,
     TRUE ~ 0
@@ -103,20 +102,27 @@ tbl <- tibble(
     method, windows, package, model, normalisation, groups, score, everything()
   ) %>% 
   reactable(
-    sortable = TRUE, filterable = FALSE, pagination = FALSE,
+    sortable = TRUE, filterable = TRUE, pagination = FALSE,
     columns = list(
       method = colDef(
-        name = "Method", footer = htmltools::tags$b("All Methods")
+        name = "Method", footer = htmltools::tags$b("All Methods"), 
+        maxWidth = 150
       ),
       package = colDef(name = "Package", footer = "", maxWidth = 110),
       model = colDef(name = "Model", footer = "", maxWidth = 110),
-      score = colDef(name = "Score", footer = "", maxWidth = 80),
+      score = colDef(name = "Score", footer = "", maxWidth = 60),
       groups = colDef(name = "Groups", footer = "", maxWidth = 110),
       windows = colDef(name = "Windows", footer = "", maxWidth = 110),
-      normalisation = colDef(name = "Norm.", footer = "")
+      normalisation = colDef(name = "Norm.", footer = ""),
+      "PRJNA509779 (AR)" = colDef(name = "AR", maxWidth = 60),
+      "PRJNA509779 (ER)" = colDef(name = "ER", maxWidth = 60),
+      "PRJNA509779 (H3K27ac)" = colDef(name = "H3K27ac")
+    ),
+    columnGroups = list(
+      colGroup(name = "PRJNA509779", columns = str_subset(names(.), "PRJNA509779"))
     ),
     defaultColDef = colDef(
-      maxWidth = 130, 
+      maxWidth = 100, 
       style = function(value) {
         clr <- "black"
         if (value < 0) clr <- "red"

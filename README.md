@@ -38,6 +38,9 @@ This makes a total of 19 methods, of which two are specific to DiffBind and the 
 All above methods will be initially tested using $H_0: \mu = 0$.
 Subsequent comparisons will be made using $H_0: -\lambda < \mu < \lambda$ but excluding DiffBind results.
 
+Library sizes for the entire set of comparisons will be taken as the total number of reads within the original BamFile, as opposed to those from within the retained regions only.
+The exception to this is when using `qsmooth` and `qsmoothGC` where count distributions are normalised within groups, breaking this connectiong between counts and total library sizes.
+
 ## Datasets
 
 All approaches will be compared across multiple datasets:
