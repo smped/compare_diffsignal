@@ -1,5 +1,5 @@
 ---
-title: "ZR75: ERa"
+title: "ZR75: H3K27ac"
 author: "Stephen Pederson"
 date: "`r format(Sys.Date(), '%d %B, %Y')`"
 output: workflowr::wflow_html
@@ -8,10 +8,10 @@ editor_options:
 params:
   cell_line: "ZR-75"
   dataset: "PRJNA509779"
-  target: "ERa"
+  target: "H3K27ac"
   treat_levels: ["E2", "E2DHT"]
-  width: 400
-  fl: 190
+  width: 1000
+  fl: 210
 ---
 
 

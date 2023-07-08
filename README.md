@@ -19,6 +19,7 @@ The methods being compared will be
 | FW-CQNG      | extraChIPs | Fixed   | CQN Groups    | QLF    | counts |
 | FW-SQN       | extraChIPs | Fixed   | qsmooth       | QLF    | normCounts |
 | FW-SQNGC     | extraChIPs | Fixed   | qsmoothGC     | QLF    | normCounts |
+| FW-LT        | extraChIPs | Fixed   | Library Size  | LT    | logCPM |
 | SW-LS        | extraChIPs | Sliding   | Library Size  | QLF    | counts |
 | SW-TMM       | extraChIPs | Sliding   | TMM           | QLF    | counts |
 | SW-TMMG      | extraChIPs | Sliding   | TMM Groups    | QLF    | counts |

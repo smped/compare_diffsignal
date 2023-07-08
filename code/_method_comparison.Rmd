@@ -14,7 +14,7 @@ fig_path <- here::here("docs", "assets", dataset, target)
 if (!dir.exists(fig_path)) dir.create(fig_path, recursive = TRUE)
 threads <- min(parallel::detectCores() - 2, 12)
 knitr::opts_chunk$set(
-  message = FALSE, warnings = FALSE, results = "hide",
+  message = FALSE, warning = FALSE, results = "hide",
   fig.height = 8, fig.width = 10, dev = "png", fig.show = "hide",
   fig.align = "center"
 )
@@ -41,7 +41,9 @@ library(reactable)
 library(htmltools)
 library(ComplexUpset)
 library(patchwork)
+library(quantro)
 register(MulticoreParam(threads))
+panderOptions("table.split.table", Inf)
 theme_set(
   theme_bw() + 
     theme(
@@ -94,6 +96,13 @@ sq <- seqinfo(bfl) %>%
   sortSeqlevels() 
 genome(sq) <- "hg19"
 isCircular(sq) <- rep_len(FALSE, length(seqlevels(sq)))
+```
+
+```{r tbl-samples, results='asis'}
+samples %>% 
+  pander(
+    caption = "Description of samples used for method testing"
+  )
 ```
 
 
@@ -491,6 +500,7 @@ if (interactive()) {
 }
 ```
 
+![*MA-plot for extraChIPs results using CQ Normalisation*](`r href`)
 
 #### CQN Groups
 
@@ -507,7 +517,7 @@ cqn_groups <- treat_levels %>%
     }
   ) %>% 
   setNames(treat_levels)
-offset <- do.call("cbind", lapply(cqn_groups, function(x) x$glm.offset))[,colnames(filtcounts)]
+offset <- do.call("cbind", lapply(cqn_groups, function(x) x$glm.offset))[,colnames(se)]
 cqng_results <- fitAssayDiff(
   se, method = "qlf", offset = offset, design = X, asRanges = TRUE
 ) %>% 
@@ -541,6 +551,8 @@ if (interactive()) {
   dev.off()
 }
 ```
+
+![*MA-plot for extraChIPs results using CQ Normalisation within groups*](`r href`)
 
 
 ### Smooth Quantile {.tabset}
@@ -636,7 +648,49 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using Smooth Quantile Normalisation, accounting for GC content*](`r href`)
 
-### Comparison of extraChIPs and DiffBind
+#### Limma-Trend
+
+
+```{r ec-lt-fixed}
+assay(se, "logCPM") <- cpm(assay(se, "counts"), log = TRUE, lib.sizes = se$totals)
+lt_results <- fitAssayDiff(
+  se, assay = "logCPM", method = "lt", design = X, asRanges = TRUE
+) %>% 
+  addDiffStatus()
+```
+
+
+This analysis returned `r comma(sum(lt_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+```{r plotma-ec-lt-fixed}
+p <- lt_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{target}: extraChIPs"), subtitle = "Fixed-Width; Limma-Trend") +
+  labs(colour = "Status") +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA-plot for extraChIPs results using Limma-Trend*](`r href`)
+
+## Comparison of extraChIPs and DiffBind
 
 Given the expectation of identical results, those from DiffBind and extraChIPs were compared for both Library-Size and TMM normalisation.
 
@@ -672,9 +726,9 @@ stat_cols <- c(
 ```
 
 
-#### Library Size Normalisation {.tabset}
+### Library Size Normalisation {.tabset}
 
-##### logFC Estimates
+#### logFC Estimates
 
 ```{r compare-logfc-db-ec-ls}
 p <- GRangesList(
@@ -706,7 +760,7 @@ if (interactive()) {
 
 ![*Comparison of logFC estimates returned using library-size normalisation for both DiffBind and extraChIPs*](`r href`)
 
-##### P-Values
+#### P-Values
 
 
 ```{r compare-p-db-ec-ls}
@@ -757,9 +811,9 @@ if (interactive()) {
 
 ![*Comparison of -log~10~ p-values returned using library-size normalisation for both DiffBind and extraChIPs*](`r href`)
 
-#### TMM Normalisation {.tabset}
+### TMM Normalisation {.tabset}
 
-##### logFC Estimates
+#### logFC Estimates
 
 ```{r compare-logfc-db-ec-tmm}
 p <- GRangesList(
@@ -791,7 +845,7 @@ if (interactive()) {
 
 ![*Comparison of logFC estimates returned using TMM normalisation for both DiffBind and extraChIPs*](`r href`)
 
-##### P-Values
+#### P-Values
 
 ```{r compare-p-db-ec-tmm}
 p <- GRangesList(
@@ -841,7 +895,7 @@ if (interactive()) {
 
 ![*Comparison of -log~10~ p-values returned using TMM normalisation for both DiffBind and extraChIPs*](`r href`)
 
-## Sliding Windows
+## Sliding Windows {.tabset}
 
 ```{r set-windows}
 window_size <- round(params$width / 4, -1)
@@ -1149,7 +1203,6 @@ if (interactive()) {
 ### Conditional Quantile Normalisation
 
 ```{r sw-cqn-results}
-library(cqn)
 cqn <- assay(filtcounts, "counts") %>% 
   cqn(
     x = rowData(filtcounts)$gc, sizeFactors = filtcounts$totals, 
@@ -1364,7 +1417,7 @@ sw_ltsqgc_results <- sw_ltsqgc_all %>%
 
 This analysis returned `r comma(sum(sw_ltsqgc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
-```{r plotma-sw-ltsq}
+```{r plotma-sw-ltsqgc}
 p <- sw_ltsqgc_all %>% 
   mutate(Sig = propOverlap(., subset(sw_ltsqgc_results, FDR < 0.05)$keyval_range) == 1) %>% 
   as_tibble() %>% 
@@ -1408,6 +1461,7 @@ all_res <- list(
   `FW-CQNG` = cqng_results,
   `FW-SQN` = sqn_results,
   `FW-SQNGC` = sqngc_results,
+  `FW-LT` = lt_results,
   `SW-LS` = sw_ls_results,
   `SW-TMM` = sw_tmm_results,
   `SW-TMMG` = sw_tmmg_results,
@@ -1426,9 +1480,49 @@ write_rds(
 )
 ```
 
-### Table
+### Quantro Test
 
-```{r result-table}
+```{r qtest, results = 'asis'}
+qtest <- list(
+  `FW-Counts` = quantro(assay(se, "counts"), groupFactor = se$treatment, B = 1e3),
+  `FW-logCPM` = quantro(assay(se, "logCPM"), groupFactor = se$treatment, B = 1e3),
+  `SW-Counts` = quantro(assay(filtcounts, "counts"), groupFactor = filtcounts$treatment, B = 1e3),
+  `SW-logCPM` = quantro(assay(filtcounts, "logCPM"), groupFactor = filtcounts$treatment, B = 1e3)
+)
+qtest %>% 
+  lapply(
+    function(x){
+      p <- anova(x)$`Pr(>F)`[[1]]
+      perm <- x@quantroPvalPerm
+      tibble(`Anova P` = p, `Permutation P` = perm)
+    }
+  ) %>% 
+  bind_rows(.id = "method") %>% 
+  mutate(
+    windows = ifelse(grepl("^FW", method), "Fixed", "Sliding"),
+    assay = str_remove_all(method, "^.+-"),
+    `Group Effects` = `Anova P` < 0.05 | `Permutation P` < 0.05
+  ) %>% 
+  dplyr::select(
+    method, windows, assay, ends_with("P"), everything()
+  ) %>% 
+  rename_with(str_to_title) %>% 
+  pander(
+    justify = "lllrrl",
+    caption = "
+    Summary of quantro test results. The Anova results test for equality of 
+    medians between groups, whilst the permutation test identifies distributions 
+    with different shapes. Any difference detected between treatment groups 
+    will raise concerns about methods, such as TMM and CQN, which do not 
+    explicitly account for differences in data distributions.
+    "
+  )
+```
+
+
+### Comparison Table
+
+```{r result-table, results='asis'}
 tbl <- all_res %>%
   lapply(
     function(x) {
@@ -1493,15 +1587,16 @@ cp <- htmltools::tags$caption(
     )
   )
 )
-div(class = "table",
-  div(class = "table-header",
-      div(class = "caption", cp),
-      tbl
-  )
+div(
+  class = "table",
+  div(class = "table-header", cp),
+  tbl
 )
 ```
 
-### Summary Visualisation
+### Visualisations {.tabset}
+
+#### Summary
 
 ```{r plot-all-cat}
 p <- all_res %>%
@@ -1515,18 +1610,20 @@ p <- all_res %>%
   mutate(p = n / sum(n), .by = method) %>% 
   arrange(desc(p)) %>% 
   mutate(
-    windows = ifelse(grepl("^SW", method), "Sliding Windows", "Fixed-Width"),
+    windows = ifelse(grepl("^SW", method), "Sliding\nWindows", "Fixed\nWidth"),
+    groups = ifelse(grepl("G$", method), "Explicit\nGroups", "No Groups"),
     method = method %>% 
       str_remove_all("^(FW|SW)-") %>% 
       str_replace_all("G$", " (Groups)") %>% 
       str_replace_all("^LT", "Limma-Trend ") %>% 
+      str_replace_all("SQNGC", "SQN-GC") %>% 
       fct_inorder(),
     status = factor(status, levels = names(status_colours)),
   ) %>% 
   droplevels() %>% 
   ggplot(aes(p, fct_rev(method), fill = status)) +
   geom_col() +
-  facet_grid(windows ~ ., scales = "free", space = "free", switch = "y") +
+  facet_grid(windows + groups ~ ., scales = "free", space = "free", switch = "y") +
   labs(x = "% In Category", y = "Method", fill = "Status") +
   scale_x_continuous(
     expand = expansion(c(0, 0)), breaks = seq(0, 1, by = 0.2),
@@ -1553,7 +1650,7 @@ if (interactive()) {
 ![*Combined results for each applied method broken into Fixed-Window and Sliding-Window approaches. Both CQN and TMM were applied across the complete dataset and within groups. Methods beginning with DB indicate those fitted using DiffBind. All Limma-Trend methods use logCPM values as the starting point.*](`r href`)
 
 
-### Shared Increasing Sites
+#### Shared Increasing Sites
 
 ```{r upset-increasing}
 size <- get_size_mode('exclusive_intersection')
@@ -1620,7 +1717,7 @@ if (interactive()) {
 ![*Overlapping/Shared sites detected as Increased across all methods*](`r href`)
 
 
-### Shared Decreasing Sites
+#### Shared Decreasing Sites
 
 ```{r upset-decreasing}
 p <- all_res %>% 
