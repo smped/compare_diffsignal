@@ -1,7 +1,7 @@
 
 ```{r setup, echo=FALSE, eval=TRUE}
 # params <- list(
-#   dataset = "PRJNA509779", target = "AR", cell_line = "ZR-75-1",
+#   dataset = "PRJNA509779", target = "H3K27ac", cell_line = "ZR-75-1",
 #   treat_levels = c("E2", "E2DHT"), width = 400, fl = 195
 # )
 dataset <- params$dataset
@@ -355,6 +355,20 @@ colData(se) <- colData(se) %>%
 X <- model.matrix(~treatment, data = colData(se))
 ```
 
+```{r get-gc}
+bs <- BSgenome.Hsapiens.UCSC.hg19
+seqlevels(centred_peaks) <- seqlevels(bs)
+seqinfo(centred_peaks) <- seqinfo(bs)
+gc <- getSeq(bs, centred_peaks) %>% 
+  letterFrequency(letters = "GC", as.prob = TRUE)
+rowData(se)$gc <- gc[,1]
+centred_peaks <- keepSeqlevels(centred_peaks, seqnames(sq))
+seqinfo(centred_peaks) <- sq  # Restore..
+```
+
+
+
+
 ```{r plot-ec-read-densities}
 p <- plotAssayDensities(se, trans = "log1p", colour = "treatment") +
   scale_colour_manual(values = c("deepskyblue3", "red3"))
@@ -378,7 +392,7 @@ if (interactive()) {
 ![*Read Density Plot for counts returned by csaw*](`r href`)
 
 
-#### Library Size
+#### Library Size {.tabset}
 
 ```{r ec-ls-fixed}
 ec_ls_results <- fitAssayDiff(se, design = X, asRanges = TRUE) %>% 
@@ -387,6 +401,8 @@ ec_ls_results <- fitAssayDiff(se, design = X, asRanges = TRUE) %>%
 
 
 This analysis returned `r comma(sum(ec_ls_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
 
 ```{r plotma-ec-ls-fixed}
 p <- ec_ls_results %>% 
@@ -417,7 +433,41 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using Library Size Normalisation*](`r href`)
 
-#### TMM
+##### GC Bias Plot
+
+```{r plotgc-ec-ls-fixed}
+p <- ec_ls_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Library Size Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*GC-bias plot for extraChIPs results using Library Size Normalisation*](`r href`)
+
+
+
+#### TMM {.tabset}
 
 ```{r ec-tmm-fixed}
 ec_tmm_results <- fitAssayDiff(se, design = X, norm = "TMM", asRanges = TRUE) %>% 
@@ -426,6 +476,8 @@ ec_tmm_results <- fitAssayDiff(se, design = X, norm = "TMM", asRanges = TRUE) %>
 
 
 This analysis returned `r comma(sum(ec_tmm_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
 
 ```{r plotma-ec-tmm-fixed}
 p <- ec_tmm_results %>% 
@@ -456,8 +508,40 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using TMM Normalisation*](`r href`)
 
+##### GC Bias Plot
 
-#### TMM Groups
+```{r plotgc-ec-tmm-fixed}
+p <- ec_tmm_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; TMM Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*GC-bias plot for extraChIPs results using Library Size Normalisation*](`r href`)
+
+
+#### TMM Groups {.tabset}
 
 ```{r ec-tmmg-fixed}
 ec_tmmg_results <- fitAssayDiff(se, design = X, norm = "TMM", groups = "treat", asRanges = TRUE) %>% 
@@ -466,6 +550,8 @@ ec_tmmg_results <- fitAssayDiff(se, design = X, norm = "TMM", groups = "treat", 
 
 
 This analysis returned `r comma(sum(ec_tmmg_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
 
 ```{r plotma-ec-tmmg-fixed}
 p <- ec_tmmg_results %>% 
@@ -496,20 +582,41 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using TMM-groups Normalisation*](`r href`)
 
-### Conditional Quantile {.tabset}
+##### GC Bias Plot
 
-```{r get-gc}
-bs <- BSgenome.Hsapiens.UCSC.hg19
-seqlevels(centred_peaks) <- seqlevels(bs)
-seqinfo(centred_peaks) <- seqinfo(bs)
-gc <- getSeq(bs, centred_peaks) %>% 
-  letterFrequency(letters = "GC", as.prob = TRUE)
-rowData(se)$gc <- gc[,1]
-centred_peaks <- keepSeqlevels(centred_peaks, seqnames(sq))
-seqinfo(centred_peaks) <- sq  # Restore..
+```{r plotgc-ec-tmmg-fixed}
+p <- ec_tmmg_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; TMM-Groups Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
 ```
 
-#### CQN
+
+![*GC-bias plot for extraChIPs results using TMM-Groups Normalisation*](`r href`)
+
+### Conditional Quantile {.tabset}
+
+#### CQN {.tabset}
 
 ```{r cqn-fixed}
 cqn <- assay(se, "counts") %>% 
@@ -525,6 +632,8 @@ cqn_results <- fitAssayDiff(
 ```
 
 This analysis returned `r comma(sum(cqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
 
 ```{r plotma-cqn-fixed}
 p <- cqn_results %>% 
@@ -554,7 +663,40 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using CQ Normalisation*](`r href`)
 
-#### CQN Groups
+##### GC Bias Plot
+
+```{r plotgc-cqn-fixed}
+p <- cqn_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; CQ Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*GC-bias plot for extraChIPs results using CQ Normalisation*](`r href`)
+
+
+#### CQN Groups {.tabset}
 
 ```{r cqng-fixed}
 cqn_groups <- treat_levels %>% 
@@ -577,6 +719,8 @@ cqng_results <- fitAssayDiff(
 ```
 
 This analysis returned `r comma(sum(cqng_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
 
 ```{r plotma-cqng-fixed}
 p <- cqng_results %>% 
@@ -606,11 +750,42 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using CQ Normalisation within groups*](`r href`)
 
+##### GC Bias Plot
+
+```{r plotgc-cqng-fixed}
+p <- cqng_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; CQN-Groups") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+
+![*GC-bias plot for extraChIPs results using CQN-groups*](`r href`)
 
 ### Smooth Quantile {.tabset}
 
 
-#### SQN
+#### SQN {.tabset}
 
 ```{r ec-sqn-fixed}
 assay(se, "normCounts") <- qsmooth(se, group_factor = se$treatment) %>% 
@@ -624,14 +799,17 @@ sqn_results <- fitAssayDiff(
 
 This analysis returned `r comma(sum(sqn_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
 
-```{r plotma-ec-sqn-fixed}
+
+##### MA Plot
+
+```{r plotma-sqn-fixed}
 p <- sqn_results %>% 
   as_tibble() %>% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Smooth Quantil Normalisation") +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Smooth Quantile Normalisation") +
   labs(colour = "Status") +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -653,9 +831,38 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using Smooth Quantile Normalisation*](`r href`)
 
+##### GC Bias Plot
 
+```{r plotgc-sqn-fixed}
+p <- sqn_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; SQ Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
 
-#### SQN-GC
+![*GC-bias plot for extraChIPs results using SQN*](`r href`)
+
+#### SQN-GC {.tabset}
 
 ```{r ec-sqngc-fixed}
 assay(se, "normCountsGC") <- qsmoothGC(
@@ -670,6 +877,9 @@ sqngc_results <- fitAssayDiff(
 
 
 This analysis returned `r comma(sum(sqngc_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+##### MA Plot
+
 
 ```{r plotma-ec-sqngc-fixed}
 p <- sqngc_results %>% 
@@ -700,7 +910,39 @@ if (interactive()) {
 
 ![*MA-plot for extraChIPs results using Smooth Quantile Normalisation, accounting for GC content*](`r href`)
 
-#### Limma-Trend
+##### GC Bias Plot
+
+```{r plotgc-sqnggc-fixed}
+p <- sqngc_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; SQ-GC Normalisation") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*GC-bias plot for extraChIPs results using SQ-GC Normalisation*](`r href`)
+
+
+#### Limma-Trend {.tabset}
 
 
 ```{r ec-lt-fixed}
@@ -713,6 +955,9 @@ lt_results <- fitAssayDiff(
 
 
 This analysis returned `r comma(sum(lt_results$FDR < 0.05))` peaks considered to show evidence of differential signal.
+
+
+##### MA Plot
 
 ```{r plotma-ec-lt-fixed}
 p <- lt_results %>% 
@@ -741,6 +986,39 @@ if (interactive()) {
 ```
 
 ![*MA-plot for extraChIPs results using Limma-Trend*](`r href`)
+
+##### GC Bias Plot
+
+```{r plotgc-ec-lt-fixed}
+p <- lt_results %>% 
+  as_tibble() %>% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue("{dataset}: {target}"), subtitle = "extraChIPs; Fixed Width; Limma-Trend") +
+  labs(x = "% GC", colour = "Status") +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*GC-bias plot for extraChIPs results using Limma-Trend*](`r href`)
+
+
 
 ## Comparison of extraChIPs and DiffBind
 
@@ -1003,10 +1281,6 @@ filtcounts <- dualFilter(
 )
 ```
 
-Under this filtering approach `r comma(sum(!overlapsAny(union_peaks, filtcounts)))` of the `r comma(length(union_peaks))` (`r percent(mean(!overlapsAny(union_peaks, filtcounts)), 0.1)`) were not covered by any sliding windows.
-
-Conversely, `r percent(mean(!rowData(filtcounts)$overlaps_ref), 0.1)` of the sliding windows retained after filtering did not overlap any of the union_peaks.
-
 
 ```{r add-assays}
 filtRanges <- granges(rowRanges(filtcounts))
@@ -1052,6 +1326,10 @@ if (interactive()) {
 
 
 ![*Read Density Plot for sliding-window counts returned by extraChIPs after filtering*](`r href`)
+
+Under this filtering approach `r comma(sum(!overlapsAny(union_peaks, filtcounts)))` of the `r comma(length(union_peaks))` (`r percent(mean(!overlapsAny(union_peaks, filtcounts)), 0.1)`) were not covered by any sliding windows.
+
+Conversely, `r percent(mean(!rowData(filtcounts)$overlaps_ref), 0.1)` of the sliding windows retained after filtering did not overlap any of the union_peaks.
 
 
 
@@ -1529,6 +1807,160 @@ if (interactive()) {
 
 ![*MA-plot for sliding-window results using Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are shown, prior to merging of results. Windows considered to the the key-value range in significant merged ranges are highlighted in red.*](`r href`)
 
+## Fixed Vs Sliding Windows {.tabset}
+
+As representative of a conservative approach without known bias, the fixed and sliding window approaches were compared using *library size normalisation*.
+This gives a guide as to which sites are additionally covered or omitted by either approach.
+
+### MA Plots
+
+```{r plotma-fixed-sliding}
+A <- ec_ls_results %>% 
+  mutate(inSliding = overlapsAny(., sw_ls_results)) %>% 
+  as_tibble() %>% 
+  mutate(inSliding = ifelse(inSliding, "In Sliding Windows", "Not In Sliding Windows")) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inSliding) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = "Status")
+B <- sw_ls_results %>% 
+    mutate(inFixed = overlapsAny(., ec_ls_results)) %>% 
+  as_tibble() %>% 
+  mutate(inFixed = ifelse(inFixed, "In Fixed Windows", "Not In Fixed Windows")) %>% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inFixed) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = "Status")
+p <- A + B + 
+  plot_layout(nrow = 2, guides = "collect") +
+  plot_annotation(tag_levels = "A") +
+  plot_annotation(title = glue("{dataset}: {target}"))
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*MA Plots for each analysis with points separated by whether they were detected or not in the contrasting approach.*](`r href`)
+
+### logFC Comparison
+
+```{r logfc-fixed-sliding}
+p <- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %>% 
+  plotPairwise(var = "logFC", colour = "status") +
+  ggtitle(glue("{dataset}: {target}")) +
+  scale_fill_manual(
+    values = c(
+      setNames(status_colours, paste("Fixed", names(status_colours))),
+      setNames(status_colours, paste("Sliding", names(status_colours)))
+    )
+  )
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of logFC estimates across fixed and sliding windows including status from each dataset.*](`r href`)
+
+### logCPM Comparison
+
+```{r logcpm-fixed-sliding}
+p <- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %>% 
+  plotPairwise(var = "logCPM", alpha = 0.7) +
+  ggtitle(glue("{dataset}: {target}")) 
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of logCPM values across fixed and sliding windows indicating detection/inclusion status under either approach*](`r href`)
+
+### Status Comparison
+
+
+```{r status-fixed-sliding}
+p <- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %>% 
+  mapGrlCols(var = "status") %>% 
+  as_tibble() %>% 
+  mutate(
+    across(ends_with("status"), \(x) fct_na_value_to_level(x, "Undetected"))
+  ) %>% 
+  summarise(n = dplyr::n(), .by = ends_with("status")) %>% 
+  mutate(combined = fct_cross(fct_rev(Fixed_status), fct_rev(Sliding_status), sep = " - ")) %>% 
+  ggplot(aes(Fixed_status, Sliding_status, fill = combined)) +
+  geom_point(aes(size = n), shape = 21) +
+  geom_label(aes(label = comma(n)), fill = "white", alpha = 0.7) +
+  geom_rect(xmin = 0.6, xmax = 1.4, ymin = 1.6, ymax = 3.4, colour = "red", fill = NA) +
+  geom_rect(ymin = 0.6, ymax = 1.4, xmin = 1.6, xmax = 3.4, colour = "red", fill = NA) +
+  geom_rect(ymin = 3.6, ymax = 4.4, xmin = 1.6, xmax = 3.4, colour = "blue", fill = NA) +
+  geom_rect(xmin = 3.6, xmax = 4.4, ymin = 1.6, ymax = 3.4, colour = "blue", fill = NA) +
+  scale_x_discrete(drop = FALSE) +
+  scale_y_discrete(drop = FALSE) +
+  scale_size(range = c(5, 55)) +
+  scale_fill_viridis_d(direction = -1) +
+  guides(size = "none") +
+  ggtitle(glue("{dataset}: {target}")) +
+  labs(x = "Fixed Window Status", y = "Slding Window Status", fill = "Combined Status")
+if (interactive()) {
+  p
+} else {
+  lb <- knitr::opts_current$get("label")
+  fig_out <- file.path(fig_path, glue(lb, ".png"))
+  href <- str_remove_all(fig_out, ".+docs/")
+  png(
+    fig_out, res = 300, units = "in",
+    height = knitr::opts_chunk$get("fig.height"), 
+    width = knitr::opts_chunk$get("fig.width")
+  )
+  print(p)
+  dev.off()
+}
+```
+
+![*Comparison of status between fixed and sliding windows. Points along the diagonal are consistent between approaches. Red rectangles highlight the regions considered unchanged under one approach, but changed in the other. Blue rectangles highlight the regions considered changed under one approach, but which were undetectable/excluded from the alternative method*](`r href`)
 
 ## Results
 

@@ -383,7 +383,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ZR75: ERa</h1>
 <h4 class="author">Stephen Pederson</h4>
-<h4 class="date">08 July, 2023</h4>
+<h4 class="date">09 July, 2023</h4>
 
 </div>
 
@@ -412,7 +412,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-07-08
+<strong>Last updated:</strong> 2023-07-09
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -543,15 +543,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree5f43f88191f55d7e9e6df9241532fc7579d4a365targetblank5f43f88a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree4778e0dff3674a4541d4621ddfb5d6b491614e5dtargetblank4778e0da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/5f43f88191f55d7e9e6df9241532fc7579d4a365" target="_blank">5f43f88</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/4778e0dff3674a4541d4621ddfb5d6b491614e5d" target="_blank">4778e0d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree5f43f88191f55d7e9e6df9241532fc7579d4a365targetblank5f43f88a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree4778e0dff3674a4541d4621ddfb5d6b491614e5dtargetblank4778e0da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -561,7 +561,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/5f43f88191f55d7e9e6df9241532fc7579d4a365" target="_blank">5f43f88</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/4778e0dff3674a4541d4621ddfb5d6b491614e5d" target="_blank">4778e0d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,12 +580,9 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    data/bam/
     Ignored:    data/macs2/
-
-Untracked files:
-    Untracked:  output/PRJNA509779/
+    Ignored:    output/PRJNA509779/
 
 Unstaged changes:
-    Modified:   README.md
     Modified:   analysis/index.Rmd
     Modified:   code/_method_comparison.Rmd
 
@@ -633,6 +630,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/4778e0dff3674a4541d4621ddfb5d6b491614e5d/docs/zr75_er.html" target="_blank">4778e0d</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-08
+</td>
+<td>
+Finished assessment of PRJNA509779
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1104,6 +1118,14 @@ colData(se) &lt;- colData(se) %&gt;%
 # se$treatment &lt;- factor(se$Treatment, levels = treat_levels)
 # se$totals &lt;- as.numeric(se$Reads)
 X &lt;- model.matrix(~treatment, data = colData(se))</code></pre>
+<pre class="r"><code>bs &lt;- BSgenome.Hsapiens.UCSC.hg19
+seqlevels(centred_peaks) &lt;- seqlevels(bs)
+seqinfo(centred_peaks) &lt;- seqinfo(bs)
+gc &lt;- getSeq(bs, centred_peaks) %&gt;% 
+  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
+rowData(se)$gc &lt;- gc[,1]
+centred_peaks &lt;- keepSeqlevels(centred_peaks, seqnames(sq))
+seqinfo(centred_peaks) &lt;- sq  # Restore..</code></pre>
 <pre class="r"><code>p &lt;- plotAssayDensities(se, trans = &quot;log1p&quot;, colour = &quot;treatment&quot;) +
   scale_colour_manual(values = c(&quot;deepskyblue3&quot;, &quot;red3&quot;))
 if (interactive()) {
@@ -1125,12 +1147,14 @@ if (interactive()) {
 <p class="caption"><em>Read Density Plot for counts returned by
 csaw</em></p>
 </div>
-<div id="library-size-1" class="section level4">
-<h4>Library Size</h4>
+<div id="library-size-1" class="section level4 tabset">
+<h4 class="tabset">Library Size</h4>
 <pre class="r"><code>ec_ls_results &lt;- fitAssayDiff(se, design = X, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
 <p>This analysis returned 182 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- ec_ls_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1160,12 +1184,47 @@ if (interactive()) {
 Normalisation</em></p>
 </div>
 </div>
-<div id="tmm-1" class="section level4">
-<h4>TMM</h4>
+<div id="gc-bias-plot" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_ls_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Library Size Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-ec-ls-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using Library
+Size Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-1" class="section level4 tabset">
+<h4 class="tabset">TMM</h4>
 <pre class="r"><code>ec_tmm_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
 <p>This analysis returned 596 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-1" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- ec_tmm_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1195,12 +1254,47 @@ if (interactive()) {
 Normalisation</em></p>
 </div>
 </div>
-<div id="tmm-groups" class="section level4">
-<h4>TMM Groups</h4>
+<div id="gc-bias-plot-1" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmm_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-ec-tmm-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using Library
+Size Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-groups" class="section level4 tabset">
+<h4 class="tabset">TMM Groups</h4>
 <pre class="r"><code>ec_tmmg_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, groups = &quot;treat&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
 <p>This analysis returned 211 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-2" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- ec_tmmg_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1230,19 +1324,44 @@ if (interactive()) {
 Normalisation</em></p>
 </div>
 </div>
+<div id="gc-bias-plot-2" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmmg_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM-Groups Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-ec-tmmg-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+TMM-Groups Normalisation</em></p>
+</div>
+</div>
+</div>
 </div>
 <div id="conditional-quantile" class="section level3 tabset">
 <h3 class="tabset">Conditional Quantile</h3>
-<pre class="r"><code>bs &lt;- BSgenome.Hsapiens.UCSC.hg19
-seqlevels(centred_peaks) &lt;- seqlevels(bs)
-seqinfo(centred_peaks) &lt;- seqinfo(bs)
-gc &lt;- getSeq(bs, centred_peaks) %&gt;% 
-  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
-rowData(se)$gc &lt;- gc[,1]
-centred_peaks &lt;- keepSeqlevels(centred_peaks, seqnames(sq))
-seqinfo(centred_peaks) &lt;- sq  # Restore..</code></pre>
-<div id="cqn" class="section level4">
-<h4>CQN</h4>
+<div id="cqn" class="section level4 tabset">
+<h4 class="tabset">CQN</h4>
 <pre class="r"><code>cqn &lt;- assay(se, &quot;counts&quot;) %&gt;% 
   cqn(
     x = rowData(se)$gc, sizeFactors = se$totals, 
@@ -1255,6 +1374,8 @@ cqnplot(cqn)</code></pre>
   addDiffStatus()</code></pre>
 <p>This analysis returned 3,067 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-3" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- cqn_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1284,8 +1405,41 @@ if (interactive()) {
 Normalisation</em></p>
 </div>
 </div>
-<div id="cqn-groups" class="section level4">
-<h4>CQN Groups</h4>
+<div id="gc-bias-plot-3" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- cqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQ Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-cqn-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using CQ
+Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="cqn-groups" class="section level4 tabset">
+<h4 class="tabset">CQN Groups</h4>
 <pre class="r"><code>cqn_groups &lt;- treat_levels %&gt;% 
   lapply(
     function(x) {
@@ -1305,6 +1459,8 @@ cqng_results &lt;- fitAssayDiff(
   addDiffStatus()</code></pre>
 <p>This analysis returned 863 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-4" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- cqng_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1334,11 +1490,44 @@ if (interactive()) {
 Normalisation within groups</em></p>
 </div>
 </div>
+<div id="gc-bias-plot-4" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- cqng_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQN-Groups&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-cqng-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+CQN-groups</em></p>
+</div>
+</div>
+</div>
 </div>
 <div id="smooth-quantile" class="section level3 tabset">
 <h3 class="tabset">Smooth Quantile</h3>
-<div id="sqn" class="section level4">
-<h4>SQN</h4>
+<div id="sqn" class="section level4 tabset">
+<h4 class="tabset">SQN</h4>
 <pre class="r"><code>assay(se, &quot;normCounts&quot;) &lt;- qsmooth(se, group_factor = se$treatment) %&gt;% 
   qsmoothData()
 sqn_results &lt;- fitAssayDiff(
@@ -1347,13 +1536,15 @@ sqn_results &lt;- fitAssayDiff(
   addDiffStatus()</code></pre>
 <p>This analysis returned 587 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-5" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- sqn_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
   geom_point(aes(colour = status), alpha = 0.7) +
   geom_smooth(se = FALSE) +
   geom_hline(yintercept = 0) +
-  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Smooth Quantil Normalisation&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Smooth Quantile Normalisation&quot;) +
   labs(colour = &quot;Status&quot;) +
   scale_colour_manual(values = status_colours)
 if (interactive()) {
@@ -1371,13 +1562,46 @@ if (interactive()) {
   dev.off()
 }</code></pre>
 <div class="figure">
-<img src="assets/PRJNA509779/ERa/plotma-ec-sqn-fixed.png" alt="" />
+<img src="assets/PRJNA509779/ERa/plotma-sqn-fixed.png" alt="" />
 <p class="caption"><em>MA-plot for extraChIPs results using Smooth
 Quantile Normalisation</em></p>
 </div>
 </div>
-<div id="sqn-gc" class="section level4">
-<h4>SQN-GC</h4>
+<div id="gc-bias-plot-5" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- sqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; SQ Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-sqn-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+SQN</em></p>
+</div>
+</div>
+</div>
+<div id="sqn-gc" class="section level4 tabset">
+<h4 class="tabset">SQN-GC</h4>
 <pre class="r"><code>assay(se, &quot;normCountsGC&quot;) &lt;- qsmoothGC(
   se, group_factor = se$treatment, gc = rowData(se)$gc
 ) %&gt;% 
@@ -1388,6 +1612,8 @@ sqngc_results &lt;- fitAssayDiff(
   addDiffStatus()</code></pre>
 <p>This analysis returned 275 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-6" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- sqngc_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1417,8 +1643,41 @@ if (interactive()) {
 Quantile Normalisation, accounting for GC content</em></p>
 </div>
 </div>
-<div id="limma-trend" class="section level4">
-<h4>Limma-Trend</h4>
+<div id="gc-bias-plot-6" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- sqngc_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; SQ-GC Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-sqnggc-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using SQ-GC
+Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="limma-trend" class="section level4 tabset">
+<h4 class="tabset">Limma-Trend</h4>
 <pre class="r"><code>assay(se, &quot;logCPM&quot;) &lt;- cpm(assay(se, &quot;counts&quot;), log = TRUE, lib.size = se$totals)
 lt_results &lt;- fitAssayDiff(
   se, assay = &quot;logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
@@ -1426,6 +1685,8 @@ lt_results &lt;- fitAssayDiff(
   addDiffStatus()</code></pre>
 <p>This analysis returned 184 peaks considered to show evidence of
 differential signal.</p>
+<div id="ma-plot-7" class="section level5">
+<h5>MA Plot</h5>
 <pre class="r"><code>p &lt;- lt_results %&gt;% 
   as_tibble() %&gt;% 
   ggplot(aes(logCPM, logFC)) +
@@ -1453,6 +1714,39 @@ if (interactive()) {
 <img src="assets/PRJNA509779/ERa/plotma-ec-lt-fixed.png" alt="" />
 <p class="caption"><em>MA-plot for extraChIPs results using
 Limma-Trend</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-7" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- lt_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Limma-Trend&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotgc-ec-lt-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+Limma-Trend</em></p>
+</div>
 </div>
 </div>
 </div>
@@ -1716,10 +2010,6 @@ colData(wincounts) &lt;- colData(wincounts) %&gt;%
   ref = union_peaks,
   q = 0.6
 )</code></pre>
-<p>Under this filtering approach 1,293 of the 7,397 (17.5%) were not
-covered by any sliding windows.</p>
-<p>Conversely, 1.4% of the sliding windows retained after filtering did
-not overlap any of the union_peaks.</p>
 <pre class="r"><code>filtRanges &lt;- granges(rowRanges(filtcounts))
 seqlevels(filtRanges) &lt;- seqlevels(bs)
 genome(filtRanges) &lt;- &quot;hg19&quot;
@@ -1761,6 +2051,10 @@ if (interactive()) {
 <p class="caption"><em>Read Density Plot for sliding-window counts
 returned by extraChIPs after filtering</em></p>
 </div>
+<p>Under this filtering approach 1,293 of the 7,397 (17.5%) were not
+covered by any sliding windows.</p>
+<p>Conversely, 1.4% of the sliding windows retained after filtering did
+not overlap any of the union_peaks.</p>
 <div id="qlf-methods" class="section level3 tabset">
 <h3 class="tabset">QLF Methods</h3>
 <div id="library-size-2" class="section level4">
@@ -2098,8 +2392,8 @@ in red.</em></p>
 </div>
 </div>
 </div>
-<div id="limma-trend-methods" class="section level3">
-<h3>Limma-Trend Methods</h3>
+<div id="limma-trend-methods" class="section level3 tabset">
+<h3 class="tabset">Limma-Trend Methods</h3>
 <div id="logcpm" class="section level4">
 <h4>logCPM</h4>
 <pre class="r"><code>sw_lt_all &lt;- fitAssayDiff(
@@ -2237,6 +2531,172 @@ shown, prior to merging of results. Windows considered to the the
 key-value range in significant merged ranges are highlighted in
 red.</em></p>
 </div>
+</div>
+</div>
+</div>
+<div id="fixed-vs-sliding-windows" class="section level2 tabset">
+<h2 class="tabset">Fixed Vs Sliding Windows</h2>
+<p>As representative of a conservative approach without known bias, the
+fixed and sliding window approaches were compared using <em>library size
+normalisation</em>. This gives a guide as to which sites are
+additionally covered or omitted by either approach.</p>
+<div id="ma-plots" class="section level3">
+<h3>MA Plots</h3>
+<pre class="r"><code>A &lt;- ec_ls_results %&gt;% 
+  mutate(inSliding = overlapsAny(., sw_ls_results)) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(inSliding = ifelse(inSliding, &quot;In Sliding Windows&quot;, &quot;Not In Sliding Windows&quot;)) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inSliding) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = &quot;Status&quot;)
+B &lt;- sw_ls_results %&gt;% 
+    mutate(inFixed = overlapsAny(., ec_ls_results)) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(inFixed = ifelse(inFixed, &quot;In Fixed Windows&quot;, &quot;Not In Fixed Windows&quot;)) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inFixed) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = &quot;Status&quot;)
+p &lt;- A + B + 
+  plot_layout(nrow = 2, guides = &quot;collect&quot;) +
+  plot_annotation(tag_levels = &quot;A&quot;) +
+  plot_annotation(title = glue(&quot;{dataset}: {target}&quot;))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/plotma-fixed-sliding.png" alt="" />
+<p class="caption"><em>MA Plots for each analysis with points separated
+by whether they were detected or not in the contrasting
+approach.</em></p>
+</div>
+</div>
+<div id="logfc-comparison" class="section level3">
+<h3>logFC Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) +
+  scale_fill_manual(
+    values = c(
+      setNames(status_colours, paste(&quot;Fixed&quot;, names(status_colours))),
+      setNames(status_colours, paste(&quot;Sliding&quot;, names(status_colours)))
+    )
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/logfc-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of logFC estimates across fixed and
+sliding windows including status from each dataset.</em></p>
+</div>
+</div>
+<div id="logcpm-comparison" class="section level3">
+<h3>logCPM Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logCPM&quot;, alpha = 0.7) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/logcpm-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of logCPM values across fixed and
+sliding windows indicating detection/inclusion status under either
+approach</em></p>
+</div>
+</div>
+<div id="status-comparison" class="section level3">
+<h3>Status Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  mapGrlCols(var = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;status&quot;), \(x) fct_na_value_to_level(x, &quot;Undetected&quot;))
+  ) %&gt;% 
+  summarise(n = dplyr::n(), .by = ends_with(&quot;status&quot;)) %&gt;% 
+  mutate(combined = fct_cross(fct_rev(Fixed_status), fct_rev(Sliding_status), sep = &quot; - &quot;)) %&gt;% 
+  ggplot(aes(Fixed_status, Sliding_status, fill = combined)) +
+  geom_point(aes(size = n), shape = 21) +
+  geom_label(aes(label = comma(n)), fill = &quot;white&quot;, alpha = 0.7) +
+  geom_rect(xmin = 0.6, xmax = 1.4, ymin = 1.6, ymax = 3.4, colour = &quot;red&quot;, fill = NA) +
+  geom_rect(ymin = 0.6, ymax = 1.4, xmin = 1.6, xmax = 3.4, colour = &quot;red&quot;, fill = NA) +
+  geom_rect(ymin = 3.6, ymax = 4.4, xmin = 1.6, xmax = 3.4, colour = &quot;blue&quot;, fill = NA) +
+  geom_rect(xmin = 3.6, xmax = 4.4, ymin = 1.6, ymax = 3.4, colour = &quot;blue&quot;, fill = NA) +
+  scale_x_discrete(drop = FALSE) +
+  scale_y_discrete(drop = FALSE) +
+  scale_size(range = c(5, 55)) +
+  scale_fill_viridis_d(direction = -1) +
+  guides(size = &quot;none&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) +
+  labs(x = &quot;Fixed Window Status&quot;, y = &quot;Slding Window Status&quot;, fill = &quot;Combined Status&quot;)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/PRJNA509779/ERa/status-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of status between fixed and sliding
+windows. Points along the diagonal are consistent between approaches.
+Red rectangles highlight the regions considered unchanged under one
+approach, but changed in the other. Blue rectangles highlight the
+regions considered changed under one approach, but which were
+undetectable/excluded from the alternative method</em></p>
 </div>
 </div>
 </div>
@@ -2487,7 +2947,7 @@ p &lt;- all_res %&gt;%
   ggtitle(glue(&quot;{dataset}: {target} Method Comparison&quot;)) +
   labs(x = &quot;% All Regions&quot;, y = &quot;Method&quot;, fill = &quot;Status&quot;) +
   scale_x_continuous(
-    expand = expansion(c(0.05, 0.05)), breaks = seq(-1, 1, by = 0.2),
+    expand = expansion(c(0.05, 0.05)),
     labels = abs_percent
   ) +
   scale_y_discrete(expand = expansion(0, 0)) +
