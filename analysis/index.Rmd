@@ -34,6 +34,12 @@ Any suggestion of spurious detections, or an introduced bias were assigned -1.
 Scores were then totalled across datasets to provide guidance for methods which were robust overall and are generally applicable.
 Scores were also totalled within datasets to provide guidance as to the sensitivity of each dataset to the chosen methods, with high scores representing a dataset with few technical challenges.
 
+It was noted that there were notable differences in the sites identified under the sliding and fixed-width approaches.
+Sites omitted from sliding-window analyses generally appeared be at the low end of signal, whilst this was less evident for sites exclusive to siding-window approaches.
+Despite their apparent lack of power in some circumstances, this shift away from sites at the low end of signal was considered advantageous in reality and these methods were scored with that in mind.
+
+
+
 ```{r set-methods}
 methods <- c(
   "DB-LS", "DB-TMM", 

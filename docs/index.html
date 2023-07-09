@@ -467,15 +467,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree11c225b254e15449ca91460074022b9178987e04targetblank11c225ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree53f469b518b583dfb6a60eeece4bf218803dcc3ctargetblank53f469ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/11c225b254e15449ca91460074022b9178987e04" target="_blank">11c225b</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/53f469b518b583dfb6a60eeece4bf218803dcc3c" target="_blank">53f469b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree11c225b254e15449ca91460074022b9178987e04targetblank11c225ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree53f469b518b583dfb6a60eeece4bf218803dcc3ctargetblank53f469ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -485,7 +485,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/11c225b254e15449ca91460074022b9178987e04" target="_blank">11c225b</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/53f469b518b583dfb6a60eeece4bf218803dcc3c" target="_blank">53f469b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -549,6 +549,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/smped/compare_diffsignal/blob/53f469b518b583dfb6a60eeece4bf218803dcc3c/analysis/index.Rmd" target="_blank">53f469b</a>
+</td>
+<td>
+Stevie Ped
+</td>
+<td>
+2023-07-09
+</td>
+<td>
+Re-evaluated scores
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/53f469b518b583dfb6a60eeece4bf218803dcc3c/docs/index.html" target="_blank">53f469b</a>
+</td>
+<td>
+Stevie Ped
+</td>
+<td>
+2023-07-09
+</td>
+<td>
+Re-evaluated scores
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -985,6 +1019,14 @@ robust overall and are generally applicable. Scores were also totalled
 within datasets to provide guidance as to the sensitivity of each
 dataset to the chosen methods, with high scores representing a dataset
 with few technical challenges.</p>
+<p>It was noted that there were notable differences in the sites
+identified under the sliding and fixed-width approaches. Sites omitted
+from sliding-window analyses generally appeared be at the low end of
+signal, whilst this was less evident for sites exclusive to
+siding-window approaches. Despite their apparent lack of power in some
+circumstances, this shift away from sites at the low end of signal was
+considered advantageous in reality and these methods were scored with
+that in mind.</p>
 <pre class="r"><code>methods &lt;- c(
   &quot;DB-LS&quot;, &quot;DB-TMM&quot;, 
   paste(&quot;FW&quot;, c(&quot;LS&quot;, &quot;TMM&quot;, &quot;TMMG&quot;, &quot;CQN&quot;, &quot;CQNG&quot;, &quot;SQN&quot;, &quot;SQNGC&quot;, &quot;LT&quot;), sep = &quot;-&quot;),
@@ -1131,6 +1173,43 @@ div(
 Heatmap of scores from individual datasets. Green indicates a
 recommended approach, whilst red indicates a highly problematic approach
 </p>
+</div>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-score-heatmap-1">
+Past versions of score-heatmap-1.png
+</button>
+</p>
+<div id="fig-score-heatmap-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/smped/compare_diffsignal/blob/53f469b518b583dfb6a60eeece4bf218803dcc3c/docs/figure/index.Rmd/score-heatmap-1.png" target="_blank">53f469b</a>
+</td>
+<td>
+Stevie Ped
+</td>
+<td>
+2023-07-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <br>
 <p>
