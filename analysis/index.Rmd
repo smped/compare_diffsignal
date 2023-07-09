@@ -10,7 +10,8 @@ editor_options:
 
 ```{r setup, echo=FALSE, eval=TRUE}
 knitr::opts_chunk$set(
-  message = FALSE, warning = FALSE
+  message = FALSE, warning = FALSE,
+  fig.height = 8, fig.width = 10, dev = "png", fig.align = "center"
 )
 ```
 
@@ -45,12 +46,12 @@ scores <- tibble(
     method %in% c(
       paste("DB", "TMM", sep = "-"), 
       paste("FW", c("CQN", "TMM", "SQN", "SQNGC"), sep = "-"),
-      paste("SW", c("CQN", "TMM", "LTSQNGC"), sep = "-")
+      paste("SW", c("CQN", "TMM", "SQN", "LTSQNGC"), sep = "-")
     ) ~ -1,
     method %in% c(
       paste("DB", "LS", sep = "-"), 
       paste("FW", c("LS", "LT", "TMMG", "CQNG"), sep = "-"),
-      paste("SW", c("CQNG", "TMMG", "LTSQN", "SQN", "SQNGC", "LT", "LS"), sep = "-")
+      paste("SW", c("CQNG", "TMMG", "LTSQN", "SQNGC", "LT", "LS"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
   ),
@@ -58,12 +59,12 @@ scores <- tibble(
     method %in% c(
       paste("DB", c(), sep = "-"),
       paste("FW", c("CQN", "CQNG"), sep = "-"),
-      paste("SW", c("CQN", "CQNG", "SQNGC"), sep = "-")
+      paste("SW", c("CQN", "CQNG", "LTSQNGC"), sep = "-")
     ) ~ -1,
     method %in% c(
       paste("DB", c("TMM"), sep = "-"), 
       paste("FW", c("SQN", "TMM"), sep = "-"),
-      paste("SW", c("LTSQN", "LTSQNGC", "SQN", "TMM"), sep = "-")
+      paste("SW", c("LTSQN", "SQN", "SQNGC", "TMM"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
   ),
@@ -76,8 +77,7 @@ scores <- tibble(
     method %in% c(
       paste("DB", c("LS", "TMM"), sep = "-"), 
       paste("FW", c("LS", "TMM", "TMMG", "CQN", "SQN", "LT"), sep = "-"),
-      paste("SW", c(), sep = "-")
-      # paste("SW", c("TMMG", "CQNG", "LTSQN", "CQN", "TMM", "LS", "LT"), sep = "-")
+      paste("SW", c("TMMG", "CQNG", "LTSQN", "CQN", "TMM", "LS", "LT"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
   )
