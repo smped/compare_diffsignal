@@ -1,0 +1,3108 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Stephen Pederson" />
+
+
+<title>MDA-MB-453: AR</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/core-js-2.5.3/shim.min.js"></script>
+<script src="site_libs/react-17.0.0/react.min.js"></script>
+<script src="site_libs/react-17.0.0/react-dom.min.js"></script>
+<script src="site_libs/reactwidget-1.0.0/react-tools.js"></script>
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="site_libs/reactable-0.4.4/reactable.css" rel="stylesheet" />
+<script src="site_libs/reactable-binding-0.4.4/reactable.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Compare Differential ChIP Signal</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    PRJNA509779
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="zr75_ar.html">AR</a>
+    </li>
+    <li>
+      <a href="zr75_er.html">ER</a>
+    </li>
+    <li>
+      <a href="zr75_h3k27ac.html">H3K27ac</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MDA-MB-453
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mdamb453_ar.html">AR</a>
+    </li>
+    <li>
+      <a href="mdamb453_gata3.html">GATA3</a>
+    </li>
+    <li>
+      <a href="mdamb453_h3k27ac.html">H3K27ac</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">MDA-MB-453: AR</h1>
+<h4 class="author">Stephen Pederson</h4>
+<h4 class="date">12 July, 2023</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-07-12
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>compare_diffsignal/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20230706code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20230706)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20230706code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20230706)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9dtargetblank274960da">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/smped/compare_diffsignal/tree/274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9d" target="_blank">274960d</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9dtargetblank274960da"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/smped/compare_diffsignal/tree/274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9d" target="_blank">274960d</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    data/bam/
+    Ignored:    data/macs2/
+    Ignored:    output/MDA-MB-453/
+    Ignored:    output/PRJNA509779/
+
+Untracked files:
+    Untracked:  analysis/mdamb453_ar.Rmd
+    Untracked:  analysis/mdamb453_gata3.Rmd
+    Untracked:  analysis/mdamb453_h3k27ac.Rmd
+    Untracked:  data/19-INPUT-G1_S19_R1_001_greylist.bed
+    Untracked:  data/MDA-MB-453.tsv
+    Untracked:  slurm/
+
+Unstaged changes:
+    Modified:   analysis/_site.yml
+    Modified:   code/_method_comparison.Rmd
+    Modified:   code/build_site.R
+    Modified:   code/submit.sh
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(tidyverse)
+library(extraChIPs)
+library(Rsamtools)
+library(rtracklayer)
+library(scales)
+library(glue)
+library(plyranges)
+library(pander)
+library(DiffBind)
+library(edgeR)
+library(csaw)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(qsmooth)
+library(BiocParallel)
+library(cqn)
+library(reactable)
+library(htmltools)
+library(ComplexUpset)
+library(patchwork)
+library(quantro)
+register(MulticoreParam(threads))
+panderOptions(&quot;table.split.table&quot;, Inf)
+theme_set(
+  theme_bw() + 
+    theme(
+      text = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(face = &quot;italic&quot;, hjust = 0.5)
+    )
+)
+status_colours &lt;- c(
+  Increased = &quot;red2&quot;, Decreased = &quot;deepskyblue3&quot;, 
+  Unchanged = &quot;grey30&quot;, Undetected = &quot;grey70&quot;
+)
+bar_style &lt;- function(width = 1, fill = &quot;#e6e6e6&quot;, height = &quot;75%&quot;, align = c(&quot;left&quot;, &quot;right&quot;), color = NULL, fontSize = c()) {
+  align &lt;- match.arg(align)
+  if (align == &quot;left&quot;) {
+    position &lt;- paste0(width * 100, &quot;%&quot;)
+    image &lt;- sprintf(&quot;linear-gradient(90deg, %1$s %2$s, transparent %2$s)&quot;, fill, position)
+  } else {
+    position &lt;- paste0(100 - width * 100, &quot;%&quot;)
+    image &lt;- sprintf(&quot;linear-gradient(90deg, transparent %1$s, %2$s %1$s)&quot;, position, fill)
+  }
+  styles &lt;- list(
+    backgroundImage = image,
+    backgroundSize = paste(&quot;100%&quot;, height),
+    backgroundRepeat = &quot;no-repeat&quot;,
+    backgroundPosition = &quot;center&quot;,
+    color = color
+  )
+  if (!is.null(fontSize)) styles$fontSize = fontSize
+  styles
+}</code></pre>
+<pre class="r"><code>samples &lt;- here::here(&quot;data&quot;, glue(&quot;{dataset}.tsv&quot;)) %&gt;% 
+  read_tsv() %&gt;% 
+  dplyr::filter(target == .GlobalEnv$target) %&gt;% 
+  mutate(treatment = factor(treatment, levels = treat_levels))</code></pre>
+<pre class="r"><code>bfl &lt;- samples %&gt;% 
+  mutate(path = here::here(&quot;data&quot;, &quot;bam&quot;, dataset, glue(&quot;{accession}.bam&quot;))) %&gt;% 
+  pull(path) %&gt;% 
+  BamFileList()
+sq &lt;- seqinfo(bfl) %&gt;% 
+  keepStandardChromosomes() %&gt;% 
+  dropSeqlevels(value = &quot;chrM&quot;) %&gt;% 
+  sortSeqlevels() 
+genome(sq) &lt;- &quot;hg19&quot;
+isCircular(sq) &lt;- rep_len(FALSE, length(seqlevels(sq)))</code></pre>
+<pre class="r"><code>samples %&gt;% 
+  pander(
+    caption = &quot;Description of samples used for method testing&quot;
+  )</code></pre>
+<table>
+<caption>Description of samples used for method testing</caption>
+<colgroup>
+<col width="44%" />
+<col width="11%" />
+<col width="14%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">accession</th>
+<th align="center">target</th>
+<th align="center">treatment</th>
+<th align="center">input</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">13-H3K27Ac-Vehicle-1-E1_S13_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">Veh</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+<tr class="even">
+<td align="center">14-H3K27Ac-Vehicle-2-E2_S14_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">Veh</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+<tr class="odd">
+<td align="center">15-H3K27Ac-Vehicle-3-E3_S15_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">Veh</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+<tr class="even">
+<td align="center">16-H3K27Ac-DHT-1-F1_S16_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">DHT</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+<tr class="odd">
+<td align="center">17-H3K27Ac-DHT-2-F2_S17_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">DHT</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+<tr class="even">
+<td align="center">18-H3K27Ac-DHT-3-F3_S18_R1_001</td>
+<td align="center">H3K27ac</td>
+<td align="center">DHT</td>
+<td align="center">19-INPUT-G1_S19_R1_001</td>
+</tr>
+</tbody>
+</table>
+<div id="peaks" class="section level2">
+<h2>Peaks</h2>
+<pre class="r"><code>greylist &lt;- here::here(&quot;data&quot;, glue(&quot;{samples$input}_greylist.bed&quot;)) %&gt;% 
+  unique() %&gt;% 
+  import.bed(which = GRanges(sq)) %&gt;% 
+  keepStandardChromosomes()%&gt;% 
+  dropSeqlevels(value = &quot;chrM&quot;) %&gt;% 
+  sortSeqlevels() 
+seqinfo(greylist) &lt;- sq
+data(&quot;hg19.blacklist&quot;, package = &quot;GreyListChIP&quot;) 
+blacklist &lt;- hg19.blacklist %&gt;% 
+  sortSeqlevels() %&gt;% 
+  subset(seqnames %in% seqlevels(sq)) %&gt;% 
+  dropSeqlevels(&quot;chrM&quot;) %&gt;% 
+  keepSeqlevels(value = seqnames(sq))
+seqinfo(blacklist) &lt;- sq
+omit_ranges &lt;- c(blacklist, greylist) %&gt;% 
+  granges() %&gt;% 
+  sort()
+all_peaks &lt;- samples %&gt;% 
+  mutate(peak_file = here::here(&quot;data&quot;, &quot;macs2&quot;, dataset, accession, glue(&quot;{accession}_peaks.narrowPeak&quot;))) %&gt;% 
+  split(.$treatment) %&gt;% 
+  lapply(pull, peak_file) %&gt;% 
+  lapply(
+    importPeaks, 
+    centre = TRUE, blacklist = omit_ranges, seqinfo = sq, 
+    glueNames = &quot;{str_remove_all(basename(x), &#39;_peaks.+&#39;)}&quot;
+  )
+treat_peaks &lt;- all_peaks %&gt;% 
+  lapply(makeConsensus, p = 2/3, var = &quot;centre&quot;) %&gt;% 
+  lapply(mutate, centre = vapply(centre, median, numeric(1))) 
+merged_peaks &lt;- here::here(
+  &quot;data&quot;, &quot;macs2&quot;, dataset, target, glue(&quot;{treat_levels}_merged_peaks.narrowPeak&quot;)
+) %&gt;% 
+  importPeaks(
+    blacklist = omit_ranges, seqinfo = sq, centre = TRUE, 
+    glueNames = &quot;{str_remove_all(basename(x), &#39;_merged.+&#39;)}&quot;
+  )
+merged_peaks &lt;- treat_levels %&gt;% 
+  lapply(
+    function(x) filter_by_overlaps(merged_peaks[[x]], treat_peaks[[x]])
+  ) %&gt;% 
+  GRangesList() %&gt;% 
+  setNames(treat_levels)
+union_peaks &lt;- makeConsensus(merged_peaks, var = c(&quot;score&quot;, &quot;centre&quot;)) %&gt;% 
+  mutate(
+    centre = round(vapply(centre, mean, numeric(1)), 0),
+    score=  vapply(score, max, numeric(1))
+  )
+union_peaks %&gt;% 
+  select(score) %&gt;% 
+  export.bed(file.path(out_path, glue(&quot;{target}_union_peaks.bed&quot;)))
+centred_peaks &lt;- union_peaks %&gt;% 
+  mutate(rng = paste0(seqnames, &quot;:&quot;, centre)) %&gt;% 
+  colToRanges(&quot;rng&quot;, seqinfo = sq) %&gt;% 
+  resize(width = params$width, fix = &#39;center&#39;)
+centred_peaks %&gt;% 
+  select(score) %&gt;% 
+  export.bed(file.path(out_path, glue(&quot;{target}_centred_peaks.bed&quot;)))</code></pre>
+<p>Peaks were:</p>
+<ol style="list-style-type: decimal">
+<li>Imported for each sample individually</li>
+<li>Merged to create treatment-specific ranges with peaks in 2 or more
+samples</li>
+<li>Those derived by merging samples (as input to
+<code>macs2 callpeak</code>) were filtered by overlaps with the above
+merged samples</li>
+<li>A set of union peaks were then taken as the union of the above
+treatment-specific peaks which passed filtering</li>
+</ol>
+<p>This gave 21,435 union peaks derived from <em>19,155</em> and
+<em>19,263</em> treatment-specific peaks from Veh and DHT
+respectively.</p>
+</div>
+<div id="fixed-width-analysis" class="section level2">
+<h2>Fixed-Width Analysis</h2>
+<div id="diffbind" class="section level3 tabset">
+<h3 class="tabset">DiffBind</h3>
+<pre class="r"><code>db_sample_sheet &lt;- samples %&gt;%
+  mutate(
+    Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
+    bamReads = path(bfl),
+    ControlID = &quot;Pooled&quot;,
+    bamControl = file.path(dirname(bamReads), glue(&quot;{input}.bam&quot;))#,
+    # Peaks = file.path(out_path, glue(&quot;{target}_centred_peaks.bed&quot;)),
+    # PeakCaller = &quot;bed&quot;
+  ) %&gt;% 
+  dplyr::rename(SampleID = accession, Treatment = treatment) %&gt;% 
+  mutate(Replicate = seq_along(Treatment), .by = Treatment) %&gt;% 
+  dplyr::select(
+    SampleID, Tissue, Factor, #Condition, 
+    Treatment, Replicate,
+    bamReads, ControlID, bamControl#, starts_with(&quot;Peak&quot;)
+  ) %&gt;% 
+  as.data.frame()
+dba &lt;- dba(
+  sampleSheet = db_sample_sheet, 
+  config = data.frame(fragmentSize = params$fl, cores = threads)
+) %&gt;% 
+  dba.count(peaks = union_peaks, summits = floor(params$width / 2)) %&gt;% 
+  dba.blacklist(cores = threads, blacklist = blacklist, greylist = greylist)</code></pre>
+<p>For the initial analysis using DiffBind, all files were passed to the
+requisite functions using a fixed-width of 1000 bp, assuming a fragment
+length of 210.</p>
+<pre class="r"><code>db_se &lt;- dba(dba, bSummarizedExperiment = TRUE)
+p &lt;- plotAssayDensities(
+  db_se, assay = &quot;Reads&quot;, trans = &quot;log1p&quot;, colour = &quot;Treatment&quot;
+  ) +
+  scale_colour_manual(values = c(&quot;deepskyblue3&quot;, &quot;red3&quot;))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plot-db-read-densities.png"
+alt="" />
+<p class="caption"><em>Read Density Plot for counts returned by
+DiffBind</em></p>
+</div>
+<div id="library-size" class="section level4">
+<h4>Library Size</h4>
+<pre class="r"><code>dba_ls &lt;- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_LIB) %&gt;% 
+  dba.analyze(method = DBA_ALL_METHODS)
+db_ls_results &lt;-  dba_ls %&gt;% 
+  dba.report(method = DBA_EDGER, th = 1) %&gt;% 
+  sortSeqlevels() %&gt;% 
+  sort() %&gt;% 
+  select(Conc, logFC = Fold, PValue = `p-value`, FDR) %&gt;% 
+  addDiffStatus()
+seqinfo(db_ls_results) &lt;- sq</code></pre>
+<p>This analysis returned 3,314 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- db_ls_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(Conc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: DiffBind&quot;), subtitle = &quot;Library Size Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;, colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-db-ls.png" alt="" />
+<p class="caption"><em>MA-plot for DiffBind results using Library Size
+Normalisation</em></p>
+</div>
+</div>
+<div id="tmm" class="section level4">
+<h4>TMM</h4>
+<pre class="r"><code>dba_tmm &lt;- dba.normalize(dba, method = DBA_ALL_METHODS, normalize = DBA_NORM_TMM) %&gt;% 
+  dba.analyze(method = DBA_ALL_METHODS)
+db_tmm_results &lt;- dba_tmm %&gt;%
+  dba.report(method = DBA_EDGER, th = 1) %&gt;% 
+  sortSeqlevels() %&gt;% 
+  sort() %&gt;% 
+  select(Conc, logFC = Fold, PValue = `p-value`, FDR) %&gt;% 
+  addDiffStatus()
+seqinfo(db_ls_results) &lt;- sq</code></pre>
+<p>This analysis returned 4,146 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- db_tmm_results  %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(Conc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{target}: DiffBind&quot;), subtitle = &quot;TMM Normalisation&quot;) +
+  labs(x = &quot;Ave Signal&quot;, y = &quot;logFC&quot;, colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-db-tmm.png" alt="" />
+<p class="caption"><em>MA-plot for DiffBind results using TMM
+Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="extrachips" class="section level3 tabset">
+<h3 class="tabset">extraChIPs</h3>
+<pre class="r"><code>rp &lt;- readParam(
+  pe = &quot;none&quot;, dedup = TRUE,
+  restrict = seqnames(sq),
+  discard = omit_ranges
+)
+se &lt;- regionCounts(
+  bfl, centred_peaks, ext = params$fl, param = rp, BPPARAM = bpparam()
+)
+colData(se) &lt;- colData(se) %&gt;%
+  as_tibble(rownames = &quot;sample&quot;) %&gt;%
+  mutate(
+    accession = str_remove_all(sample, &quot;.bam&quot;),
+  ) %&gt;%
+  left_join(samples, by = &quot;accession&quot;) %&gt;%
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %&gt;%
+  as.data.frame() %&gt;%
+  column_to_rownames(&quot;sample&quot;) %&gt;%
+  DataFrame()
+# se &lt;- dba(dba_ls, bSummarizedExperiment = TRUE)
+# assayNames(se) &lt;- str_replace_all(assayNames(se), &quot;^Reads$&quot;, &quot;counts&quot;)
+# se$treatment &lt;- factor(se$Treatment, levels = treat_levels)
+# se$totals &lt;- as.numeric(se$Reads)
+X &lt;- model.matrix(~treatment, data = colData(se))</code></pre>
+<pre class="r"><code>bs &lt;- BSgenome.Hsapiens.UCSC.hg19
+seqlevels(centred_peaks) &lt;- seqlevels(bs)
+seqinfo(centred_peaks) &lt;- seqinfo(bs)
+gc &lt;- getSeq(bs, centred_peaks) %&gt;% 
+  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
+rowData(se)$gc &lt;- gc[,1]
+centred_peaks &lt;- keepSeqlevels(centred_peaks, seqnames(sq))
+seqinfo(centred_peaks) &lt;- sq  # Restore..</code></pre>
+<pre class="r"><code>p &lt;- plotAssayDensities(se, trans = &quot;log1p&quot;, colour = &quot;treatment&quot;) +
+  scale_colour_manual(values = c(&quot;deepskyblue3&quot;, &quot;red3&quot;))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plot-ec-read-densities.png"
+alt="" />
+<p class="caption"><em>Read Density Plot for counts returned by
+csaw</em></p>
+</div>
+<div id="library-size-1" class="section level4 tabset">
+<h4 class="tabset">Library Size</h4>
+<pre class="r"><code>ec_ls_results &lt;- fitAssayDiff(se, design = X, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 4,460 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- ec_ls_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Library Size Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-ec-ls-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using Library Size
+Normalisation</em></p>
+</div>
+</div>
+<div id="gc-bias-plot" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_ls_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Library Size Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-ec-ls-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using Library
+Size Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-1" class="section level4 tabset">
+<h4 class="tabset">TMM</h4>
+<pre class="r"><code>ec_tmm_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,387 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-1" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmm_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-ec-tmm-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using TMM
+Normalisation</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-1" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmm_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-ec-tmm-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using Library
+Size Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-groups" class="section level4 tabset">
+<h4 class="tabset">TMM Groups</h4>
+<pre class="r"><code>ec_tmmg_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, groups = &quot;treat&quot;, asRanges = TRUE) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 4,699 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-2" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmmg_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM-Groups Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-ec-tmmg-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using TMM-groups
+Normalisation</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-2" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- ec_tmmg_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; TMM-Groups Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-ec-tmmg-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+TMM-Groups Normalisation</em></p>
+</div>
+</div>
+</div>
+</div>
+<div id="conditional-quantile" class="section level3 tabset">
+<h3 class="tabset">Conditional Quantile</h3>
+<div id="cqn" class="section level4 tabset">
+<h4 class="tabset">CQN</h4>
+<pre class="r"><code>cqn &lt;- assay(se, &quot;counts&quot;) %&gt;% 
+  cqn(
+    x = rowData(se)$gc, sizeFactors = se$totals, 
+    lengths = rep(1e3, nrow(se)), lengthMethod = &quot;fixed&quot;
+  )
+cqnplot(cqn)</code></pre>
+<pre class="r"><code>cqn_results &lt;- fitAssayDiff(
+  se, method = &quot;qlf&quot;, offset = cqn$glm.offset, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 6,153 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-3" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- cqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQ Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-cqn-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using CQ
+Normalisation</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-3" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- cqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQ Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-cqn-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using CQ
+Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="cqn-groups" class="section level4 tabset">
+<h4 class="tabset">CQN Groups</h4>
+<pre class="r"><code>cqn_groups &lt;- treat_levels %&gt;% 
+  lapply(
+    function(x) {
+      ind &lt;- se$treatment == x
+      mat &lt;- assay(se, &quot;counts&quot;)[, ind]
+      cqn(
+        mat, x = rowData(se)$gc, sizeFactors = se$totals[ind],
+        lengths = rep(1e3, nrow(se)), lengthMethod = &quot;fixed&quot;
+      )
+    }
+  ) %&gt;% 
+  setNames(treat_levels)
+offset &lt;- do.call(&quot;cbind&quot;, lapply(cqn_groups, function(x) x$glm.offset))[,colnames(se)]
+cqng_results &lt;- fitAssayDiff(
+  se, method = &quot;qlf&quot;, offset = offset, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,880 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-4" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- cqng_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQN-Groups&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-cqng-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using CQ
+Normalisation within groups</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-4" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- cqng_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; CQN-Groups&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-cqng-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+CQN-groups</em></p>
+</div>
+</div>
+</div>
+</div>
+<div id="smooth-quantile" class="section level3 tabset">
+<h3 class="tabset">Smooth Quantile</h3>
+<div id="sqn" class="section level4 tabset">
+<h4 class="tabset">SQN</h4>
+<pre class="r"><code>assay(se, &quot;normCounts&quot;) &lt;- qsmooth(se, group_factor = se$treatment) %&gt;% 
+  qsmoothData()
+sqn_results &lt;- fitAssayDiff(
+  se, assay = &quot;normCounts&quot;, lib.size = NULL, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,689 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-5" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- sqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Smooth Quantile Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sqn-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using Smooth
+Quantile Normalisation</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-5" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- sqn_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; SQ Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-sqn-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+SQN</em></p>
+</div>
+</div>
+</div>
+<div id="sqn-gc" class="section level4 tabset">
+<h4 class="tabset">SQN-GC</h4>
+<pre class="r"><code>assay(se, &quot;normCountsGC&quot;) &lt;- qsmoothGC(
+  se, group_factor = se$treatment, gc = rowData(se)$gc
+) %&gt;% 
+  qsmoothData()
+sqngc_results &lt;- fitAssayDiff(
+  se, assay = &quot;normCountsGC&quot;, lib.size = NULL, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 5,568 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-6" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- sqngc_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; SQ-GC Normalisation&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-ec-sqngc-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using Smooth
+Quantile Normalisation, accounting for GC content</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-6" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- sqngc_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; SQ-GC Normalisation&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-sqnggc-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using SQ-GC
+Normalisation</em></p>
+</div>
+</div>
+</div>
+<div id="limma-trend" class="section level4 tabset">
+<h4 class="tabset">Limma-Trend</h4>
+<pre class="r"><code>assay(se, &quot;logCPM&quot;) &lt;- cpm(assay(se, &quot;counts&quot;), log = TRUE, lib.size = se$totals)
+lt_results &lt;- fitAssayDiff(
+  se, assay = &quot;logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
+) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 4,463 peaks considered to show evidence of
+differential signal.</p>
+<div id="ma-plot-7" class="section level5">
+<h5>MA Plot</h5>
+<pre class="r"><code>p &lt;- lt_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Limma-Trend&quot;) +
+  labs(colour = &quot;Status&quot;) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-ec-lt-fixed.png" alt="" />
+<p class="caption"><em>MA-plot for extraChIPs results using
+Limma-Trend</em></p>
+</div>
+</div>
+<div id="gc-bias-plot-7" class="section level5">
+<h5>GC Bias Plot</h5>
+<pre class="r"><code>p &lt;- lt_results %&gt;% 
+  as_tibble() %&gt;% 
+  ggplot(aes(gc, logFC)) +
+  geom_point(aes(colour = status), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;extraChIPs; Fixed Width; Limma-Trend&quot;) +
+  labs(x = &quot;% GC&quot;, colour = &quot;Status&quot;) +
+  scale_x_continuous(labels = percent) +
+  scale_colour_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotgc-ec-lt-fixed.png" alt="" />
+<p class="caption"><em>GC-bias plot for extraChIPs results using
+Limma-Trend</em></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="comparison-of-extrachips-and-diffbind" class="section level2">
+<h2>Comparison of extraChIPs and DiffBind</h2>
+<pre class="r"><code>dir_combs &lt;- c(&quot;DiffBind&quot;, &quot;extraChIPs&quot;) %&gt;% 
+vapply(
+  function(x) paste(x, setdiff(names(status_colours), &quot;Undetected&quot;)),
+  character(3)
+) %&gt;% 
+  as.data.frame() %&gt;% 
+  expand.grid() %&gt;% 
+  mutate(
+    status = paste(extraChIPs, DiffBind, sep = &quot; - &quot;),
+    status = case_when(
+      grepl(&quot;Increased.+Increased&quot;, status) ~ &quot;Both Increased&quot;,
+      grepl(&quot;Decreased.+Decreased&quot;, status) ~ &quot;Both Decreased&quot;,
+      grepl(&quot;Unchanged.+Unchanged&quot;, status) ~ &quot;Both Unchanged&quot;,
+      TRUE ~ status
+    )
+  ) %&gt;% 
+  pull(status) %&gt;% 
+  sort()
+dir_cols &lt;- c(
+  rgb(0, 0, 1), rgb(1, 0, 0), rgb(0.5, 0.5, 0.5), #Both
+  &quot;orange&quot;, rgb(0, 0.5, 1), &quot;orange&quot;, rgb(1, 0.5, 0),
+  rgb(0.5, 0, 1), rgb(1, 0, 0.5)
+)
+names(dir_cols) &lt;- dir_combs
+stat_cols &lt;- c(
+  Neither = &quot;grey70&quot;, Both = &quot;forestgreen&quot;,
+  `DiffBind Only` = &quot;red&quot;, `extraChIPs Only` = &quot;orange&quot;
+)</code></pre>
+<p>Given the expectation of identical results, those from DiffBind and
+extraChIPs were compared for both Library-Size and TMM normalisation. It
+should be noted that DiffBind re-centres any supplied peaks whilst
+extraChIPs will not. This accounts for much of the observed difference,
+and direct comparison of Library Size normalisation using the two
+identical sets of ranges (i.e. passing DiffBind re-cented ranges to
+extraChIPs) does in fact yield a 1:1 association between logFC estimates
+and detection of differential signal. The following comparison instead
+indirectly assesses the impact of this additional step performed by
+DiffBind.</p>
+<div id="library-size-normalisation" class="section level3 tabset">
+<h3 class="tabset">Library Size Normalisation</h3>
+<div id="logfc-estimates" class="section level4">
+<h4>logFC Estimates</h4>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_ls_results, logFC, status), 
+  extraChIPs = select(ec_ls_results, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;, xside = &quot;none&quot;, yside = &quot;none&quot;) +
+    geom_abline(slope = 1) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, formula = &quot;y~x&quot;) +
+  ggtitle(
+    glue(&quot;{target} logFC&quot;), &quot;Library-Size Normalisation&quot;
+  ) +
+  scale_colour_manual(values = dir_cols)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/compare-logfc-db-ec-ls.png"
+alt="" />
+<p class="caption"><em>Comparison of logFC estimates returned using
+library-size normalisation for both DiffBind and extraChIPs</em></p>
+</div>
+</div>
+<div id="p-values" class="section level4">
+<h4>P-Values</h4>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_ls_results, PValue, status), 
+  extraChIPs = select(ec_ls_results, PValue, status)
+) %&gt;% 
+  mapGrlCols(var = c(&quot;PValue&quot;, &quot;status&quot;)) %&gt;% # , collapse = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;PValue&quot;), function(x) -log10(x)),
+    status = case_when(
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;Both&quot;, 
+      !grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;extraChIPs Only&quot;, 
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; !grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;DiffBind Only&quot;, 
+      TRUE ~ &quot;Neither&quot;
+    )
+  ) %&gt;% 
+  dplyr::filter(!is.na(DiffBind_PValue), !is.na(extraChIPs_PValue)) %&gt;% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  geom_abline(slope = 1) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, formula = &quot;y~x&quot;) +
+  ggtitle(
+    glue(&quot;{target}&quot;), &quot;Library-Size Normalisation&quot;
+  ) +
+  scale_colour_manual(values = stat_cols) +
+  labs(
+    x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
+    y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
+    colour = &quot;Status&quot;
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/compare-p-db-ec-ls.png" alt="" />
+<p class="caption"><em>Comparison of -log<sub>10</sub> p-values returned
+using library-size normalisation for both DiffBind and
+extraChIPs</em></p>
+</div>
+</div>
+</div>
+<div id="tmm-normalisation" class="section level3 tabset">
+<h3 class="tabset">TMM Normalisation</h3>
+<div id="logfc-estimates-1" class="section level4">
+<h4>logFC Estimates</h4>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_tmm_results, logFC, status), 
+  extraChIPs = select(ec_tmm_results, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;, xside = &quot;none&quot;, yside = &quot;none&quot;) +
+    geom_abline(slope = 1) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, formula = &quot;y~x&quot;) +
+  ggtitle(
+    glue(&quot;{target} logFC&quot;), &quot;TMM Normalisation&quot;
+  ) +
+  scale_colour_manual(values = dir_cols)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/compare-logfc-db-ec-tmm.png"
+alt="" />
+<p class="caption"><em>Comparison of logFC estimates returned using TMM
+normalisation for both DiffBind and extraChIPs</em></p>
+</div>
+</div>
+<div id="p-values-1" class="section level4">
+<h4>P-Values</h4>
+<pre class="r"><code>p &lt;- GRangesList(
+  DiffBind = select(db_tmm_results, PValue, status), 
+  extraChIPs = select(ec_tmm_results, PValue, status)
+) %&gt;% 
+  mapGrlCols(var = c(&quot;PValue&quot;, &quot;status&quot;)) %&gt;% # , collapse = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;PValue&quot;), function(x) -log10(x)),
+    status = case_when(
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;Both&quot;, 
+      !grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;extraChIPs Only&quot;, 
+      grepl(&quot;(In|De)creased&quot;, DiffBind_status) &amp; !grepl(&quot;(In|De)creased&quot;, extraChIPs_status) ~ &quot;DiffBind Only&quot;, 
+      TRUE ~ &quot;Neither&quot;
+    )
+  ) %&gt;% 
+    dplyr::filter(!is.na(DiffBind_PValue), !is.na(extraChIPs_PValue)) %&gt;% 
+  ggplot(aes(DiffBind_PValue, extraChIPs_PValue)) +
+  geom_point(aes(colour = status)) +
+  geom_abline(slope = 1) +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, formula = &quot;y~x&quot;) +
+  ggtitle(
+    glue(&quot;{target}&quot;), &quot;TMM Normalisation&quot;
+  ) +
+  scale_colour_manual(values = stat_cols) +
+  labs(
+    x = expr(paste(-log[10], &quot;p (DiffBind)&quot;)),
+    y = expr(paste(-log[10], &quot;p (extraChIPs)&quot;)),
+    colour = &quot;Status&quot;
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/compare-p-db-ec-tmm.png" alt="" />
+<p class="caption"><em>Comparison of -log<sub>10</sub> p-values returned
+using TMM normalisation for both DiffBind and extraChIPs</em></p>
+</div>
+</div>
+</div>
+</div>
+<div id="sliding-windows" class="section level2">
+<h2>Sliding Windows</h2>
+<pre class="r"><code>window_size &lt;- round(params$width / 5, -1)
+window_step &lt;- ceiling(0.1 * window_size / 3) * 10
+bfl &lt;- path(bfl) %&gt;% 
+  dirname() %&gt;% 
+  unique() %&gt;% 
+  file.path(glue(&quot;{samples$input}.bam&quot;)) %&gt;% 
+  unique() %&gt;% 
+  BamFileList() %&gt;% 
+  setNames(unique(samples$input)) %&gt;% 
+  c(bfl)</code></pre>
+<p>Windows were set to be about 1/5 of the fixed-width window-size, with
+each range covered up to 3 times. This gave 200bp windows moving in
+increments of 70bp.</p>
+<pre class="r"><code>wincounts &lt;- windowCounts(
+  bam.files = bfl,
+  spacing = window_step,
+  width = window_size,
+  ext = params$fl,
+  filter = length(bfl),
+  param = rp,
+  BPPARAM = bpparam()
+)
+seqlevels(wincounts) &lt;- seqlevels(sq)
+seqinfo(wincounts) &lt;- sq
+colData(wincounts) &lt;- colData(wincounts) %&gt;% 
+  as_tibble(rownames = &quot;sample&quot;) %&gt;% 
+  mutate(
+    accession = str_remove_all(sample, &quot;.bam&quot;),
+    ChIP_Target = ifelse(accession %in% samples$accession, .GlobalEnv$target, &quot;Input&quot;)
+  ) %&gt;% 
+  left_join(samples, by = &quot;accession&quot;) %&gt;% 
+  dplyr::select(all_of(colnames(colData(se))), sample, accession, ChIP_Target, treatment) %&gt;% 
+  as.data.frame() %&gt;% 
+  column_to_rownames(&quot;sample&quot;) %&gt;% 
+  DataFrame()</code></pre>
+<pre class="r"><code>filtcounts &lt;- dualFilter(
+  x = wincounts[, wincounts$ChIP_Target == target],
+  bg = wincounts[, wincounts$ChIP_Target != target], 
+  ref = union_peaks,
+  q = 0.6
+)</code></pre>
+<pre class="r"><code>filtRanges &lt;- granges(rowRanges(filtcounts))
+seqlevels(filtRanges) &lt;- seqlevels(bs)
+genome(filtRanges) &lt;- &quot;hg19&quot;
+seqinfo(filtRanges) &lt;- seqinfo(bs)
+gc &lt;- getSeq(bs, filtRanges) %&gt;% 
+  letterFrequency(letters = &quot;GC&quot;, as.prob = TRUE)
+rowRanges(filtcounts)$gc &lt;- gc[,1]
+assay(filtcounts, &quot;sq_counts&quot;) &lt;- assay(filtcounts, &quot;counts&quot;) %&gt;% 
+  qsmooth(group_factor = filtcounts$treatment) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sq_logCPM&quot;) &lt;- assay(filtcounts, &quot;logCPM&quot;) %&gt;% 
+  qsmooth(group_factor = filtcounts$treatment) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sqgc_counts&quot;) &lt;- assay(filtcounts, &quot;counts&quot;) %&gt;% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc) %&gt;% 
+  qsmoothData()
+assay(filtcounts, &quot;sqgc_logCPM&quot;) &lt;- assay(filtcounts, &quot;logCPM&quot;) %&gt;% 
+  qsmoothGC(filtcounts$treatment, rowRanges(filtcounts)$gc, round = FALSE) %&gt;% 
+  qsmoothData()
+X &lt;- model.matrix(~treatment, data = colData(filtcounts))</code></pre>
+<pre class="r"><code>p &lt;- plotAssayDensities(filtcounts, trans = &quot;log1p&quot;, colour = &quot;treatment&quot;) +
+  scale_colour_manual(values = c(&quot;deepskyblue3&quot;, &quot;red3&quot;))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plot-sw-read-densities.png"
+alt="" />
+<p class="caption"><em>Read Density Plot for sliding-window counts
+returned by extraChIPs after filtering</em></p>
+</div>
+<p>Under this filtering approach 5,861 of the 21,435 (27.3%) were not
+covered by any sliding windows.</p>
+<p>Conversely, 17.4% of the sliding windows retained after filtering did
+not overlap any of the union_peaks.</p>
+<div id="qlf-methods" class="section level3 tabset">
+<h3 class="tabset">QLF Methods</h3>
+<div id="library-size-2" class="section level4">
+<h4>Library Size</h4>
+<pre class="r"><code>sw_ls_all &lt;- fitAssayDiff(filtcounts, design = X, asRanges = TRUE) 
+sw_ls_results &lt;- sw_ls_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 2,526 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_ls_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_ls_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; Library Size Normalisation&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-ls.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using Library
+Size Normalisation. All windows are shown, prior to merging of results.
+Windows considered to the the key-value range in significant merged
+ranges are highlighted in red.</em></p>
+</div>
+</div>
+<div id="tmm-2" class="section level4">
+<h4>TMM</h4>
+<pre class="r"><code>sw_tmm_all &lt;- fitAssayDiff(filtcounts, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) 
+sw_tmm_results &lt;- sw_tmm_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 3,141 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_tmm_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_tmm_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; TMM Normalisation&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-tmm.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using TMM
+Normalisation. All windows are shown, prior to merging of results.
+Windows considered to the the key-value range in significant merged
+ranges are highlighted in red.</em></p>
+</div>
+</div>
+<div id="tmm-groups-1" class="section level4">
+<h4>TMM Groups</h4>
+<pre class="r"><code>sw_tmmg_all &lt;- fitAssayDiff(
+  filtcounts, design = X, norm = &quot;TMM&quot;, groups = &quot;treatment&quot;, asRanges = TRUE
+) 
+sw_tmmg_results &lt;- sw_tmmg_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 2,588 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_tmmg_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_tmmg_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; TMM-Groups Normalisation&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-tmmg.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using TMM
+Normalisation within treatment groups. All windows are shown, prior to
+merging of results. Windows considered to the the key-value range in
+significant merged ranges are highlighted in red.</em></p>
+</div>
+</div>
+<div id="smooth-quantile-1" class="section level4">
+<h4>Smooth Quantile</h4>
+<pre class="r"><code>sw_sq_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sq_counts&quot;, totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sq_results &lt;- sw_sq_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 1,559 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_sq_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_sq_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; SQN (Counts)&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-sq.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Smooth-Quantile Normalisation on counts, within treatment groups. All
+windows are shown, prior to merging of results. Windows considered to
+the the key-value range in significant merged ranges are highlighted in
+red.</em></p>
+</div>
+</div>
+<div id="smooth-quantile-gc" class="section level4">
+<h4>Smooth Quantile GC</h4>
+<pre class="r"><code>sw_sqgc_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sqgc_counts&quot;, totals = NULL, design = X, asRanges = TRUE
+) 
+sw_sqgc_results &lt;- sw_sqgc_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 1,871 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_sqgc_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_sqgc_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; SQN-GC (Counts)&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-sqgc.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Smooth-Quantile Normalisation on counts, within treatment groups and
+accounting for GC effects. All windows are shown, prior to merging of
+results. Windows considered to the the key-value range in significant
+merged ranges are highlighted in red.</em></p>
+</div>
+</div>
+<div id="conditional-quantile-normalisation" class="section level4">
+<h4>Conditional Quantile Normalisation</h4>
+<pre class="r"><code>cqn &lt;- assay(filtcounts, &quot;counts&quot;) %&gt;% 
+  cqn(
+    x = rowData(filtcounts)$gc, sizeFactors = filtcounts$totals, 
+    lengths = rep(1e3, nrow(filtcounts)), lengthMethod = &quot;fixed&quot;
+  )
+sw_cqn_all &lt;- fitAssayDiff(
+  filtcounts, method = &quot;qlf&quot;, offset = cqn$glm.offset, design = X, asRanges = TRUE
+) 
+sw_cqn_results &lt;- sw_cqn_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 4,334 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_cqn_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_cqn_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; CQN&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-cqn.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Conditional-Quantile Normalisation on counts to account for GC-effects.
+All windows are shown, prior to merging of results. Windows considered
+to the the key-value range in significant merged ranges are highlighted
+in red.</em></p>
+</div>
+</div>
+<div id="conditional-quantile-normalisation-groups"
+class="section level4">
+<h4>Conditional Quantile Normalisation (Groups)</h4>
+<pre class="r"><code>cqn_groups &lt;- treat_levels %&gt;% 
+  lapply(
+    function(x) {
+      ind &lt;- filtcounts$treatment == x
+      mat &lt;- assay(filtcounts, &quot;counts&quot;)[, ind]
+      cqn(
+        mat, x = rowData(filtcounts)$gc, sizeFactors = filtcounts$totals[ind],
+        lengths = rep(1e3, nrow(filtcounts)), lengthMethod = &quot;fixed&quot;
+      )
+    }
+  ) %&gt;% 
+  setNames(treat_levels)
+offset &lt;- do.call(&quot;cbind&quot;, lapply(cqn_groups, function(x) x$glm.offset))[,colnames(filtcounts)]
+sw_cqng_all &lt;- fitAssayDiff(
+  filtcounts, method = &quot;qlf&quot;, offset = offset, design = X, asRanges = TRUE
+) 
+sw_cqng_results &lt;- sw_cqng_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 3,225 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_cqng_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_cqng_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; CQN-Groups&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-cqng.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Conditional-Quantile Normalisation on counts to account for GC-effects.
+All windows are shown, prior to merging of results. Windows considered
+to the the key-value range in significant merged ranges are highlighted
+in red.</em></p>
+</div>
+</div>
+</div>
+<div id="limma-trend-methods" class="section level3 tabset">
+<h3 class="tabset">Limma-Trend Methods</h3>
+<div id="logcpm" class="section level4">
+<h4>logCPM</h4>
+<pre class="r"><code>sw_lt_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
+) 
+sw_lt_results &lt;- sw_lt_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 2,436 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_lt_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_lt_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; Limma-Trend&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-lt.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Limma-Trend on logCPM values taken directly from each window. All
+windows are shown, prior to merging of results. Windows considered to
+the the key-value range in significant merged ranges are highlighted in
+red.</em></p>
+</div>
+</div>
+<div id="smooth-quantile-2" class="section level4">
+<h4>Smooth Quantile</h4>
+<pre class="r"><code>sw_ltsq_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sq_logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
+) 
+sw_ltsq_results &lt;- sw_ltsq_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 2,953 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_ltsq_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_ltsq_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; SQN + Limma-Trend&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-ltsq.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are
+shown, prior to merging of results. Windows considered to the the
+key-value range in significant merged ranges are highlighted in
+red.</em></p>
+</div>
+</div>
+<div id="smooth-quantile-gc-1" class="section level4">
+<h4>Smooth Quantile GC</h4>
+<pre class="r"><code>sw_ltsqgc_all &lt;- fitAssayDiff(
+  filtcounts, assay = &quot;sqgc_logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
+) 
+sw_ltsqgc_results &lt;- sw_ltsqgc_all %&gt;% 
+  mergeByHMP(inc_cols = &quot;overlaps_ref&quot;, min_win = 2) %&gt;% 
+  mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
+  select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
+  addDiffStatus()</code></pre>
+<p>This analysis returned 3,249 peaks considered to show evidence of
+differential signal.</p>
+<pre class="r"><code>p &lt;- sw_ltsqgc_all %&gt;% 
+  mutate(Sig = propOverlap(., subset(sw_ltsqgc_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(Sig) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = Sig), alpha = 0.7) +
+  geom_smooth(se = FALSE) +
+  geom_hline(yintercept = 0) +
+  scale_colour_manual(values = c(&quot;grey&quot;, &quot;red&quot;)) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;), subtitle = &quot;Sliding Windows; SQN-GC + Limma-Trend&quot;) +
+  labs(x = &quot;logCPM&quot;, y = &quot;logFC&quot;) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-sw-ltsqgc.png" alt="" />
+<p class="caption"><em>MA-plot for sliding-window results using
+Limma-Trend on Smooth Quantile Normalised logCPM values. All windows are
+shown, prior to merging of results. Windows considered to the the
+key-value range in significant merged ranges are highlighted in
+red.</em></p>
+</div>
+</div>
+</div>
+</div>
+<div id="fixed-vs-sliding-windows" class="section level2 tabset">
+<h2 class="tabset">Fixed Vs Sliding Windows</h2>
+<p>As representative of a conservative approach without known bias, the
+fixed and sliding window approaches were compared using <em>library size
+normalisation</em>. This gives a guide as to which sites are
+additionally covered or omitted by either approach.</p>
+<div id="ma-plots" class="section level3">
+<h3>MA Plots</h3>
+<pre class="r"><code>A &lt;- ec_ls_results %&gt;% 
+  mutate(inSliding = overlapsAny(., sw_ls_results)) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(inSliding = ifelse(inSliding, &quot;In Sliding Windows&quot;, &quot;Not In Sliding Windows&quot;)) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inSliding) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = &quot;Status&quot;)
+B &lt;- sw_ls_results %&gt;% 
+    mutate(inFixed = overlapsAny(., ec_ls_results)) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(inFixed = ifelse(inFixed, &quot;In Fixed Windows&quot;, &quot;Not In Fixed Windows&quot;)) %&gt;% 
+  ggplot(aes(logCPM, logFC)) +
+  geom_point(aes(colour = status)) +
+  facet_wrap(~inFixed) +
+  scale_colour_manual(values = status_colours) +
+  labs(colour = &quot;Status&quot;)
+p &lt;- A + B + 
+  plot_layout(nrow = 2, guides = &quot;collect&quot;) +
+  plot_annotation(tag_levels = &quot;A&quot;) +
+  plot_annotation(title = glue(&quot;{dataset}: {target}&quot;))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plotma-fixed-sliding.png" alt="" />
+<p class="caption"><em>MA Plots for each analysis with points separated
+by whether they were detected or not in the contrasting
+approach.</em></p>
+</div>
+</div>
+<div id="logfc-comparison" class="section level3">
+<h3>logFC Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logFC&quot;, colour = &quot;status&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) +
+  scale_fill_manual(
+    values = c(
+      setNames(status_colours, paste(&quot;Fixed&quot;, names(status_colours))),
+      setNames(status_colours, paste(&quot;Sliding&quot;, names(status_colours)))
+    )
+  )
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/logfc-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of logFC estimates across fixed and
+sliding windows including status from each dataset.</em></p>
+</div>
+</div>
+<div id="logcpm-comparison" class="section level3">
+<h3>logCPM Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  plotPairwise(var = &quot;logCPM&quot;, alpha = 0.7) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) 
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/logcpm-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of logCPM values across fixed and
+sliding windows indicating detection/inclusion status under either
+approach</em></p>
+</div>
+</div>
+<div id="status-comparison" class="section level3">
+<h3>Status Comparison</h3>
+<pre class="r"><code>p &lt;- GRangesList(
+  Fixed = select(ec_ls_results, logCPM, logFC, status),
+  Sliding = select(sw_ls_results, logCPM, logFC, status)
+) %&gt;% 
+  mapGrlCols(var = &quot;status&quot;) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(
+    across(ends_with(&quot;status&quot;), \(x) fct_na_value_to_level(x, &quot;Undetected&quot;))
+  ) %&gt;% 
+  summarise(n = dplyr::n(), .by = ends_with(&quot;status&quot;)) %&gt;% 
+  mutate(combined = fct_cross(fct_rev(Fixed_status), fct_rev(Sliding_status), sep = &quot; - &quot;)) %&gt;% 
+  ggplot(aes(Fixed_status, Sliding_status, fill = combined)) +
+  geom_point(aes(size = n), shape = 21) +
+  geom_label(aes(label = comma(n)), fill = &quot;white&quot;, alpha = 0.7) +
+  geom_rect(xmin = 0.6, xmax = 1.4, ymin = 1.6, ymax = 3.4, colour = &quot;red&quot;, fill = NA) +
+  geom_rect(ymin = 0.6, ymax = 1.4, xmin = 1.6, xmax = 3.4, colour = &quot;red&quot;, fill = NA) +
+  geom_rect(ymin = 3.6, ymax = 4.4, xmin = 1.6, xmax = 3.4, colour = &quot;blue&quot;, fill = NA) +
+  geom_rect(xmin = 3.6, xmax = 4.4, ymin = 1.6, ymax = 3.4, colour = &quot;blue&quot;, fill = NA) +
+  scale_x_discrete(drop = FALSE) +
+  scale_y_discrete(drop = FALSE) +
+  scale_size(range = c(5, 55)) +
+  scale_fill_viridis_d(direction = -1) +
+  guides(size = &quot;none&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target}&quot;)) +
+  labs(x = &quot;Fixed Window Status&quot;, y = &quot;Slding Window Status&quot;, fill = &quot;Combined Status&quot;)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/status-fixed-sliding.png" alt="" />
+<p class="caption"><em>Comparison of status between fixed and sliding
+windows. Points along the diagonal are consistent between approaches.
+Red rectangles highlight the regions considered unchanged under one
+approach, but changed in the other. Blue rectangles highlight the
+regions considered changed under one approach, but which were
+undetectable/excluded from the alternative method</em></p>
+</div>
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<pre class="r"><code>all_res &lt;- list(
+  `DB-LS` = db_ls_results,
+  `DB-TMM` = db_tmm_results,
+  `FW-LS` = ec_ls_results,
+  `FW-TMM` = ec_tmm_results,
+  `FW-TMMG` = ec_tmmg_results,
+  `FW-CQN` = cqn_results,
+  `FW-CQNG` = cqng_results,
+  `FW-SQN` = sqn_results,
+  `FW-SQNGC` = sqngc_results,
+  `FW-LT` = lt_results,
+  `SW-LS` = sw_ls_results,
+  `SW-TMM` = sw_tmm_results,
+  `SW-TMMG` = sw_tmmg_results,
+  `SW-SQN` = sw_sq_results,
+  `SW-SQNGC` = sw_sqgc_results,
+  `SW-CQN` = sw_cqn_results,
+  `SW-CQNG` = sw_cqng_results,
+  `SW-LT` = sw_lt_results,
+  `SW-LTSQN` = sw_ltsq_results,
+  `SW-LTSQNGC` = sw_ltsqgc_results
+)
+write_rds(
+  all_res,
+  here::here(&quot;output&quot;, dataset, target, &quot;all_results.rds&quot;),
+  compress = &quot;gz&quot;
+)</code></pre>
+<div id="quantro-test" class="section level3">
+<h3>Quantro Test</h3>
+<pre class="r"><code>qtest &lt;- list(
+  `FW-Counts` = quantro(assay(se, &quot;counts&quot;), groupFactor = se$treatment, B = 1e3),
+  `FW-logCPM` = quantro(assay(se, &quot;logCPM&quot;), groupFactor = se$treatment, B = 1e3),
+  `SW-Counts` = quantro(assay(filtcounts, &quot;counts&quot;), groupFactor = filtcounts$treatment, B = 1e3),
+  `SW-logCPM` = quantro(assay(filtcounts, &quot;logCPM&quot;), groupFactor = filtcounts$treatment, B = 1e3)
+)
+qtest %&gt;% 
+  lapply(
+    function(x){
+      p &lt;- anova(x)$`Pr(&gt;F)`[[1]]
+      perm &lt;- x@quantroPvalPerm
+      tibble(`Anova P` = p, `Permutation P` = perm)
+    }
+  ) %&gt;% 
+  bind_rows(.id = &quot;method&quot;) %&gt;% 
+  mutate(
+    windows = ifelse(grepl(&quot;^FW&quot;, method), &quot;Fixed&quot;, &quot;Sliding&quot;),
+    assay = str_remove_all(method, &quot;^.+-&quot;),
+    `Group Effects` = `Anova P` &lt; 0.05 | `Permutation P` &lt; 0.05
+  ) %&gt;% 
+  dplyr::select(
+    method, windows, assay, ends_with(&quot;P&quot;), everything()
+  ) %&gt;% 
+  rename_with(str_to_title) %&gt;% 
+  pander(
+    justify = &quot;lllrrl&quot;,
+    caption = &quot;
+    Summary of quantro test results. The Anova results test for equality of 
+    medians between groups, whilst the permutation test identifies distributions 
+    with different shapes. Any difference detected between treatment groups 
+    will raise concerns about methods, such as TMM and CQN, which do not 
+    explicitly account for differences in data distributions.
+    &quot;
+  )</code></pre>
+<table>
+<caption>Summary of quantro test results. The Anova results test for
+equality of medians between groups, whilst the permutation test
+identifies distributions with different shapes. Any difference detected
+between treatment groups will raise concerns about methods, such as TMM
+and CQN, which do not explicitly account for differences in data
+distributions.</caption>
+<colgroup>
+<col width="16%" />
+<col width="13%" />
+<col width="12%" />
+<col width="13%" />
+<col width="21%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Method</th>
+<th align="left">Windows</th>
+<th align="left">Assay</th>
+<th align="right">Anova P</th>
+<th align="right">Permutation P</th>
+<th align="left">Group Effects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">FW-Counts</td>
+<td align="left">Fixed</td>
+<td align="left">Counts</td>
+<td align="right">0.8722</td>
+<td align="right">0.566</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">FW-logCPM</td>
+<td align="left">Fixed</td>
+<td align="left">logCPM</td>
+<td align="right">0.9235</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">SW-Counts</td>
+<td align="left">Sliding</td>
+<td align="left">Counts</td>
+<td align="right">1</td>
+<td align="right">0.676</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">SW-logCPM</td>
+<td align="left">Sliding</td>
+<td align="left">logCPM</td>
+<td align="right">0.9811</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="comparison-table" class="section level3">
+<h3>Comparison Table</h3>
+<pre class="r"><code>tbl &lt;- all_res %&gt;%
+  lapply(
+    function(x) {
+      tbl &lt;- table(x$status)
+      tibble(status = names(tbl), n = as.integer(tbl))
+    }
+  ) %&gt;% 
+  bind_rows(.id = &quot;method&quot;) %&gt;% 
+  dplyr::filter(n &gt; 0) %&gt;% 
+  pivot_wider(names_from = &quot;status&quot;, values_from = &quot;n&quot;) %&gt;% 
+  mutate(
+    total = Unchanged + Decreased + Increased,
+    Detected = 1 - Unchanged / total,
+    package = ifelse(grepl(&quot;DB&quot;, method), &quot;DiffBind&quot;, &quot;extraChIPs&quot;),
+    normalisation = str_remove_all(method, &quot;.+-&quot;),
+    groups = grepl(&quot;(SQ|G$)&quot;, normalisation),
+    windows = ifelse(grepl(&quot;^SW&quot;, method), &quot;Sliding&quot;, &quot;Fixed&quot;),
+    GC = grepl(&quot;GC|CQN&quot;, normalisation),
+    Model = ifelse(grepl(&quot;LT&quot;, normalisation), &quot;limma-trend&quot;, &quot;glmQLF&quot;),
+    normalisation = normalisation %&gt;% 
+      str_remove_all(&quot;(^LT|G$)&quot;) %&gt;% 
+      str_replace_all(&quot;GC$&quot;, &quot;-GC&quot;)
+  ) %&gt;% 
+  arrange(desc(Detected)) %&gt;% 
+  dplyr::select(
+    method, package, windows, normalisation, groups, GC, Model, total, 
+    Detected, Increased, Decreased, Unchanged
+  ) %&gt;% 
+  rename_with(str_to_title, -all_of(&quot;GC&quot;)) %&gt;% 
+  reactable(
+    sortable = TRUE, filterable = TRUE, pagination = FALSE,
+    columns = list(
+      Normalisation = colDef(name = &quot;Norm&quot;, maxWidth = 100),
+      Groups = colDef(
+        cell = function(value) ifelse(value, &quot;Y&quot;, &quot;N&quot;), maxWidth = 80
+      ),
+      GC = colDef(
+        cell = function(value) ifelse(value, &quot;Y&quot;, &quot;N&quot;), maxWidth = 50
+      ),
+      Total = colDef(format = colFormat(separators = TRUE), maxWidth = 80),
+      Increased = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Decreased = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Unchanged = colDef(format = colFormat(separators = TRUE), maxWidth = 100),
+      Detected = colDef(
+        format = colFormat(percent = TRUE, digits = 1), maxWidth = 80,
+        style = function(value) bar_style(width = value, align = &quot;left&quot;)
+      ),
+      Windows = colDef(maxWidth = 80)
+    )
+  )
+cp &lt;- htmltools::tags$caption(
+  htmltools::em(
+    glue(
+      &quot;
+      Summary of all {length(all_res)} approaches investigated. Results are
+      ranked by the total number of detected regions, although this may be
+      poorly representative of accuracy. LS in the Normalisation column is 
+      indicative of Library-Size normalisation, which is the most conservative 
+      approach, but is widely applicable in general. Models fitted using 
+      limma-trend used logCPM values instead of counts.
+      &quot;
+    )
+  )
+)
+div(
+  class = &quot;table&quot;,
+  div(class = &quot;table-header&quot;, cp),
+  tbl
+)</code></pre>
+<div class="table">
+<div class="table-header">
+<caption>
+<em>Summary of all 20 approaches investigated. Results are
+ranked by the total number of detected regions, although this may be
+poorly representative of accuracy. LS in the Normalisation column is 
+indicative of Library-Size normalisation, which is the most conservative 
+approach, but is widely applicable in general. Models fitted using 
+limma-trend used logCPM values instead of counts.</em>
+</caption>
+</div>
+<div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-457d6c0a31b68c9ac99b" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-457d6c0a31b68c9ac99b">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Method":["FW-CQN","FW-CQNG","FW-SQN","FW-SQNGC","FW-TMM","DB-TMM","FW-TMMG","SW-CQN","FW-LT","FW-LS","DB-LS","SW-LTSQNGC","SW-CQNG","SW-TMM","SW-LTSQN","SW-TMMG","SW-LS","SW-LT","SW-SQNGC","SW-SQN"],"Package":["extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","DiffBind","extraChIPs","extraChIPs","extraChIPs","extraChIPs","DiffBind","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs"],"Windows":["Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Sliding","Fixed","Fixed","Fixed","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding"],"Normalisation":["CQN","CQN","SQN","SQN-GC","TMM","TMM","TMM","CQN","","LS","LS","SQN-GC","CQN","TMM","SQN","TMM","LS","","SQN-GC","SQN"],"Groups":[false,true,true,true,false,false,true,false,false,false,false,true,true,false,true,true,false,false,true,true],"GC":[true,true,false,true,false,false,false,true,false,false,false,true,true,false,false,false,false,false,true,false],"Model":["glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF"],"Total":[21435,21435,21435,21435,21435,16711,21435,19858,21435,21435,16711,19858,19858,19858,19858,19858,19858,19858,19858,19858],"Detected":[0.28705388383485,0.274317704688593,0.265407044553301,0.259762071378586,0.251317937951948,0.248100053856741,0.219220900396548,0.218249571960923,0.208210870072312,0.208070912059715,0.198312488779846,0.163611642662907,0.162403061738342,0.158173028502367,0.148705811259946,0.130325309698862,0.127203142310404,0.122670963843287,0.0942189545775003,0.0785074025581629],"Increased":[3035,3326,2896,2892,2929,2191,2732,1411,2635,2640,1824,1760,1897,1715,1609,1491,1469,1423,1165,1043],"Decreased":[3118,2554,2793,2676,2458,1955,1967,2923,1828,1820,1490,1489,1328,1426,1344,1097,1057,1013,706,516],"Unchanged":[15282,15555,15746,15867,16048,12565,16736,15524,16972,16975,13397,16609,16633,16717,16905,17270,17332,17422,17987,18299]},"columns":[{"id":"Method","name":"Method","type":"character"},{"id":"Package","name":"Package","type":"character"},{"id":"Windows","name":"Windows","type":"character","maxWidth":80},{"id":"Normalisation","name":"Norm","type":"character","maxWidth":100},{"id":"Groups","name":"Groups","type":"logical","cell":["N","Y","Y","Y","N","N","Y","N","N","N","N","Y","Y","N","Y","Y","N","N","Y","Y"],"maxWidth":80},{"id":"GC","name":"GC","type":"logical","cell":["Y","Y","N","Y","N","N","N","Y","N","N","N","Y","Y","N","N","N","N","N","Y","N"],"maxWidth":50},{"id":"Model","name":"Model","type":"character"},{"id":"Total","name":"Total","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":80},{"id":"Detected","name":"Detected","type":"numeric","format":{"cell":{"digits":1,"percent":true},"aggregated":{"digits":1,"percent":true}},"maxWidth":80,"style":[{"backgroundImage":"linear-gradient(90deg, #e6e6e6 28.705388383485%, transparent 28.705388383485%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 27.4317704688593%, transparent 27.4317704688593%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 26.5407044553301%, transparent 26.5407044553301%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 25.9762071378586%, transparent 25.9762071378586%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 25.1317937951948%, transparent 25.1317937951948%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 24.8100053856741%, transparent 24.8100053856741%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 21.9220900396548%, transparent 21.9220900396548%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 21.8249571960923%, transparent 21.8249571960923%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 20.8210870072312%, transparent 20.8210870072312%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 20.8070912059715%, transparent 20.8070912059715%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 19.8312488779846%, transparent 19.8312488779846%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 16.3611642662907%, transparent 16.3611642662907%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 16.2403061738342%, transparent 16.2403061738342%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 15.8173028502367%, transparent 15.8173028502367%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 14.8705811259946%, transparent 14.8705811259946%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 13.0325309698862%, transparent 13.0325309698862%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 12.7203142310404%, transparent 12.7203142310404%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 12.2670963843287%, transparent 12.2670963843287%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 9.42189545775003%, transparent 9.42189545775003%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 7.85074025581629%, transparent 7.85074025581629%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null}]},{"id":"Increased","name":"Increased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Decreased","name":"Decreased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Unchanged","name":"Unchanged","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100}],"filterable":true,"pagination":false,"dataKey":"ccffbc5e4edbb546f01754281c5cf0e8"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="visualisations" class="section level3 tabset">
+<h3 class="tabset">Visualisations</h3>
+<div id="summary" class="section level4">
+<h4>Summary</h4>
+<pre class="r"><code>abs_percent &lt;- function(x, ...) scales::percent(abs(x), ...)
+p &lt;- all_res %&gt;%
+  lapply(
+    function(x) {
+      tbl &lt;- table(x$status)
+      tibble(status = names(tbl), n = as.integer(tbl))
+    }
+  ) %&gt;% 
+  bind_rows(.id = &quot;method&quot;) %&gt;% 
+  mutate(p = n / sum(n), .by = method) %&gt;% 
+  dplyr::filter(status %in% c(&quot;Increased&quot;, &quot;Decreased&quot;)) %&gt;% 
+  mutate(p = ifelse(status == &quot;Decreased&quot;, -1, 1) * p) %&gt;% 
+  arrange(desc(p)) %&gt;% 
+  mutate(
+    windows = ifelse(grepl(&quot;^SW&quot;, method), &quot;Sliding Windows&quot;, &quot;Fixed Width&quot;),
+    groups = ifelse(grepl(&quot;(SQN|G$)&quot;, method), &quot;Explicit Groups&quot;, &quot;No Groups&quot;),
+    method = method %&gt;% 
+      str_remove_all(&quot;^(FW|SW)-&quot;) %&gt;% 
+      str_replace_all(&quot;G$&quot;, &quot; (Groups)&quot;) %&gt;% 
+      str_replace_all(&quot;^LT&quot;, &quot;Limma-Trend &quot;) %&gt;% 
+      str_replace_all(&quot;SQNGC&quot;, &quot;SQN-GC&quot;) %&gt;% 
+      fct_inorder(),
+    status = factor(status, levels = names(status_colours)),
+  ) %&gt;% 
+  droplevels() %&gt;% 
+  ggplot(aes(p, fct_rev(method), fill = status)) +
+  geom_col() +
+  facet_grid(windows + groups ~ ., scales = &quot;free&quot;, space = &quot;free&quot;, switch = &quot;y&quot;) +
+  ggtitle(glue(&quot;{dataset}: {target} Method Comparison&quot;)) +
+  labs(x = &quot;% All Regions&quot;, y = &quot;Method&quot;, fill = &quot;Status&quot;) +
+  scale_x_continuous(
+    expand = expansion(c(0.05, 0.05)),
+    labels = abs_percent
+  ) +
+  scale_y_discrete(expand = expansion(0, 0)) +
+  scale_fill_manual(values = status_colours)
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/plot-all-cat.png" alt="" />
+<p class="caption"><em>Combined results for each applied method broken
+into Fixed-Window and Sliding-Window approaches. Both CQN and TMM were
+applied across the complete dataset and within groups. Methods beginning
+with DB indicate those fitted using DiffBind. All Limma-Trend methods
+use logCPM values as the starting point.</em></p>
+</div>
+</div>
+<div id="shared-increasing-sites" class="section level4">
+<h4>Shared Increasing Sites</h4>
+<pre class="r"><code>size &lt;- get_size_mode(&#39;exclusive_intersection&#39;)
+p &lt;- all_res %&gt;% 
+  lapply(filter, status == &quot;Increased&quot;) %&gt;% 
+  lapply(granges) %&gt;% 
+  GRangesList() %&gt;% 
+  plotOverlaps(
+    base_annotations = list(
+      `Shared Increasing Sites` = intersection_size(
+        text_mapping = aes(label = comma(!!size)),
+        bar_number_threshold = 1, text_colors = &quot;black&quot;, 
+        text = list(size = 3.5, angle = 90, vjust = 0.5, hjust = -0.1)
+      ) +
+        scale_y_continuous(expand = expansion(c(0, 0.2)), label = comma) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = &quot;grey20&quot;),
+          panel.border = element_rect(colour = &quot;grey20&quot;, fill =  NA)
+        )
+    ),
+    set_sizes = (
+      upset_set_size() +
+        geom_text(
+          aes(label = comma(after_stat(count))), 
+          hjust = 1.1, stat = &#39;count&#39;, size = 3.5
+        ) +
+        scale_y_reverse(
+          expand = expansion(c(0.3, 0)), label = comma
+        ) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = &quot;grey20&quot;),
+          panel.border = element_rect(colour = &quot;grey20&quot;, fill =  NA)
+        )
+    ),
+    n_intersections = 30, keep_empty_groups = TRUE, 
+    set_col = status_colours[&quot;Increased&quot;]
+  ) +
+  xlab(NULL) +
+  theme_bw() +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_layout(heights = c(1, 1))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/upset-increasing.png" alt="" />
+<p class="caption"><em>Overlapping/Shared sites detected as Increased
+across all methods</em></p>
+</div>
+</div>
+<div id="shared-decreasing-sites" class="section level4">
+<h4>Shared Decreasing Sites</h4>
+<pre class="r"><code>p &lt;- all_res %&gt;% 
+  lapply(filter, status == &quot;Decreased&quot;) %&gt;% 
+  lapply(granges) %&gt;% 
+  GRangesList() %&gt;% 
+  plotOverlaps(
+    base_annotations = list(
+      `Shared Decreasing Sites` = intersection_size(
+        text_mapping = aes(label = comma(!!size)),
+        bar_number_threshold = 1, text_colors = &quot;black&quot;, 
+        text = list(size = 3.5, angle = 90, vjust = 0.5, hjust = -0.1)
+      ) +
+        scale_y_continuous(expand = expansion(c(0, 0.2)), label = comma) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = &quot;grey20&quot;),
+          panel.border = element_rect(colour = &quot;grey20&quot;, fill =  NA)
+        )
+    ),
+    set_sizes = (
+      upset_set_size() +
+        geom_text(
+          aes(label = comma(after_stat(count))), 
+          hjust = 1.1, stat = &#39;count&#39;, size = 3.5
+        ) +
+        scale_y_reverse(
+          expand = expansion(c(0.3, 0)), label = comma
+        ) +
+        theme(
+          panel.grid = element_blank(), 
+          axis.line = element_line(colour = &quot;grey20&quot;),
+          panel.border = element_rect(colour = &quot;grey20&quot;, fill =  NA)
+        )
+    ),
+    n_intersections = 30, keep_empty_groups = TRUE, 
+    set_col = status_colours[&quot;Decreased&quot;]
+  ) +
+  xlab(NULL) +
+  theme_bw() +
+  theme(
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_layout(heights = c(1, 1))
+if (interactive()) {
+  p
+} else {
+  lb &lt;- knitr::opts_current$get(&quot;label&quot;)
+  fig_out &lt;- file.path(fig_path, glue(lb, &quot;.png&quot;))
+  href &lt;- str_remove_all(fig_out, &quot;.+docs/&quot;)
+  png(
+    fig_out, res = 300, units = &quot;in&quot;,
+    height = knitr::opts_chunk$get(&quot;fig.height&quot;), 
+    width = knitr::opts_chunk$get(&quot;fig.width&quot;)
+  )
+  print(p)
+  dev.off()
+}</code></pre>
+<div class="figure">
+<img src="assets/MDA-MB-453/H3K27ac/upset-decreasing.png" alt="" />
+<p class="caption"><em>Overlapping/Shared sites detected as Decreased
+across all methods</em></p>
+</div>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

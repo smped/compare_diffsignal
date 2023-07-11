@@ -14,7 +14,7 @@
 
 <title>ZR75: H3K27ac</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -30,7 +30,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -361,6 +361,24 @@ div.tocify {
     </li>
   </ul>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    MDA-MB-453
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mdamb453_ar.html">AR</a>
+    </li>
+    <li>
+      <a href="mdamb453_gata3.html">GATA3</a>
+    </li>
+    <li>
+      <a href="mdamb453_h3k27ac.html">H3K27ac</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -383,7 +401,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ZR75: H3K27ac</h1>
 <h4 class="author">Stephen Pederson</h4>
-<h4 class="date">09 July, 2023</h4>
+<h4 class="date">11 July, 2023</h4>
 
 </div>
 
@@ -412,7 +430,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-07-09
+<strong>Last updated:</strong> 2023-07-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -543,15 +561,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree4778e0dff3674a4541d4621ddfb5d6b491614e5dtargetblank4778e0da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9dtargetblank274960da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/smped/compare_diffsignal/tree/4778e0dff3674a4541d4621ddfb5d6b491614e5d" target="_blank">4778e0d</a>
+<a href="https://github.com/smped/compare_diffsignal/tree/274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9d" target="_blank">274960d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree4778e0dff3674a4541d4621ddfb5d6b491614e5dtargetblank4778e0da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomsmpedcomparediffsignaltree274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9dtargetblank274960da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -561,7 +579,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/smped/compare_diffsignal/tree/4778e0dff3674a4541d4621ddfb5d6b491614e5d" target="_blank">4778e0d</a>.
+<a href="https://github.com/smped/compare_diffsignal/tree/274960d0a2d2c868bf96fd1d5f86ba68ac9c9c9d" target="_blank">274960d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -576,15 +594,22 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .Rhistory
-    Ignored:    .Rproj.user/
     Ignored:    data/bam/
     Ignored:    data/macs2/
     Ignored:    output/PRJNA509779/
 
+Untracked files:
+    Untracked:  analysis/mdamb453_ar.Rmd
+    Untracked:  analysis/mdamb453_gata3.Rmd
+    Untracked:  analysis/mdamb453_h3k27ac.Rmd
+    Untracked:  data/MDA-MB-453.tsv
+    Untracked:  slurm/
+
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/_site.yml
     Modified:   code/_method_comparison.Rmd
+    Modified:   code/build_site.R
+    Modified:   code/submit.sh
 
 </code></pre>
 <p>
@@ -630,6 +655,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/smped/compare_diffsignal/11c225b254e15449ca91460074022b9178987e04/docs/zr75_h3k27ac.html" target="_blank">11c225b</a>
+</td>
+<td>
+Stephen Pederson
+</td>
+<td>
+2023-07-09
+</td>
+<td>
+Added pairwise for Fixed/Sliding
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -729,7 +771,7 @@ bar_style &lt;- function(width = 1, fill = &quot;#e6e6e6&quot;, height = &quot;7
   dplyr::filter(target == .GlobalEnv$target) %&gt;% 
   mutate(treatment = factor(treatment, levels = treat_levels))</code></pre>
 <pre class="r"><code>bfl &lt;- samples %&gt;% 
-  mutate(path = here::here(&quot;data&quot;, &quot;bam&quot;, dataset, glue(&quot;{accession}.sorted.bam&quot;))) %&gt;% 
+  mutate(path = here::here(&quot;data&quot;, &quot;bam&quot;, dataset, glue(&quot;{accession}.bam&quot;))) %&gt;% 
   pull(path) %&gt;% 
   BamFileList()
 sq &lt;- seqinfo(bfl) %&gt;% 
@@ -899,7 +941,7 @@ merged samples</li>
 <li>A set of union peaks were then taken as the union of the above
 treatment-specific peaks which passed filtering</li>
 </ol>
-<p>This gave 49,644 union peaks derived from <em>47,434</em> and
+<p>This gave 49,621 union peaks derived from <em>47,389</em> and
 <em>47,022</em> treatment-specific peaks from E2 and E2DHT
 respectively.</p>
 </div>
@@ -912,7 +954,7 @@ respectively.</p>
     Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
     bamReads = path(bfl),
     ControlID = &quot;Pooled&quot;,
-    bamControl = file.path(dirname(bamReads), glue(&quot;{input}.sorted.bam&quot;))#,
+    bamControl = file.path(dirname(bamReads), glue(&quot;{input}.bam&quot;))#,
     # Peaks = file.path(out_path, glue(&quot;{target}_centred_peaks.bed&quot;)),
     # PeakCaller = &quot;bed&quot;
   ) %&gt;% 
@@ -969,7 +1011,7 @@ db_ls_results &lt;-  dba_ls %&gt;%
   select(Conc, logFC = Fold, PValue = `p-value`, FDR) %&gt;% 
   addDiffStatus()
 seqinfo(db_ls_results) &lt;- sq</code></pre>
-<p>This analysis returned 2,106 peaks considered to show evidence of
+<p>This analysis returned 2,107 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- db_ls_results %&gt;% 
   as_tibble() %&gt;% 
@@ -1011,7 +1053,7 @@ db_tmm_results &lt;- dba_tmm %&gt;%
   select(Conc, logFC = Fold, PValue = `p-value`, FDR) %&gt;% 
   addDiffStatus()
 seqinfo(db_ls_results) &lt;- sq</code></pre>
-<p>This analysis returned 2,154 peaks considered to show evidence of
+<p>This analysis returned 2,153 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- db_tmm_results  %&gt;% 
   as_tibble() %&gt;% 
@@ -1056,7 +1098,7 @@ se &lt;- regionCounts(
 colData(se) &lt;- colData(se) %&gt;%
   as_tibble(rownames = &quot;sample&quot;) %&gt;%
   mutate(
-    accession = str_remove_all(sample, &quot;.sorted.bam&quot;),
+    accession = str_remove_all(sample, &quot;.bam&quot;),
   ) %&gt;%
   left_join(samples, by = &quot;accession&quot;) %&gt;%
   dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %&gt;%
@@ -1102,7 +1144,7 @@ csaw</em></p>
 <h4 class="tabset">Library Size</h4>
 <pre class="r"><code>ec_ls_results &lt;- fitAssayDiff(se, design = X, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,522 peaks considered to show evidence of
+<p>This analysis returned 2,524 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot" class="section level5">
 <h5>MA Plot</h5>
@@ -1172,7 +1214,7 @@ Size Normalisation</em></p>
 <h4 class="tabset">TMM</h4>
 <pre class="r"><code>ec_tmm_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,623 peaks considered to show evidence of
+<p>This analysis returned 2,627 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-1" class="section level5">
 <h5>MA Plot</h5>
@@ -1242,7 +1284,7 @@ Size Normalisation</em></p>
 <h4 class="tabset">TMM Groups</h4>
 <pre class="r"><code>ec_tmmg_results &lt;- fitAssayDiff(se, design = X, norm = &quot;TMM&quot;, groups = &quot;treat&quot;, asRanges = TRUE) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,580 peaks considered to show evidence of
+<p>This analysis returned 2,576 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-2" class="section level5">
 <h5>MA Plot</h5>
@@ -1323,7 +1365,7 @@ cqnplot(cqn)</code></pre>
   se, method = &quot;qlf&quot;, offset = cqn$glm.offset, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,639 peaks considered to show evidence of
+<p>This analysis returned 2,630 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-3" class="section level5">
 <h5>MA Plot</h5>
@@ -1408,7 +1450,7 @@ cqng_results &lt;- fitAssayDiff(
   se, method = &quot;qlf&quot;, offset = offset, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 3,426 peaks considered to show evidence of
+<p>This analysis returned 3,415 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-4" class="section level5">
 <h5>MA Plot</h5>
@@ -1485,7 +1527,7 @@ sqn_results &lt;- fitAssayDiff(
   se, assay = &quot;normCounts&quot;, lib.size = NULL, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,470 peaks considered to show evidence of
+<p>This analysis returned 2,465 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-5" class="section level5">
 <h5>MA Plot</h5>
@@ -1561,7 +1603,7 @@ sqngc_results &lt;- fitAssayDiff(
   se, assay = &quot;normCountsGC&quot;, lib.size = NULL, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,786 peaks considered to show evidence of
+<p>This analysis returned 1,799 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-6" class="section level5">
 <h5>MA Plot</h5>
@@ -1635,7 +1677,7 @@ lt_results &lt;- fitAssayDiff(
   se, assay = &quot;logCPM&quot;, method = &quot;lt&quot;, design = X, asRanges = TRUE
 ) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 2,389 peaks considered to show evidence of
+<p>This analysis returned 2,394 peaks considered to show evidence of
 differential signal.</p>
 <div id="ma-plot-7" class="section level5">
 <h5>MA Plot</h5>
@@ -1923,19 +1965,19 @@ using TMM normalisation for both DiffBind and extraChIPs</em></p>
 </div>
 <div id="sliding-windows" class="section level2">
 <h2>Sliding Windows</h2>
-<pre class="r"><code>window_size &lt;- round(params$width / 4, -1)
+<pre class="r"><code>window_size &lt;- round(params$width / 5, -1)
 window_step &lt;- ceiling(0.1 * window_size / 3) * 10
 bfl &lt;- path(bfl) %&gt;% 
   dirname() %&gt;% 
   unique() %&gt;% 
-  file.path(glue(&quot;{samples$input}.sorted.bam&quot;)) %&gt;% 
+  file.path(glue(&quot;{samples$input}.bam&quot;)) %&gt;% 
   unique() %&gt;% 
   BamFileList() %&gt;% 
   setNames(unique(samples$input)) %&gt;% 
   c(bfl)</code></pre>
-<p>Windows were set to be about 1/4 of the fixed-width window-size, with
-each range covered up to 3 times. This gave 250bp windows moving in
-increments of 90bp.</p>
+<p>Windows were set to be about 1/5 of the fixed-width window-size, with
+each range covered up to 3 times. This gave 200bp windows moving in
+increments of 70bp.</p>
 <pre class="r"><code>wincounts &lt;- windowCounts(
   bam.files = bfl,
   spacing = window_step,
@@ -1950,7 +1992,7 @@ seqinfo(wincounts) &lt;- sq
 colData(wincounts) &lt;- colData(wincounts) %&gt;% 
   as_tibble(rownames = &quot;sample&quot;) %&gt;% 
   mutate(
-    accession = str_remove_all(sample, &quot;.sorted.bam&quot;),
+    accession = str_remove_all(sample, &quot;.bam&quot;),
     ChIP_Target = ifelse(accession %in% samples$accession, .GlobalEnv$target, &quot;Input&quot;)
   ) %&gt;% 
   left_join(samples, by = &quot;accession&quot;) %&gt;% 
@@ -2006,7 +2048,7 @@ alt="" />
 <p class="caption"><em>Read Density Plot for sliding-window counts
 returned by extraChIPs after filtering</em></p>
 </div>
-<p>Under this filtering approach 18,940 of the 49,644 (38.2%) were not
+<p>Under this filtering approach 18,884 of the 49,621 (38.1%) were not
 covered by any sliding windows.</p>
 <p>Conversely, 2.2% of the sliding windows retained after filtering did
 not overlap any of the union_peaks.</p>
@@ -2020,7 +2062,7 @@ sw_ls_results &lt;- sw_ls_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,149 peaks considered to show evidence of
+<p>This analysis returned 1,129 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_ls_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_ls_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2063,7 +2105,7 @@ sw_tmm_results &lt;- sw_tmm_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,192 peaks considered to show evidence of
+<p>This analysis returned 1,186 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_tmm_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_tmm_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2108,7 +2150,7 @@ sw_tmmg_results &lt;- sw_tmmg_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,176 peaks considered to show evidence of
+<p>This analysis returned 1,161 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_tmmg_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_tmmg_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2153,7 +2195,7 @@ sw_sq_results &lt;- sw_sq_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 760 peaks considered to show evidence of
+<p>This analysis returned 772 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_sq_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_sq_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2199,7 +2241,7 @@ sw_sqgc_results &lt;- sw_sqgc_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 796 peaks considered to show evidence of
+<p>This analysis returned 801 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_sqgc_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_sqgc_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2250,7 +2292,7 @@ sw_cqn_results &lt;- sw_cqn_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,167 peaks considered to show evidence of
+<p>This analysis returned 1,194 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_cqn_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_cqn_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2310,7 +2352,7 @@ sw_cqng_results &lt;- sw_cqng_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,163 peaks considered to show evidence of
+<p>This analysis returned 1,147 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_cqng_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_cqng_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2359,7 +2401,7 @@ sw_lt_results &lt;- sw_lt_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,059 peaks considered to show evidence of
+<p>This analysis returned 1,035 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_lt_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_lt_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2405,7 +2447,7 @@ sw_ltsq_results &lt;- sw_ltsq_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,075 peaks considered to show evidence of
+<p>This analysis returned 1,065 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_ltsq_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_ltsq_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2451,7 +2493,7 @@ sw_ltsqgc_results &lt;- sw_ltsqgc_all %&gt;%
   mutate(FDR = p.adjust(hmp, &quot;fdr&quot;)) %&gt;% 
   select(overlaps_ref, keyval_range, starts_with(&quot;log&quot;), PValue = hmp, FDR) %&gt;% 
   addDiffStatus()</code></pre>
-<p>This analysis returned 1,104 peaks considered to show evidence of
+<p>This analysis returned 1,102 peaks considered to show evidence of
 differential signal.</p>
 <pre class="r"><code>p &lt;- sw_ltsqgc_all %&gt;% 
   mutate(Sig = propOverlap(., subset(sw_ltsqgc_results, FDR &lt; 0.05)$keyval_range) == 1) %&gt;% 
@@ -2751,7 +2793,7 @@ distributions.</caption>
 <td align="left">Fixed</td>
 <td align="left">Counts</td>
 <td align="right">0.7515</td>
-<td align="right">0.589</td>
+<td align="right">0.605</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -2766,16 +2808,16 @@ distributions.</caption>
 <td align="left">SW-Counts</td>
 <td align="left">Sliding</td>
 <td align="left">Counts</td>
-<td align="right">0.6626</td>
-<td align="right">0.611</td>
+<td align="right">0.6981</td>
+<td align="right">0.614</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">SW-logCPM</td>
 <td align="left">Sliding</td>
 <td align="left">logCPM</td>
-<td align="right">0.7666</td>
-<td align="right">0.376</td>
+<td align="right">0.5975</td>
+<td align="right">0.491</td>
 <td align="left">FALSE</td>
 </tr>
 </tbody>
@@ -2863,8 +2905,8 @@ approach, but is widely applicable in general. Models fitted using
 limma-trend used logCPM values instead of counts.</em>
 </caption>
 </div>
-<div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-377bc064349ba46c3744" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-377bc064349ba46c3744">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Method":["FW-CQNG","FW-CQN","FW-TMM","FW-TMMG","FW-LS","DB-TMM","FW-SQN","DB-LS","FW-LT","SW-TMM","SW-TMMG","SW-CQN","SW-CQNG","SW-LS","FW-SQNGC","SW-LTSQNGC","SW-LTSQN","SW-LT","SW-SQNGC","SW-SQN"],"Package":["extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","DiffBind","extraChIPs","DiffBind","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs"],"Windows":["Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Sliding","Sliding","Sliding","Sliding","Sliding","Fixed","Sliding","Sliding","Sliding","Sliding","Sliding"],"Normalisation":["CQN","CQN","TMM","TMM","LS","TMM","SQN","LS","","TMM","TMM","CQN","CQN","LS","SQN-GC","SQN-GC","SQN","","SQN-GC","SQN"],"Groups":[true,false,false,true,false,false,true,false,false,false,true,false,true,false,true,true,true,false,true,true],"GC":[true,true,false,false,false,false,false,false,false,false,false,true,true,false,true,true,false,false,true,false],"Model":["glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","limma-trend","limma-trend","limma-trend","glmQLF","glmQLF"],"Total":[49644,49644,49644,49644,49644,43007,49644,43007,49644,31351,31351,31351,31351,31351,49644,31351,31351,31351,31351,31351],"Detected":[0.069011360889533524,0.053158488437676232,0.052836193699137834,0.051970026589315932,0.050801708162114267,0.050084869904899243,0.04975425026186453,0.048968772525402882,0.048122633148013905,0.03802111575388345,0.037510765206851482,0.037223693024145965,0.037096105387387945,0.036649548658734932,0.035976150189348188,0.035214187745207459,0.034289177378711955,0.033778826831679987,0.025389939714841603,0.024241650984019647],"Increased":[1899,2176,2150,1955,1916,1757,1934,1539,1851,968,875,914,851,861,1558,887,857,821,601,577],"Decreased":[1527,463,473,625,606,397,536,567,538,224,301,253,312,288,228,217,218,238,195,183],"Unchanged":[46218,47005,47021,47064,47122,40853,47174,40901,47255,30159,30175,30184,30188,30202,47858,30247,30276,30292,30555,30591]},"columns":[{"id":"Method","name":"Method","type":"character"},{"id":"Package","name":"Package","type":"character"},{"id":"Windows","name":"Windows","type":"character","maxWidth":80},{"id":"Normalisation","name":"Norm","type":"character","maxWidth":100},{"id":"Groups","name":"Groups","type":"logical","cell":["Y","N","N","Y","N","N","Y","N","N","N","Y","N","Y","N","Y","Y","Y","N","Y","Y"],"maxWidth":80},{"id":"GC","name":"GC","type":"logical","cell":["Y","Y","N","N","N","N","N","N","N","N","N","Y","Y","N","Y","Y","N","N","Y","N"],"maxWidth":50},{"id":"Model","name":"Model","type":"character"},{"id":"Total","name":"Total","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":80},{"id":"Detected","name":"Detected","type":"numeric","format":{"cell":{"digits":1,"percent":true},"aggregated":{"digits":1,"percent":true}},"maxWidth":80,"style":[{"backgroundImage":"linear-gradient(90deg, #e6e6e6 6.90113608895335%, transparent 6.90113608895335%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.31584884376762%, transparent 5.31584884376762%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.28361936991378%, transparent 5.28361936991378%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.19700265893159%, transparent 5.19700265893159%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.08017081621143%, transparent 5.08017081621143%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.00848699048992%, transparent 5.00848699048992%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.97542502618645%, transparent 4.97542502618645%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.89687725254029%, transparent 4.89687725254029%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.81226331480139%, transparent 4.81226331480139%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.80211157538834%, transparent 3.80211157538834%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.75107652068515%, transparent 3.75107652068515%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.7223693024146%, transparent 3.7223693024146%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.70961053873879%, transparent 3.70961053873879%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.66495486587349%, transparent 3.66495486587349%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.59761501893482%, transparent 3.59761501893482%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.52141877452075%, transparent 3.52141877452075%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.4289177378712%, transparent 3.4289177378712%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.377882683168%, transparent 3.377882683168%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 2.53899397148416%, transparent 2.53899397148416%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 2.42416509840196%, transparent 2.42416509840196%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null}]},{"id":"Increased","name":"Increased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Decreased","name":"Decreased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Unchanged","name":"Unchanged","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100}],"filterable":true,"pagination":false,"dataKey":"5a8a5916117cb8b07470a195ea0358cf"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-d8e0af5f13b7d0218b5f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d8e0af5f13b7d0218b5f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Method":["FW-CQNG","FW-CQN","FW-TMM","FW-TMMG","FW-LS","DB-TMM","FW-SQN","DB-LS","FW-LT","FW-SQNGC","SW-CQN","SW-TMM","SW-TMMG","SW-CQNG","SW-LS","SW-LTSQNGC","SW-LTSQN","SW-LT","SW-SQNGC","SW-SQN"],"Package":["extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","DiffBind","extraChIPs","DiffBind","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs","extraChIPs"],"Windows":["Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Fixed","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding","Sliding"],"Normalisation":["CQN","CQN","TMM","TMM","LS","TMM","SQN","LS","","SQN-GC","CQN","TMM","TMM","CQN","LS","SQN-GC","SQN","","SQN-GC","SQN"],"Groups":[true,false,false,true,false,false,true,false,false,true,false,false,true,true,false,true,true,false,true,true],"GC":[true,true,false,false,false,false,false,false,false,true,true,false,false,true,false,true,false,false,true,false],"Model":["glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","limma-trend","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","glmQLF","limma-trend","limma-trend","limma-trend","glmQLF","glmQLF"],"Total":[49621,49621,49621,49621,49621,43002,49621,43002,49621,49621,33044,33044,33044,33044,33044,33044,33044,33044,33044,33044],"Detected":[0.0688216682452993,0.0530017532899377,0.052941295016223,0.0519135043630721,0.0508655609520163,0.0500674387237803,0.0496765482356261,0.0489977210362309,0.0482457024243768,0.0362548114709498,0.036133639995158,0.0358915385546544,0.0351349715530808,0.0347112940321995,0.0341665657910665,0.0333494734293669,0.0322297542670379,0.0313218738651495,0.02424040673042,0.0233627890085946],"Increased":[1902,2169,2154,1953,1916,1758,1931,1539,1855,1565,913,963,871,862,854,881,856,802,603,587],"Decreased":[1513,461,473,623,608,395,534,568,539,234,281,223,290,285,275,221,209,233,198,185],"Unchanged":[46206,46991,46994,47045,47097,40849,47156,40895,47227,47822,31850,31858,31883,31897,31915,31942,31979,32009,32243,32272]},"columns":[{"id":"Method","name":"Method","type":"character"},{"id":"Package","name":"Package","type":"character"},{"id":"Windows","name":"Windows","type":"character","maxWidth":80},{"id":"Normalisation","name":"Norm","type":"character","maxWidth":100},{"id":"Groups","name":"Groups","type":"logical","cell":["Y","N","N","Y","N","N","Y","N","N","Y","N","N","Y","Y","N","Y","Y","N","Y","Y"],"maxWidth":80},{"id":"GC","name":"GC","type":"logical","cell":["Y","Y","N","N","N","N","N","N","N","Y","Y","N","N","Y","N","Y","N","N","Y","N"],"maxWidth":50},{"id":"Model","name":"Model","type":"character"},{"id":"Total","name":"Total","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":80},{"id":"Detected","name":"Detected","type":"numeric","format":{"cell":{"digits":1,"percent":true},"aggregated":{"digits":1,"percent":true}},"maxWidth":80,"style":[{"backgroundImage":"linear-gradient(90deg, #e6e6e6 6.88216682452993%, transparent 6.88216682452993%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.30017532899377%, transparent 5.30017532899377%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.2941295016223%, transparent 5.2941295016223%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.19135043630721%, transparent 5.19135043630721%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.08655609520163%, transparent 5.08655609520163%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 5.00674387237803%, transparent 5.00674387237803%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.96765482356261%, transparent 4.96765482356261%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.89977210362309%, transparent 4.89977210362309%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 4.82457024243768%, transparent 4.82457024243768%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.62548114709498%, transparent 3.62548114709498%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.6133639995158%, transparent 3.6133639995158%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.58915385546544%, transparent 3.58915385546544%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.51349715530808%, transparent 3.51349715530808%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.47112940321995%, transparent 3.47112940321995%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.41665657910665%, transparent 3.41665657910665%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.33494734293669%, transparent 3.33494734293669%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.22297542670379%, transparent 3.22297542670379%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 3.13218738651495%, transparent 3.13218738651495%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 2.424040673042%, transparent 2.424040673042%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null},{"backgroundImage":"linear-gradient(90deg, #e6e6e6 2.33627890085946%, transparent 2.33627890085946%)","backgroundSize":"100% 75%","backgroundRepeat":"no-repeat","backgroundPosition":"center","color":null}]},{"id":"Increased","name":"Increased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Decreased","name":"Decreased","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100},{"id":"Unchanged","name":"Unchanged","type":"numeric","format":{"cell":{"separators":true},"aggregated":{"separators":true}},"maxWidth":100}],"filterable":true,"pagination":false,"dataKey":"b776ed75e04976e7b10b3117937662d1"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="visualisations" class="section level3 tabset">

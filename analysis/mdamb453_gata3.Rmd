@@ -1,0 +1,21 @@
+---
+title: "MDA-MB-453: AR"
+author: "Stephen Pederson"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+params:
+  cell_line: "MDA-MB-453"
+  dataset: "MDA-MB-453"
+  target: "GATA3"
+  treat_levels: ["Veh", "DHT"]
+  width: 400
+  fl: 195
+---
+
+
+```{r run-analysis, eval = TRUE, child = here::here('code/_method_comparison.Rmd')}
+
+```
+

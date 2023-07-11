@@ -13,6 +13,14 @@ navbar:
       href: zr75_er.html
     - text: H3K27ac
       href: zr75_h3k27ac.html
+  - text: MDA-MB-453
+    menu:
+    - text: AR
+      href: mdamb453_ar.html
+    - text: GATA3
+      href: mdamb453_gata3.html
+    - text: H3K27ac
+      href: mdamb453_h3k27ac.html      
 output:
   workflowr::wflow_html:
     toc: yes

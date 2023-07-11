@@ -1232,7 +1232,7 @@ if (interactive()) {
 ## Sliding Windows
 
 ```{r set-windows}
-window_size <- round(params$width / 4, -1)
+window_size <- round(params$width / 5, -1)
 window_step <- ceiling(0.1 * window_size / 3) * 10
 bfl <- path(bfl) %>% 
   dirname() %>% 
@@ -1244,7 +1244,7 @@ bfl <- path(bfl) %>%
   c(bfl)
 ```
 
-Windows were set to be about 1/4 of the fixed-width window-size, with each range covered up to 3 times.
+Windows were set to be about 1/5 of the fixed-width window-size, with each range covered up to 3 times.
 This gave `r window_size`bp windows moving in increments of `r window_step`bp.
 
 ```{r wincounts}
