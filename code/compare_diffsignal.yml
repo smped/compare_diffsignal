@@ -1,0 +1,33 @@
+name: compare_diffsignal
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - icu =72
+  - r-base =4.2.3
+  - r-biocmanager
+  - r-complexupset =1.3.3
+  - r-diagrammer =1.0
+  - r-glue =1.6
+  - r-here =1.0
+  - r-knitr =1.43
+  - r-pander = 0.6.5
+  - r-polychrome =1.5
+  - r-reactable =0.4
+  - r-remotes
+  - r-rmarkdown =2.21
+  - r-scales =1.2
+  - r-tidyverse =2.0
+  - r-workflowr
+  - r-yaml =2.3
+  - bioconductor-cqn
+  - bioconductor-edger
+  - bioconductor-extrachips =1.2
+  - bioconductor-ngsReports =2.0
+  - bioconductor-plyranges =1.18
+  - bioconductor-qsmooth
+  - bioconductor-quantro
+  - bioconductor-rtracklayer =1.58  
+  - bioconductor-diffbind
+  - bioconductor-bsgenome.hsapiens.ucsc.hg19

@@ -87,7 +87,7 @@ samples <- here::here("data", glue("{dataset}.tsv")) %>%
 
 ```{r bfl}
 bfl <- samples %>% 
-  mutate(path = here::here("data", "bam", dataset, glue("{accession}.sorted.bam"))) %>% 
+  mutate(path = here::here("data", "bam", dataset, glue("{accession}.bam"))) %>% 
   pull(path) %>% 
   BamFileList()
 sq <- seqinfo(bfl) %>% 
@@ -187,7 +187,7 @@ db_sample_sheet <- samples %>%
     Tissue = cell_line, Factor = target,# Condition = treat_levels[[1]], # Leads to two identically named masks
     bamReads = path(bfl),
     ControlID = "Pooled",
-    bamControl = file.path(dirname(bamReads), glue("{input}.sorted.bam"))#,
+    bamControl = file.path(dirname(bamReads), glue("{input}.bam"))#,
     # Peaks = file.path(out_path, glue("{target}_centred_peaks.bed")),
     # PeakCaller = "bed"
   ) %>% 
@@ -341,7 +341,7 @@ se <- regionCounts(
 colData(se) <- colData(se) %>%
   as_tibble(rownames = "sample") %>%
   mutate(
-    accession = str_remove_all(sample, ".sorted.bam"),
+    accession = str_remove_all(sample, ".bam"),
   ) %>%
   left_join(samples, by = "accession") %>%
   dplyr::select(all_of(colnames(colData(se))), sample, accession, treatment) %>%
@@ -1237,7 +1237,7 @@ window_step <- ceiling(0.1 * window_size / 3) * 10
 bfl <- path(bfl) %>% 
   dirname() %>% 
   unique() %>% 
-  file.path(glue("{samples$input}.sorted.bam")) %>% 
+  file.path(glue("{samples$input}.bam")) %>% 
   unique() %>% 
   BamFileList() %>% 
   setNames(unique(samples$input)) %>% 
@@ -1262,7 +1262,7 @@ seqinfo(wincounts) <- sq
 colData(wincounts) <- colData(wincounts) %>% 
   as_tibble(rownames = "sample") %>% 
   mutate(
-    accession = str_remove_all(sample, ".sorted.bam"),
+    accession = str_remove_all(sample, ".bam"),
     ChIP_Target = ifelse(accession %in% samples$accession, .GlobalEnv$target, "Input")
   ) %>% 
   left_join(samples, by = "accession") %>% 
