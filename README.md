@@ -50,6 +50,7 @@ All approaches will be compared across multiple datasets:
 | PRJNA509779 | ZR-75-1   | AR          | E2, E2DHT  |
 | PRJNA509779 | ZR-75-1   | ER$\alpha$  | E2, E2DHT  |
 | PRJNA509779 | ZR-75-1   | H3K27ac     | E2, E2DHT  |
+| MDA-MB-453  | MDA-MB-453 | AR         | Veh, DHT   |
 
 Table: *Cell lines and ChIP targets being analysed*
 
@@ -58,6 +59,7 @@ The key **defining features** underlining this selection are:
 - AR will shift from cytoplasmic to nuclear in response to DHT leading to unbalanced signal
 - ER$\alpha$ should show approximately the same levels of signal between conditions, and like AR, should produce 'narrow' binding regions
 - H3K27ac will be far broader peaks than either AR or ER$\alpha$
+- GATA3 may be shifted from the cytoplasm to the nucleus by AR
 
 ## Peak Definitions
 

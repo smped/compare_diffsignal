@@ -27,7 +27,7 @@ cat(readLines(here::here("README.md")), sep = "\n")
 ```
 
 
-## Conclusion
+## Analysis
 
 Each method was given a score for each dataset, representing (-1) Not Recommended, (0) Viable But Lacking in some characteristic such as statistical power, and (1) for Recommended.
 Any suggestion of spurious detections, or an introduced bias were assigned -1.
@@ -86,6 +86,45 @@ scores <- tibble(
       paste("SW", c("TMMG", "CQNG", "LTSQN", "CQN", "TMM", "LS", "LT"), sep = "-")
     ) ~ 1,
     TRUE ~ 0
+  ),
+  `MDA-MB-453 (AR)` = case_when(
+    method %in% c(
+      paste("DB", c("TMM"), sep = "-"), 
+      paste("FW", c("SQN", "SQNGC", "TMM", "CQN"), sep = "-"),
+      paste("SW", c("CQN", "TMM"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", c("LS"), sep = "-"), 
+      paste("FW", c("CQNG", "TMMG", "LS", "LT"), sep = "-"),
+      paste("SW", c("CQNG", "TMMG", "LTSQN", "SQN", "SQNGC", "LTSQNGC", "LS", "LT"), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
+  ),
+  `MDA-MB-453 (GATA3)` = case_when(
+    method %in% c(
+      paste("DB", c("TMM"), sep = "-"), 
+      paste("FW", c("TMM", "CQN", "SQNGC", "SQN"), sep = "-"),
+      paste("SW", c("CQN", "TMM", "LTSQNGC"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", c("LS"), sep = "-"), 
+      paste("FW", c("LS", "LT", "TMMG", "CQNG"), sep = "-"),
+      paste("SW", c("LS", "TMMG", "CQNG", "LT"), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
+  ),
+  `MDA-MB-453 (H3K27ac)` = case_when(
+    method %in% c(
+      paste("DB", c(), sep = "-"), 
+      paste("FW", c(), sep = "-"),
+      paste("SW", c("CQN", "LTSQNGC"), sep = "-")
+    ) ~ -1,
+    method %in% c(
+      paste("DB", c("LS", "TMM"), sep = "-"), 
+      paste("FW", c("LS", "TMM", "TMMG", "CQN", "CQNG", "SQN", "SQNGC", "LT"), sep = "-"),
+      paste("SW", c("LS", "TMM", "TMMG", "CQNGC", "LT", "LTSQN"), sep = "-")
+    ) ~ 1,
+    TRUE ~ 0
   )
 ) %>% 
   mutate(
@@ -124,7 +163,10 @@ tbl <- scores %>%
       normalisation = colDef(name = "Norm.", footer = ""),
       "PRJNA509779 (AR)" = colDef(name = "AR", maxWidth = 60, show = FALSE),
       "PRJNA509779 (ER)" = colDef(name = "ER", maxWidth = 60, show = FALSE),
-      "PRJNA509779 (H3K27ac)" = colDef(name = "H3K27ac", show = FALSE)
+      "PRJNA509779 (H3K27ac)" = colDef(name = "H3K27ac", show = FALSE),
+      "MDA-MB-453 (AR)" = colDef(name = "AR", maxWidth = 60, show = FALSE),
+      "MDA-MB-453 (GATA3)" = colDef(name = "AR", maxWidth = 60, show = FALSE),
+      "MDA-MB-453 (H3K27ac)" = colDef(name = "AR", maxWidth = 60, show = FALSE)
     ),
     # columnGroups = list(
     #   colGroup(name = "PRJNA509779", columns = str_subset(names(.), "PRJNA509779"))
@@ -172,3 +214,30 @@ scores %>%
   )
 ```
 
+## Conclusion
+
+Some methods clearly stood as being applicable:
+
+- Limma-Trend using logCPM values was appropriate for:
+  - Fixed Windows
+  - Sliding Windows (logCPM or SQ-Normalised)
+  
+- QLF Models were appropriate
+  - Library Size Normalisation (Fixed or Sliding Windows)
+  - TMM Normalisation **after testing** for group differences (Fixed or Sliding)
+  
+Datasets failing a permutation test using `quantro` using raw counts were AR (both datasets) and GATA3.
+Incorporating a quantro test when using TMM will enable this to be applied widely.
+Interestingly, most datasets failed this test when using logCPM values, perhaps suggesting this test is too sensitive for this data type, or is even misleading
+
+In addition, H3K27ac appeared to perform more poorly using sliding windows.
+However, the majority of sites 'lost' were low signal sites, with a number of new sites detected in the middle of the signal range.
+Choosing the optimal method may require careful consideration.
+
+Thus the final options for GRAVI should be
+
+1. Fixed-Width: QLF-none, QLF-TMM(+G), LT-none
+2. Sliding Windows: QLF-none, QLF-TMM(+G), LT-none, LT-SQN
+
+Previous work has also suggested the *limma-trend* methods lose comparatively more power when applying *treat* and this requires testing.
+A final comparison of these 7 methods, along with the impact of *treat* is required next.
